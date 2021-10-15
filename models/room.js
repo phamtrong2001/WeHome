@@ -1,63 +1,60 @@
 const Sequelize = require('sequelize');
 module.exports = function(sequelize, DataTypes) {
-  return sequelize.define('rooms', {
-    id: {
+  return sequelize.define('room', {
+    room_id: {
       autoIncrement: true,
       type: DataTypes.INTEGER,
       allowNull: false,
       primaryKey: true
     },
-    name: {
+    room_name: {
       type: DataTypes.TEXT,
       allowNull: false
     },
-    total_point: {
-      type: DataTypes.DECIMAL(5,2),
-      allowNull: false
-    },
-    total_reviews: {
+    address_id: {
       type: DataTypes.INTEGER,
       allowNull: false
     },
-    place_id: {
+    room_type_id: {
       type: DataTypes.INTEGER,
       allowNull: false
     },
-    type_id: {
+    host_id: {
       type: DataTypes.INTEGER,
       allowNull: false
     },
-    user_id: {
+    num_guest: {
       type: DataTypes.INTEGER,
       allowNull: false
     },
-    guests: {
-      type: DataTypes.TINYINT,
+    num_bed: {
+      type: DataTypes.INTEGER,
       allowNull: false
     },
-    beds: {
-      type: DataTypes.TINYINT,
+    num_bedroom: {
+      type: DataTypes.INTEGER,
       allowNull: false
     },
-    bedrooms: {
-      type: DataTypes.TINYINT,
+    num_bathroom: {
+      type: DataTypes.INTEGER,
       allowNull: false
     },
-    bathrooms: {
-      type: DataTypes.TINYINT,
-      allowNull: false
-    },
-    rules: {
+    rule: {
       type: DataTypes.TEXT,
       allowNull: true
+    },
+    accommodation_type: {
+      type: DataTypes.TEXT,
+      allowNull: false
     },
     price: {
       type: DataTypes.DECIMAL(5,2),
       allowNull: false
     },
-    accommodation_type: {
-      type: DataTypes.TEXT,
-      allowNull: false
+    confirmed: {
+      type: DataTypes.BOOLEAN,
+      allowNull: false,
+      defaultValue: 0
     },
     last_update: {
       type: DataTypes.DATE,
@@ -66,7 +63,7 @@ module.exports = function(sequelize, DataTypes) {
     }
   }, {
     sequelize,
-    tableName: 'rooms',
+    tableName: 'room',
     timestamps: false,
     indexes: [
       {
@@ -74,28 +71,7 @@ module.exports = function(sequelize, DataTypes) {
         unique: true,
         using: "BTREE",
         fields: [
-          { name: "id" },
-        ]
-      },
-      {
-        name: "user_id",
-        using: "BTREE",
-        fields: [
-          { name: "user_id" },
-        ]
-      },
-      {
-        name: "type_id",
-        using: "BTREE",
-        fields: [
-          { name: "type_id" },
-        ]
-      },
-      {
-        name: "place_id",
-        using: "BTREE",
-        fields: [
-          { name: "place_id" },
+          { name: "room_id" },
         ]
       },
     ]

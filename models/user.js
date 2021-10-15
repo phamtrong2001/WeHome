@@ -1,7 +1,7 @@
 const Sequelize = require('sequelize');
 module.exports = function(sequelize, DataTypes) {
-  return sequelize.define('places', {
-    id: {
+  return sequelize.define('user', {
+    user_id: {
       autoIncrement: true,
       type: DataTypes.INTEGER,
       allowNull: false,
@@ -9,15 +9,26 @@ module.exports = function(sequelize, DataTypes) {
     },
     name: {
       type: DataTypes.TEXT,
-      allowNull: false,
-      unique: "name_2"
-    },
-    latitude: {
-      type: DataTypes.FLOAT,
       allowNull: false
     },
-    longitude: {
-      type: DataTypes.FLOAT,
+    phone: {
+      type: DataTypes.TEXT,
+      allowNull: false
+    },
+    email: {
+      type: DataTypes.TEXT,
+      allowNull: false
+    },
+    user_type_id: {
+      type: DataTypes.INTEGER,
+      allowNull: false
+    },
+    username: {
+      type: DataTypes.TEXT,
+      allowNull: false
+    },
+    password: {
+      type: DataTypes.TEXT,
       allowNull: false
     },
     last_update: {
@@ -27,7 +38,7 @@ module.exports = function(sequelize, DataTypes) {
     }
   }, {
     sequelize,
-    tableName: 'places',
+    tableName: 'user',
     timestamps: false,
     indexes: [
       {
@@ -35,23 +46,7 @@ module.exports = function(sequelize, DataTypes) {
         unique: true,
         using: "BTREE",
         fields: [
-          { name: "id" },
-        ]
-      },
-      {
-        name: "name",
-        unique: true,
-        using: "HASH",
-        fields: [
-          { name: "name" },
-        ]
-      },
-      {
-        name: "name_2",
-        unique: true,
-        using: "HASH",
-        fields: [
-          { name: "name" },
+          { name: "user_id" },
         ]
       },
     ]

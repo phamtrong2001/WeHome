@@ -1,7 +1,7 @@
 const Sequelize = require('sequelize');
 module.exports = function(sequelize, DataTypes) {
   return sequelize.define('rental', {
-    id: {
+    rental_id: {
       autoIncrement: true,
       type: DataTypes.INTEGER,
       allowNull: false,
@@ -21,16 +21,17 @@ module.exports = function(sequelize, DataTypes) {
     },
     discount: {
       type: DataTypes.DECIMAL(5,2),
+      allowNull: false,
+      defaultValue: 0.00
+    },
+    client_id: {
+      type: DataTypes.INTEGER,
       allowNull: true
     },
     last_update: {
       type: DataTypes.DATE,
       allowNull: false,
       defaultValue: Sequelize.Sequelize.fn('current_timestamp')
-    },
-    user_id: {
-      type: DataTypes.INTEGER,
-      allowNull: true
     }
   }, {
     sequelize,
@@ -43,28 +44,7 @@ module.exports = function(sequelize, DataTypes) {
         unique: true,
         using: "BTREE",
         fields: [
-          { name: "id" },
-        ]
-      },
-      {
-        name: "id",
-        using: "BTREE",
-        fields: [
-          { name: "id" },
-        ]
-      },
-      {
-        name: "user_id",
-        using: "BTREE",
-        fields: [
-          { name: "user_id" },
-        ]
-      },
-      {
-        name: "room_id",
-        using: "BTREE",
-        fields: [
-          { name: "room_id" },
+          { name: "rental_id" },
         ]
       },
     ]
