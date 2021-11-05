@@ -13,23 +13,27 @@ module.exports = function(sequelize, DataTypes) {
     },
     phone: {
       type: DataTypes.TEXT,
-      allowNull: false
+      allowNull: true
     },
     email: {
       type: DataTypes.TEXT,
-      allowNull: false
+      allowNull: true
     },
     user_type_id: {
       type: DataTypes.INTEGER,
-      allowNull: false
+      allowNull: false,
+      references: {
+        model: 'user_type',
+        key: 'user_type_id'
+      }
     },
     username: {
       type: DataTypes.TEXT,
-      allowNull: false
+      allowNull: true
     },
     password: {
       type: DataTypes.TEXT,
-      allowNull: false
+      allowNull: true
     },
     last_update: {
       type: DataTypes.DATE,
@@ -47,6 +51,13 @@ module.exports = function(sequelize, DataTypes) {
         using: "BTREE",
         fields: [
           { name: "user_id" },
+        ]
+      },
+      {
+        name: "user_type_id",
+        using: "BTREE",
+        fields: [
+          { name: "user_type_id" },
         ]
       },
     ]

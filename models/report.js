@@ -3,7 +3,11 @@ module.exports = function(sequelize, DataTypes) {
   return sequelize.define('report', {
     user_id: {
       type: DataTypes.INTEGER,
-      allowNull: false
+      allowNull: false,
+      references: {
+        model: 'user',
+        key: 'user_id'
+      }
     },
     description: {
       type: DataTypes.TEXT,
@@ -12,6 +16,15 @@ module.exports = function(sequelize, DataTypes) {
   }, {
     sequelize,
     tableName: 'report',
-    timestamps: false
+    timestamps: false,
+    indexes: [
+      {
+        name: "user_id",
+        using: "BTREE",
+        fields: [
+          { name: "user_id" },
+        ]
+      },
+    ]
   });
 };

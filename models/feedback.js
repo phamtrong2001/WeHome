@@ -3,11 +3,19 @@ module.exports = function(sequelize, DataTypes) {
   return sequelize.define('feedback', {
     room_id: {
       type: DataTypes.INTEGER,
-      allowNull: false
+      allowNull: false,
+      references: {
+        model: 'room',
+        key: 'room_id'
+      }
     },
     client_id: {
       type: DataTypes.INTEGER,
-      allowNull: false
+      allowNull: false,
+      references: {
+        model: 'user',
+        key: 'user_id'
+      }
     },
     feed_back: {
       type: DataTypes.TEXT,
@@ -25,6 +33,22 @@ module.exports = function(sequelize, DataTypes) {
   }, {
     sequelize,
     tableName: 'feedback',
-    timestamps: false
+    timestamps: false,
+    indexes: [
+      {
+        name: "room_id",
+        using: "BTREE",
+        fields: [
+          { name: "room_id" },
+        ]
+      },
+      {
+        name: "client_id",
+        using: "BTREE",
+        fields: [
+          { name: "client_id" },
+        ]
+      },
+    ]
   });
 };

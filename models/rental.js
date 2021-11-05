@@ -9,7 +9,11 @@ module.exports = function(sequelize, DataTypes) {
     },
     room_id: {
       type: DataTypes.INTEGER,
-      allowNull: false
+      allowNull: false,
+      references: {
+        model: 'room',
+        key: 'room_id'
+      }
     },
     begin_date: {
       type: DataTypes.DATEONLY,
@@ -26,7 +30,11 @@ module.exports = function(sequelize, DataTypes) {
     },
     client_id: {
       type: DataTypes.INTEGER,
-      allowNull: true
+      allowNull: true,
+      references: {
+        model: 'user',
+        key: 'user_id'
+      }
     },
     last_update: {
       type: DataTypes.DATE,
@@ -45,6 +53,20 @@ module.exports = function(sequelize, DataTypes) {
         using: "BTREE",
         fields: [
           { name: "rental_id" },
+        ]
+      },
+      {
+        name: "room_id",
+        using: "BTREE",
+        fields: [
+          { name: "room_id" },
+        ]
+      },
+      {
+        name: "client_id",
+        using: "BTREE",
+        fields: [
+          { name: "client_id" },
         ]
       },
     ]

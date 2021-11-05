@@ -4,12 +4,20 @@ module.exports = function(sequelize, DataTypes) {
     room_id: {
       type: DataTypes.INTEGER,
       allowNull: false,
-      primaryKey: true
+      primaryKey: true,
+      references: {
+        model: 'room',
+        key: 'room_id'
+      }
     },
     facility_id: {
       type: DataTypes.INTEGER,
       allowNull: false,
-      primaryKey: true
+      primaryKey: true,
+      references: {
+        model: 'facility',
+        key: 'facility_id'
+      }
     }
   }, {
     sequelize,
@@ -22,6 +30,13 @@ module.exports = function(sequelize, DataTypes) {
         using: "BTREE",
         fields: [
           { name: "room_id" },
+          { name: "facility_id" },
+        ]
+      },
+      {
+        name: "facility_id",
+        using: "BTREE",
+        fields: [
           { name: "facility_id" },
         ]
       },
