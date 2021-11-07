@@ -2,14 +2,14 @@ const express = require('express');
 const router = express.Router();
 const models = require('../sequelize/conn');
 
+/**
+ * Get user by id
+ */
 async function getUserById(req, res) {
     const user = await models.user.findByPk(req.params["userId"]);
     res.status(200).json(user);
 }
 
-/**
- * Get user by id
- */
 router.get('/:userId', getUserById);
 
 /**
