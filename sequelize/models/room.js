@@ -19,6 +19,14 @@ module.exports = function (sequelize, DataTypes) {
                 key: 'address_id'
             }
         },
+        latitude: {
+            type: DataTypes.FLOAT,
+            allowNull: false
+        },
+        longitude: {
+            type: DataTypes.FLOAT,
+            allowNull: false
+        },
         room_type_id: {
             type: DataTypes.INTEGER,
             allowNull: true,
