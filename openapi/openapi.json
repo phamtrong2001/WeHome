@@ -1,0 +1,1294 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "WeHOME",
+    "version": "1.0.0",
+    "description": "Solve Accommodation Problems",
+    "termsOfService": "http://swagger.io/terms/",
+    "contact": {
+      "email": "19020024@vnu.edu.vn"
+    }
+  },
+  "externalDocs": {
+    "description": "Find out more about Swagger",
+    "url": "http://swagger.io"
+  },
+  "servers": [
+    {
+      "url": "http://localhost:3000"
+    }
+  ],
+  "tags": [
+    {
+      "name": "user"
+    },
+    {
+      "name": "room"
+    },
+    {
+      "name": "rental"
+    },
+    {
+      "name": "report"
+    },
+    {
+      "name": "feedback"
+    },
+    {
+      "name": "image"
+    },
+    {
+      "name": "facility"
+    }
+  ],
+  "paths": {
+    "/user/{userId}": {
+      "get": {
+        "tags": [
+          "user"
+        ],
+        "summary": "Get user by id",
+        "operationId": "user.getUser",
+        "parameters": [
+          {
+            "name": "userId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "oneOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "integer"
+                }
+              ]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/User"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid userId supplied",
+            "content": {}
+          },
+          "404": {
+            "description": "User not found",
+            "content": {}
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "user"
+        ],
+        "summary": "Update user",
+        "operationId": "user.updateUser",
+        "parameters": [
+          {
+            "name": "userId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "oneOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "integer"
+                }
+              ]
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/User"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {}
+          },
+          "400": {
+            "description": "Invalid userId supplied",
+            "content": {}
+          },
+          "404": {
+            "description": "User not found",
+            "content": {}
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "user"
+        ],
+        "summary": "Delete user",
+        "operationId": "user.deleteUser",
+        "parameters": [
+          {
+            "name": "userId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "oneOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "integer"
+                }
+              ]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {}
+          },
+          "400": {
+            "description": "Invalid userId supplied",
+            "content": {}
+          },
+          "404": {
+            "description": "User not found",
+            "content": {}
+          }
+        }
+      }
+    },
+    "/user/create": {
+      "post": {
+        "tags": [
+          "user"
+        ],
+        "summary": "Create user",
+        "operationId": "user.createUser",
+        "requestBody": {
+          "description": "Created user object",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/User"
+              }
+            }
+          }
+        },
+        "responses": {
+          "default": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/user/login": {
+      "post": {
+        "tags": [
+          "user"
+        ],
+        "summary": "Logs user into the system",
+        "operationId": "user.login",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "username": {
+                    "type": "string"
+                  },
+                  "password": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {}
+          },
+          "400": {
+            "description": "Invalid username/password supplied"
+          }
+        }
+      }
+    },
+    "/user/logout": {
+      "get": {
+        "tags": [
+          "user"
+        ],
+        "summary": "Logs out current logged in user session",
+        "operationId": "user.logout",
+        "responses": {
+          "default": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/room/{roomId}": {
+      "get": {
+        "tags": [
+          "room"
+        ],
+        "summary": "Get room by id",
+        "operationId": "room.getRoom",
+        "parameters": [
+          {
+            "name": "roomId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "oneOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "integer"
+                }
+              ]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Room"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid roomId supplied",
+            "content": {}
+          },
+          "404": {
+            "description": "Room not found",
+            "content": {}
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "room"
+        ],
+        "summary": "Update room",
+        "operationId": "room.updateRoom",
+        "parameters": [
+          {
+            "name": "roomId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "oneOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "integer"
+                }
+              ]
+            }
+          }
+        ],
+        "requestBody": {
+          "description": "Updated room object",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Room"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {}
+          },
+          "400": {
+            "description": "Invalid roomId supplied",
+            "content": {}
+          },
+          "404": {
+            "description": "Room not found",
+            "content": {}
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "room"
+        ],
+        "summary": "Delete room",
+        "operationId": "room.deleteRoom",
+        "parameters": [
+          {
+            "name": "roomId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "oneOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "integer"
+                }
+              ]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {}
+          },
+          "400": {
+            "description": "Invalid roomId supplied",
+            "content": {}
+          },
+          "404": {
+            "description": "Room not found",
+            "content": {}
+          }
+        }
+      }
+    },
+    "/room/create": {
+      "post": {
+        "tags": [
+          "room"
+        ],
+        "summary": "Create room",
+        "operationId": "room.createRoom",
+        "requestBody": {
+          "description": "Created room object",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Room"
+              }
+            }
+          }
+        },
+        "responses": {
+          "default": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/room/filter": {
+      "post": {
+        "tags": [
+          "room"
+        ],
+        "summary": "Filter room",
+        "operationId": "room.filterRoom",
+        "requestBody": {
+          "description": "Updated room object",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "lat": {
+                    "type": "number",
+                    "format": "float",
+                    "nullable": true
+                  },
+                  "long": {
+                    "type": "number",
+                    "format": "float",
+                    "nullable": true
+                  },
+                  "hostId": {
+                    "oneOf": [
+                      {
+                        "type": "string"
+                      },
+                      {
+                        "type": "integer"
+                      }
+                    ],
+                    "nullable": true
+                  },
+                  "sortBy": {
+                    "oneOf": [
+                      {
+                        "type": "string"
+                      },
+                      {
+                        "type": "integer"
+                      }
+                    ],
+                    "nullable": true,
+                    "default": "price"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Room"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid lat/long supplied",
+            "content": {}
+          },
+          "404": {
+            "description": "Room not found",
+            "content": {}
+          }
+        }
+      }
+    },
+    "/rental/{rentalId}": {
+      "get": {
+        "tags": [
+          "rental"
+        ],
+        "summary": "Get rental by id",
+        "operationId": "rental.getRental",
+        "parameters": [
+          {
+            "name": "rentalId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "oneOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "integer"
+                }
+              ]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Rental"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid rentalId supplied",
+            "content": {}
+          },
+          "404": {
+            "description": "Rental not found",
+            "content": {}
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "rental"
+        ],
+        "summary": "Update rental",
+        "operationId": "rental.updateRental",
+        "parameters": [
+          {
+            "name": "rentalId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "oneOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "integer"
+                }
+              ]
+            }
+          }
+        ],
+        "requestBody": {
+          "description": "Updated rental object",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Rental"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {}
+          },
+          "400": {
+            "description": "Invalid rentalId supplied",
+            "content": {}
+          },
+          "404": {
+            "description": "Rental not found",
+            "content": {}
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "rental"
+        ],
+        "summary": "Delete rental",
+        "operationId": "room.deleteRental",
+        "parameters": [
+          {
+            "name": "rentalId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "oneOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "integer"
+                }
+              ]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {}
+          },
+          "400": {
+            "description": "Invalid rentalId supplied",
+            "content": {}
+          },
+          "404": {
+            "description": "Rental not found",
+            "content": {}
+          }
+        }
+      }
+    },
+    "/rental/create": {
+      "post": {
+        "tags": [
+          "rental"
+        ],
+        "summary": "Create rental",
+        "operationId": "rental.createRental",
+        "requestBody": {
+          "description": "Created rental object",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Rental"
+              }
+            }
+          }
+        },
+        "responses": {
+          "default": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/rental/filter": {
+      "post": {
+        "tags": [
+          "rental"
+        ],
+        "summary": "Filter rental",
+        "operationId": "rental.filter",
+        "requestBody": {
+          "description": "Updated rental object",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "lat": {
+                    "type": "number",
+                    "format": "float",
+                    "nullable": true
+                  },
+                  "long": {
+                    "type": "number",
+                    "format": "float",
+                    "nullable": true
+                  },
+                  "rentalDate": {
+                    "type": "string",
+                    "format": "date",
+                    "nullable": true
+                  },
+                  "returnDate": {
+                    "type": "string",
+                    "format": "date",
+                    "nullable": true
+                  },
+                  "hostId": {
+                    "oneOf": [
+                      {
+                        "type": "string"
+                      },
+                      {
+                        "type": "integer"
+                      }
+                    ],
+                    "nullable": true
+                  },
+                  "minPrice": {
+                    "oneOf": [
+                      {
+                        "type": "string"
+                      },
+                      {
+                        "type": "number"
+                      }
+                    ],
+                    "nullable": true
+                  },
+                  "maxPrice": {
+                    "oneOf": [
+                      {
+                        "type": "string"
+                      },
+                      {
+                        "type": "number"
+                      }
+                    ],
+                    "nullable": true
+                  },
+                  "sortBy": {
+                    "type": "string",
+                    "nullable": true,
+                    "default": "price"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Rental"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid input supplied",
+            "content": {}
+          },
+          "404": {
+            "description": "Rental not found",
+            "content": {}
+          }
+        }
+      }
+    },
+    "/report/create": {
+      "post": {
+        "tags": [
+          "report"
+        ],
+        "summary": "Create report",
+        "operationId": "report.createReport",
+        "requestBody": {
+          "description": "Created report object",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Report"
+              }
+            }
+          }
+        },
+        "responses": {
+          "default": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/report/show": {
+      "get": {
+        "tags": [
+          "report"
+        ],
+        "summary": "Show report",
+        "operationId": "report.show",
+        "responses": {
+          "default": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Report"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/feedback/create": {
+      "post": {
+        "tags": [
+          "feedback"
+        ],
+        "summary": "Create feedback",
+        "operationId": "feedback.createFeedback",
+        "requestBody": {
+          "description": "Create feedback object",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Feedback"
+              }
+            }
+          }
+        },
+        "responses": {
+          "default": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/feedback/filter": {
+      "post": {
+        "tags": [
+          "feedback"
+        ],
+        "summary": "Show feedbacks",
+        "operationId": "feedback.filter",
+        "requestBody": {
+          "description": "Filter by roomId",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "oneOf": [
+                  {
+                    "type": "integer"
+                  },
+                  {
+                    "type": "string"
+                  }
+                ],
+                "nullable": true
+              }
+            }
+          }
+        },
+        "responses": {
+          "default": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Feedback"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/image/create": {
+      "post": {
+        "tags": [
+          "image"
+        ],
+        "summary": "Create image",
+        "operationId": "image.createImage",
+        "requestBody": {
+          "description": "Create image object",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Image"
+              }
+            }
+          }
+        },
+        "responses": {
+          "default": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/image/filter": {
+      "post": {
+        "tags": [
+          "image"
+        ],
+        "summary": "Show images",
+        "operationId": "image.filter",
+        "requestBody": {
+          "description": "Filter by roomId",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "oneOf": [
+                  {
+                    "type": "integer"
+                  },
+                  {
+                    "type": "string"
+                  }
+                ],
+                "nullable": true
+              }
+            }
+          }
+        },
+        "responses": {
+          "default": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Image"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/facility/create": {
+      "post": {
+        "tags": [
+          "facility"
+        ],
+        "summary": "Create facility",
+        "operationId": "facility.createFacility",
+        "requestBody": {
+          "description": "Create facility object",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Facility"
+              }
+            }
+          }
+        },
+        "responses": {
+          "default": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/facility/filter": {
+      "post": {
+        "tags": [
+          "facility"
+        ],
+        "summary": "Show facility",
+        "operationId": "facility.filter",
+        "requestBody": {
+          "description": "Filter by roomId",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "oneOf": [
+                  {
+                    "type": "integer"
+                  },
+                  {
+                    "type": "string"
+                  }
+                ],
+                "nullable": true
+              }
+            }
+          }
+        },
+        "responses": {
+          "default": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Facility"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "ApiKeyAuth": {
+        "type": "apiKey",
+        "in": "header",
+        "name": "X-API-KEY"
+      }
+    },
+    "schemas": {
+      "User": {
+        "type": "object",
+        "properties": {
+          "userId": {
+            "oneOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "string"
+              }
+            ]
+          },
+          "name": {
+            "type": "string"
+          },
+          "phone": {
+            "type": "string"
+          },
+          "email": {
+            "type": "string"
+          },
+          "userType": {
+            "type": "string"
+          },
+          "username": {
+            "type": "string"
+          },
+          "password": {
+            "type": "string"
+          }
+        }
+      },
+      "Room": {
+        "type": "object",
+        "properties": {
+          "roomId": {
+            "oneOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "string"
+              }
+            ]
+          },
+          "name": {
+            "type": "string"
+          },
+          "address_id": {
+            "oneOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "string"
+              }
+            ]
+          },
+          "latitude": {
+            "type": "number",
+            "format": "float"
+          },
+          "logitude": {
+            "type": "number",
+            "format": "float"
+          },
+          "roomType": {
+            "type": "number"
+          },
+          "hostId": {
+            "oneOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "string"
+              }
+            ]
+          },
+          "numGuest": {
+            "type": "integer"
+          },
+          "numBed": {
+            "type": "integer"
+          },
+          "numBedroom": {
+            "type": "integer"
+          },
+          "numBathroom": {
+            "type": "integer"
+          },
+          "rule": {
+            "type": "string",
+            "nullable": true
+          },
+          "accommodationType": {
+            "type": "string"
+          },
+          "price": {
+            "oneOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "string"
+              }
+            ]
+          },
+          "confirmed": {
+            "type": "boolean",
+            "default": false
+          },
+          "rate": {
+            "type": "number",
+            "format": "float",
+            "nullable": true
+          }
+        }
+      },
+      "Rental": {
+        "type": "object",
+        "properties": {
+          "rentalId": {
+            "oneOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "string"
+              }
+            ]
+          },
+          "roomId": {
+            "oneOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "string"
+              }
+            ]
+          },
+          "beginDate": {
+            "type": "string",
+            "format": "date"
+          },
+          "endDate": {
+            "type": "string",
+            "format": "date"
+          },
+          "discount": {
+            "oneOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "string"
+              }
+            ]
+          },
+          "clientId": {
+            "oneOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "string"
+              }
+            ],
+            "nullable": true
+          }
+        }
+      },
+      "Report": {
+        "type": "object",
+        "properties": {
+          "userId": {
+            "oneOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "string"
+              }
+            ]
+          },
+          "description": {
+            "type": "string",
+            "nullable": true
+          }
+        }
+      },
+      "Feedback": {
+        "type": "object",
+        "properties": {
+          "roomId": {
+            "oneOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "string"
+              }
+            ]
+          },
+          "clientId": {
+            "oneOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "string"
+              }
+            ]
+          },
+          "feedback": {
+            "type": "string",
+            "nullable": true
+          },
+          "rate": {
+            "oneOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "string"
+              }
+            ],
+            "nullable": true
+          }
+        }
+      },
+      "Image": {
+        "type": "object",
+        "properties": {
+          "roomId": {
+            "oneOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "string"
+              }
+            ]
+          },
+          "url": {
+            "type": "string"
+          }
+        }
+      },
+      "Facility": {
+        "type": "object",
+        "properties": {
+          "roomId": {
+            "oneOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "string"
+              }
+            ]
+          },
+          "facilityId": {
+            "oneOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "string"
+              }
+            ]
+          },
+          "description": {
+            "type": "string",
+            "nullable": true
+          }
+        }
+      }
+    }
+  }
+}
