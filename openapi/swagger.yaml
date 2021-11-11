@@ -510,10 +510,13 @@ paths:
         content:
           application/json:
             schema:
-              oneOf:
-                - type: integer
-                - type: string
-              nullable: true
+              type: object
+              properties:
+                roomId:
+                  oneOf:
+                    - type: integer
+                    - type: string
+                  nullable: true
       responses:
         default:
           description: OK
@@ -551,10 +554,13 @@ paths:
         content:
           application/json:
             schema:
-              oneOf:
-                - type: integer
-                - type: string
-              nullable: true
+              type: object
+              properties:
+                roomId:
+                  oneOf:
+                    - type: integer
+                    - type: string
+                  nullable: true
       responses:
         default:
           description: OK
@@ -592,10 +598,13 @@ paths:
         content:
           application/json:
             schema:
-              oneOf:
-                - type: integer
-                - type: string
-              nullable: true
+              type: object
+              properties:
+                roomId:
+                  oneOf:
+                    - type: integer
+                    - type: string
+                  nullable: true
       responses:
         default:
           description: OK
