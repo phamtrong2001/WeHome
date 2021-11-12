@@ -30,12 +30,12 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
-app.use('/user', userRouter);
-app.use('/room', roomRouter);
-app.use('/rental', rentalRouter);
-app.use('/report', reportRouter);
-app.use('/feedback', feedbackRouter);
-app.use('/facility', facilityRouter);
-app.use('/image', imageRouter);
+app.use('/api/user', userRouter);
+app.use('/api/room', roomRouter);
+app.use('/api/rental', rentalRouter);
+app.use('/api/report', reportRouter);
+app.use('/api/feedback', feedbackRouter);
+app.use('/api/facility', facilityRouter);
+app.use('/api/image', imageRouter);
 
 module.exports = app;
