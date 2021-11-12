@@ -28,7 +28,8 @@ Run project and open path in browser:
 
     http://localhost:3000/api-docs/
 
-##Authors
+## Authors
+
 [Trong Pham](https://github.com/phamtrong2001)
 
 [Phu Quoc](https://github.com/npqhp)
