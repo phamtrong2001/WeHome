@@ -42,13 +42,38 @@
     }
   ],
   "paths": {
+    "/user": {
+      "get": {
+        "tags": [
+          "user"
+        ],
+        "summary": "Get all user",
+        "operationId": "user.getUser",
+        "parameters": [],
+        "responses": {
+          "default": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/User"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/user/{userId}": {
       "get": {
         "tags": [
           "user"
         ],
         "summary": "Get user by id",
-        "operationId": "user.getUser",
+        "operationId": "user.getUserById",
         "parameters": [
           {
             "name": "userId",
@@ -833,15 +858,20 @@
           "content": {
             "application/json": {
               "schema": {
-                "oneOf": [
-                  {
-                    "type": "integer"
-                  },
-                  {
-                    "type": "string"
+                "type": "object",
+                "properties": {
+                  "roomId": {
+                    "oneOf": [
+                      {
+                        "type": "integer"
+                      },
+                      {
+                        "type": "string"
+                      }
+                    ],
+                    "nullable": true
                   }
-                ],
-                "nullable": true
+                }
               }
             }
           }
@@ -901,15 +931,20 @@
           "content": {
             "application/json": {
               "schema": {
-                "oneOf": [
-                  {
-                    "type": "integer"
-                  },
-                  {
-                    "type": "string"
+                "type": "object",
+                "properties": {
+                  "roomId": {
+                    "oneOf": [
+                      {
+                        "type": "integer"
+                      },
+                      {
+                        "type": "string"
+                      }
+                    ],
+                    "nullable": true
                   }
-                ],
-                "nullable": true
+                }
               }
             }
           }
@@ -969,15 +1004,20 @@
           "content": {
             "application/json": {
               "schema": {
-                "oneOf": [
-                  {
-                    "type": "integer"
-                  },
-                  {
-                    "type": "string"
+                "type": "object",
+                "properties": {
+                  "roomId": {
+                    "oneOf": [
+                      {
+                        "type": "integer"
+                      },
+                      {
+                        "type": "string"
+                      }
+                    ],
+                    "nullable": true
                   }
-                ],
-                "nullable": true
+                }
               }
             }
           }

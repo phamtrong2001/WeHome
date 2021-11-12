@@ -22,8 +22,21 @@ Or:
     npm install
 
 ## Deployment
+### Environment variables
+
+    DB_NAME=wehome
+    DB_HOST=localhost
+    DB_PORT=3307
+    DB_USER=username
+    DB_PASS=password
+    PORT=8889
+
 ### Run app
-Run in terminal:
+Run file:
+    
+    run.bat / run.sh
+
+Or run in terminal:
     
     npm start
 Or:
@@ -33,7 +46,7 @@ Or:
 ### api-docs
 Run project and open path in browser:
 
-    http://localhost:3000/api-docs/
+    http://localhost:8889/api-docs/
 
 ## Authors
 

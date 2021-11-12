@@ -2,6 +2,12 @@ const express = require('express');
 const router = express.Router();
 const models = require('../sequelize/conn');
 
+async function getUsers(req, res) {
+    const users = await models.user.findAll();
+    res.status(200).json(users);
+}
+router.get('/', getUsers);
+
 /**
  * Get user by id
  */

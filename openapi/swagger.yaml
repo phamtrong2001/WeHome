@@ -20,12 +20,28 @@ tags:
   - name: image
   - name: facility
 paths:
+  /user:
+    get:
+      tags:
+        - user
+      summary: Get all user
+      operationId: user.getUser
+      parameters: []
+      responses:
+        default:
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/User'
   /user/{userId}:
     get:
       tags:
         - user
       summary: Get user by id
-      operationId: user.getUser
+      operationId: user.getUserById
       parameters:
         - name: userId
           in: path
