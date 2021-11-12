@@ -5,6 +5,13 @@ Backend Project INT3306 4
 ## Getting Started
 These instructions will get you a copy of the project up and running on your local machine for development and testing purposes. See deployment for notes on how to deploy the project on a live system.
 
+## Prerequisites
+Before you continue, ensure you meet the following requirements:
+
+* You have installed NodeJS.
+* The project is implemented on Windows, so I recommend to use Windows machine.
+* You have a basic understanding of project.
+
 ## Installing
 Install packages:
 
