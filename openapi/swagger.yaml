@@ -10,7 +10,7 @@ externalDocs:
   description: Find out more about Swagger
   url: http://swagger.io
 servers:
-  - url: http://localhost:3000
+  - url: http://localhost:8889
 tags:
   - name: user
   - name: room
@@ -20,13 +20,13 @@ tags:
   - name: image
   - name: facility
 paths:
-  /user:
+  /api/user:
     get:
       tags:
         - user
       summary: Get all user
       operationId: user.getUser
-      parameters: []
+      parameters: [ ]
       responses:
         default:
           description: OK
@@ -36,7 +36,7 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/User'
-  /user/{userId}:
+  /api/user/{userId}:
     get:
       tags:
         - user
@@ -115,7 +115,7 @@ paths:
         '404':
           description: User not found
           content: { }
-  /user/create:
+  /api/user/create:
     post:
       tags:
         - user
@@ -131,7 +131,7 @@ paths:
       responses:
         default:
           description: OK
-  /user/login:
+  /api/user/login:
     post:
       tags:
         - user
@@ -154,7 +154,7 @@ paths:
           content: { }
         '400':
           description: Invalid username/password supplied
-  /user/logout:
+  /api/user/logout:
     get:
       tags:
         - user
@@ -163,12 +163,28 @@ paths:
       responses:
         default:
           description: OK
-  /room/{roomId}:
+  /api/room:
+    get:
+      tags:
+        - room
+      summary: Get all room
+      operationId: room.getRoom
+      parameters: [ ]
+      responses:
+        default:
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Room'
+  /api/room/{roomId}:
     get:
       tags:
         - room
       summary: Get room by id
-      operationId: room.getRoom
+      operationId: room.getRoomById
       parameters:
         - name: roomId
           in: path
@@ -243,7 +259,7 @@ paths:
         '404':
           description: Room not found
           content: { }
-  /room/create:
+  /api/room/create:
     post:
       tags:
         - room
@@ -259,7 +275,7 @@ paths:
       responses:
         default:
           description: OK
-  /room/filter:
+  /api/room/filter:
     post:
       tags:
         - room
@@ -307,12 +323,28 @@ paths:
         '404':
           description: Room not found
           content: { }
-  /rental/{rentalId}:
+  /api/rental:
+    get:
+      tags:
+        - rental
+      summary: Get all rental
+      operationId: room.getRental
+      parameters: [ ]
+      responses:
+        default:
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Rental'
+  /api/rental/{rentalId}:
     get:
       tags:
         - rental
       summary: Get rental by id
-      operationId: rental.getRental
+      operationId: rental.getRentalById
       parameters:
         - name: rentalId
           in: path
@@ -387,7 +419,7 @@ paths:
         '404':
           description: Rental not found
           content: { }
-  /rental/create:
+  /api/rental/create:
     post:
       tags:
         - rental
@@ -403,7 +435,7 @@ paths:
       responses:
         default:
           description: OK
-  /rental/filter:
+  /api/rental/filter:
     post:
       tags:
         - rental
@@ -467,7 +499,7 @@ paths:
         '404':
           description: Rental not found
           content: { }
-  /report/create:
+  /api/report/create:
     post:
       tags:
         - report
@@ -483,7 +515,7 @@ paths:
       responses:
         default:
           description: OK
-  /report/show:
+  /api/report/show:
     get:
       tags:
         - report
@@ -498,7 +530,7 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/Report'
-  /feedback/create:
+  /api/feedback/create:
     post:
       tags:
         - feedback
@@ -514,7 +546,7 @@ paths:
       responses:
         default:
           description: OK
-  /feedback/filter:
+  /api/feedback/filter:
     post:
       tags:
         - feedback
@@ -542,7 +574,7 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/Feedback'
-  /image/create:
+  /api/image/create:
     post:
       tags:
         - image
@@ -558,7 +590,7 @@ paths:
       responses:
         default:
           description: OK
-  /image/filter:
+  /api/image/filter:
     post:
       tags:
         - image
@@ -586,7 +618,7 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/Image'
-  /facility/create:
+  /api/facility/create:
     post:
       tags:
         - facility
@@ -602,7 +634,7 @@ paths:
       responses:
         default:
           description: OK
-  /facility/filter:
+  /api/facility/filter:
     post:
       tags:
         - facility

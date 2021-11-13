@@ -15,7 +15,7 @@
   },
   "servers": [
     {
-      "url": "http://localhost:3000"
+      "url": "http://localhost:8889"
     }
   ],
   "tags": [
@@ -42,7 +42,7 @@
     }
   ],
   "paths": {
-    "/user": {
+    "/api/user": {
       "get": {
         "tags": [
           "user"
@@ -67,7 +67,7 @@
         }
       }
     },
-    "/user/{userId}": {
+    "/api/user/{userId}": {
       "get": {
         "tags": [
           "user"
@@ -199,7 +199,7 @@
         }
       }
     },
-    "/user/create": {
+    "/api/user/create": {
       "post": {
         "tags": [
           "user"
@@ -224,7 +224,7 @@
         }
       }
     },
-    "/user/login": {
+    "/api/user/login": {
       "post": {
         "tags": [
           "user"
@@ -260,7 +260,7 @@
         }
       }
     },
-    "/user/logout": {
+    "/api/user/logout": {
       "get": {
         "tags": [
           "user"
@@ -274,13 +274,38 @@
         }
       }
     },
-    "/room/{roomId}": {
+    "/api/room": {
+      "get": {
+        "tags": [
+          "room"
+        ],
+        "summary": "Get all room",
+        "operationId": "room.getRoom",
+        "parameters": [],
+        "responses": {
+          "default": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Room"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/room/{roomId}": {
       "get": {
         "tags": [
           "room"
         ],
         "summary": "Get room by id",
-        "operationId": "room.getRoom",
+        "operationId": "room.getRoomById",
         "parameters": [
           {
             "name": "roomId",
@@ -407,7 +432,7 @@
         }
       }
     },
-    "/room/create": {
+    "/api/room/create": {
       "post": {
         "tags": [
           "room"
@@ -432,7 +457,7 @@
         }
       }
     },
-    "/room/filter": {
+    "/api/room/filter": {
       "post": {
         "tags": [
           "room"
@@ -510,13 +535,38 @@
         }
       }
     },
-    "/rental/{rentalId}": {
+    "/api/rental": {
+      "get": {
+        "tags": [
+          "rental"
+        ],
+        "summary": "Get all rental",
+        "operationId": "room.getRental",
+        "parameters": [],
+        "responses": {
+          "default": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Rental"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/rental/{rentalId}": {
       "get": {
         "tags": [
           "rental"
         ],
         "summary": "Get rental by id",
-        "operationId": "rental.getRental",
+        "operationId": "rental.getRentalById",
         "parameters": [
           {
             "name": "rentalId",
@@ -643,7 +693,7 @@
         }
       }
     },
-    "/rental/create": {
+    "/api/rental/create": {
       "post": {
         "tags": [
           "rental"
@@ -668,7 +718,7 @@
         }
       }
     },
-    "/rental/filter": {
+    "/api/rental/filter": {
       "post": {
         "tags": [
           "rental"
@@ -771,7 +821,7 @@
         }
       }
     },
-    "/report/create": {
+    "/api/report/create": {
       "post": {
         "tags": [
           "report"
@@ -796,7 +846,7 @@
         }
       }
     },
-    "/report/show": {
+    "/api/report/show": {
       "get": {
         "tags": [
           "report"
@@ -820,7 +870,7 @@
         }
       }
     },
-    "/feedback/create": {
+    "/api/feedback/create": {
       "post": {
         "tags": [
           "feedback"
@@ -845,7 +895,7 @@
         }
       }
     },
-    "/feedback/filter": {
+    "/api/feedback/filter": {
       "post": {
         "tags": [
           "feedback"
@@ -893,7 +943,7 @@
         }
       }
     },
-    "/image/create": {
+    "/api/image/create": {
       "post": {
         "tags": [
           "image"
@@ -918,7 +968,7 @@
         }
       }
     },
-    "/image/filter": {
+    "/api/image/filter": {
       "post": {
         "tags": [
           "image"
@@ -966,7 +1016,7 @@
         }
       }
     },
-    "/facility/create": {
+    "/api/facility/create": {
       "post": {
         "tags": [
           "facility"
@@ -991,7 +1041,7 @@
         }
       }
     },
-    "/facility/filter": {
+    "/api/facility/filter": {
       "post": {
         "tags": [
           "facility"
