@@ -30,6 +30,8 @@ Or:
     DB_USER=username
     DB_PASS=password
     PORT=8889
+    SECRET_KEY=any-secret-key
+    SALT=8
 
 ### Run app
 Run file:

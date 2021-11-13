@@ -24,10 +24,14 @@ paths:
     get:
       tags:
         - user
+      security:
+        - bearerAuth: [ ]
       summary: Get all user
       operationId: user.getUser
       parameters: [ ]
       responses:
+        UnauthorizedError:
+          description: Access token is missing or invalid
         default:
           description: OK
           content:
@@ -155,12 +159,16 @@ paths:
         '400':
           description: Invalid username/password supplied
   /api/user/logout:
-    get:
+    post:
       tags:
         - user
+      security:
+        - bearerAuth: [ ]
       summary: Logs out current logged in user session
       operationId: user.logout
       responses:
+        UnauthorizedError:
+          description: Access token is missing or invalid
         default:
           description: OK
   /api/room:
@@ -209,6 +217,8 @@ paths:
     put:
       tags:
         - room
+      security:
+        - bearerAuth: [ ]
       summary: Update room
       operationId: room.updateRoom
       parameters:
@@ -227,6 +237,8 @@ paths:
             schema:
               $ref: '#/components/schemas/Room'
       responses:
+        UnauthorizedError:
+          description: Access token is missing or invalid
         '200':
           description: OK
           content: { }
@@ -239,6 +251,8 @@ paths:
     delete:
       tags:
         - room
+      security:
+        - bearerAuth: [ ]
       summary: Delete room
       operationId: room.deleteRoom
       parameters:
@@ -250,6 +264,8 @@ paths:
               - type: string
               - type: integer
       responses:
+        UnauthorizedError:
+          description: Access token is missing or invalid
         '200':
           description: OK
           content: { }
@@ -263,6 +279,8 @@ paths:
     post:
       tags:
         - room
+      security:
+        - bearerAuth: [ ]
       summary: Create room
       operationId: room.createRoom
       requestBody:
@@ -273,6 +291,8 @@ paths:
             schema:
               $ref: '#/components/schemas/Room'
       responses:
+        UnauthorizedError:
+          description: Access token is missing or invalid
         default:
           description: OK
   /api/room/filter:
@@ -369,6 +389,8 @@ paths:
     put:
       tags:
         - rental
+      security:
+        - bearerAuth: [ ]
       summary: Update rental
       operationId: rental.updateRental
       parameters:
@@ -387,6 +409,8 @@ paths:
             schema:
               $ref: '#/components/schemas/Rental'
       responses:
+        UnauthorizedError:
+          description: Access token is missing or invalid
         '200':
           description: OK
           content: { }
@@ -399,6 +423,8 @@ paths:
     delete:
       tags:
         - rental
+      security:
+        - bearerAuth: [ ]
       summary: Delete rental
       operationId: room.deleteRental
       parameters:
@@ -410,6 +436,8 @@ paths:
               - type: string
               - type: integer
       responses:
+        UnauthorizedError:
+          description: Access token is missing or invalid
         '200':
           description: OK
           content: { }
@@ -423,6 +451,8 @@ paths:
     post:
       tags:
         - rental
+      security:
+        - bearerAuth: [ ]
       summary: Create rental
       operationId: rental.createRental
       requestBody:
@@ -433,6 +463,8 @@ paths:
             schema:
               $ref: '#/components/schemas/Rental'
       responses:
+        UnauthorizedError:
+          description: Access token is missing or invalid
         default:
           description: OK
   /api/rental/filter:
@@ -503,6 +535,8 @@ paths:
     post:
       tags:
         - report
+      security:
+        - bearerAuth: [ ]
       summary: Create report
       operationId: report.createReport
       requestBody:
@@ -513,15 +547,21 @@ paths:
             schema:
               $ref: '#/components/schemas/Report'
       responses:
+        UnauthorizedError:
+          description: Access token is missing or invalid
         default:
           description: OK
   /api/report/show:
     get:
       tags:
         - report
+      security:
+        - bearerAuth: [ ]
       summary: Show report
       operationId: report.show
       responses:
+        UnauthorizedError:
+          description: Access token is missing or invalid
         default:
           description: OK
           content:
@@ -534,6 +574,8 @@ paths:
     post:
       tags:
         - feedback
+      security:
+        - bearerAuth: [ ]
       summary: Create feedback
       operationId: feedback.createFeedback
       requestBody:
@@ -544,6 +586,8 @@ paths:
             schema:
               $ref: '#/components/schemas/Feedback'
       responses:
+        UnauthorizedError:
+          description: Access token is missing or invalid
         default:
           description: OK
   /api/feedback/filter:
@@ -578,6 +622,8 @@ paths:
     post:
       tags:
         - image
+      security:
+        - bearerAuth: [ ]
       summary: Create image
       operationId: image.createImage
       requestBody:
@@ -588,6 +634,8 @@ paths:
             schema:
               $ref: '#/components/schemas/Image'
       responses:
+        UnauthorizedError:
+          description: Access token is missing or invalid
         default:
           description: OK
   /api/image/filter:
@@ -622,6 +670,8 @@ paths:
     post:
       tags:
         - facility
+      security:
+        - bearerAuth: [ ]
       summary: Create facility
       operationId: facility.createFacility
       requestBody:
@@ -632,6 +682,8 @@ paths:
             schema:
               $ref: '#/components/schemas/Facility'
       responses:
+        UnauthorizedError:
+          description: Access token is missing or invalid
         default:
           description: OK
   /api/facility/filter:
@@ -664,10 +716,10 @@ paths:
                   $ref: '#/components/schemas/Facility'
 components:
   securitySchemes:
-    ApiKeyAuth:
-      type: apiKey
-      in: header
-      name: X-API-KEY
+    bearerAuth: # arbitrary name for the security scheme
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
   schemas:
     User:
       type: object
