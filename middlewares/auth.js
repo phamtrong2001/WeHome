@@ -8,7 +8,10 @@ const jwtOptions = {};
 jwtOptions.jwtFromRequest = ExtractJwt.fromAuthHeaderAsBearerToken();
 jwtOptions.secretOrKey = process.env.SECRET_KEY;
 
-
+/**
+ * create new strategy for user
+ * @type {JwtStrategy}
+ */
 module.exports.jwtStrategy = new jwtStrategy(
     jwtOptions,
     async (jwtPayload, done) => {
@@ -22,6 +25,10 @@ module.exports.jwtStrategy = new jwtStrategy(
     }
 );
 
+/**
+ * create new strategy for admin
+ * @type {JwtStrategy}
+ */
 module.exports.isAdmin = new jwtStrategy(
     jwtOptions,
     async (jwtPayload, done) => {
@@ -36,6 +43,10 @@ module.exports.isAdmin = new jwtStrategy(
     }
 );
 
+/**
+ * create new strategy for host
+ * @type {JwtStrategy}
+ */
 module.exports.isHost = new jwtStrategy(
     jwtOptions,
     async (jwtPayload, done) => {
