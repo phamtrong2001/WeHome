@@ -8,7 +8,10 @@ const jwtOptions = {};
 jwtOptions.jwtFromRequest = ExtractJwt.fromAuthHeaderAsBearerToken();
 jwtOptions.secretOrKey = process.env.SECRET_KEY;
 
-
+/**
+ * create new strategy for user
+ * @type {JwtStrategy}
+ */
 module.exports.jwtStrategy = new jwtStrategy(
     jwtOptions,
     async (jwtPayload, done) => {
@@ -22,11 +25,17 @@ module.exports.jwtStrategy = new jwtStrategy(
     }
 );
 
+/**
+ * create new strategy for admin
+ * @type {JwtStrategy}
+ */
 module.exports.isAdmin = new jwtStrategy(
     jwtOptions,
     async (jwtPayload, done) => {
         const user = await models.user.findByPk(jwtPayload.user_id);
-        if (user.user_type_id == 1) {
+        const user_type = await models.user_type.findByPk(user.user_type_id);
+        const role = user_type.user_type;
+        if (role == 'admin') {
             return done(null, user);
         } else {
             return done(null, false);
@@ -34,11 +43,17 @@ module.exports.isAdmin = new jwtStrategy(
     }
 );
 
+/**
+ * create new strategy for host
+ * @type {JwtStrategy}
+ */
 module.exports.isHost = new jwtStrategy(
     jwtOptions,
     async (jwtPayload, done) => {
         const user = await models.user.findByPk(jwtPayload.user_id);
-        if (user.user_type_id == 2 || user.user_type_id == 1) {
+        const user_type = await models.user_type.findByPk(user.user_type_id);
+        const role = user_type.user_type;
+        if (role == 'admin' || role == 'host') {
             return done(null, user);
         } else {
             return done(null, false);
