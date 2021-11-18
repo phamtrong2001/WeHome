@@ -19,7 +19,7 @@ const app = express();
 app.use(express.json());
 app.use(express.urlencoded({extended: false}));
 
-passport.use('jwt', auth.jwtStrategy);
+// passport.use('jwt', auth.jwtStrategy);
 app.use(passport.initialize());
 // app.use(passport.authenticate('jwt', {session: false}));
 
