@@ -15,7 +15,7 @@
   },
   "servers": [
     {
-      "url": "http://localhost:3000"
+      "url": "http://localhost:8889"
     }
   ],
   "tags": [
@@ -42,13 +42,46 @@
     }
   ],
   "paths": {
-    "/user/{userId}": {
+    "/api/user": {
+      "get": {
+        "tags": [
+          "user"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "summary": "Get all user",
+        "operationId": "user.getUser",
+        "parameters": [],
+        "responses": {
+          "UnauthorizedError": {
+            "description": "Access token is missing or invalid"
+          },
+          "default": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/User"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/user/{userId}": {
       "get": {
         "tags": [
           "user"
         ],
         "summary": "Get user by id",
-        "operationId": "user.getUser",
+        "operationId": "user.getUserById",
         "parameters": [
           {
             "name": "userId",
@@ -174,7 +207,7 @@
         }
       }
     },
-    "/user/create": {
+    "/api/user/create": {
       "post": {
         "tags": [
           "user"
@@ -199,7 +232,7 @@
         }
       }
     },
-    "/user/login": {
+    "/api/user/login": {
       "post": {
         "tags": [
           "user"
@@ -235,27 +268,60 @@
         }
       }
     },
-    "/user/logout": {
-      "get": {
+    "/api/user/logout": {
+      "post": {
         "tags": [
           "user"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
         ],
         "summary": "Logs out current logged in user session",
         "operationId": "user.logout",
         "responses": {
+          "UnauthorizedError": {
+            "description": "Access token is missing or invalid"
+          },
           "default": {
             "description": "OK"
           }
         }
       }
     },
-    "/room/{roomId}": {
+    "/api/room": {
+      "get": {
+        "tags": [
+          "room"
+        ],
+        "summary": "Get all room",
+        "operationId": "room.getRoom",
+        "parameters": [],
+        "responses": {
+          "default": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Room"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/room/{roomId}": {
       "get": {
         "tags": [
           "room"
         ],
         "summary": "Get room by id",
-        "operationId": "room.getRoom",
+        "operationId": "room.getRoomById",
         "parameters": [
           {
             "name": "roomId",
@@ -297,6 +363,11 @@
       "put": {
         "tags": [
           "room"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
         ],
         "summary": "Update room",
         "operationId": "room.updateRoom",
@@ -340,12 +411,20 @@
           "404": {
             "description": "Room not found",
             "content": {}
+          },
+          "UnauthorizedError": {
+            "description": "Access token is missing or invalid"
           }
         }
       },
       "delete": {
         "tags": [
           "room"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
         ],
         "summary": "Delete room",
         "operationId": "room.deleteRoom",
@@ -378,14 +457,22 @@
           "404": {
             "description": "Room not found",
             "content": {}
+          },
+          "UnauthorizedError": {
+            "description": "Access token is missing or invalid"
           }
         }
       }
     },
-    "/room/create": {
+    "/api/room/create": {
       "post": {
         "tags": [
           "room"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
         ],
         "summary": "Create room",
         "operationId": "room.createRoom",
@@ -401,13 +488,16 @@
           }
         },
         "responses": {
+          "UnauthorizedError": {
+            "description": "Access token is missing or invalid"
+          },
           "default": {
             "description": "OK"
           }
         }
       }
     },
-    "/room/filter": {
+    "/api/room/filter": {
       "post": {
         "tags": [
           "room"
@@ -485,13 +575,38 @@
         }
       }
     },
-    "/rental/{rentalId}": {
+    "/api/rental": {
+      "get": {
+        "tags": [
+          "rental"
+        ],
+        "summary": "Get all rental",
+        "operationId": "room.getRental",
+        "parameters": [],
+        "responses": {
+          "default": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Rental"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/rental/{rentalId}": {
       "get": {
         "tags": [
           "rental"
         ],
         "summary": "Get rental by id",
-        "operationId": "rental.getRental",
+        "operationId": "rental.getRentalById",
         "parameters": [
           {
             "name": "rentalId",
@@ -533,6 +648,11 @@
       "put": {
         "tags": [
           "rental"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
         ],
         "summary": "Update rental",
         "operationId": "rental.updateRental",
@@ -576,12 +696,20 @@
           "404": {
             "description": "Rental not found",
             "content": {}
+          },
+          "UnauthorizedError": {
+            "description": "Access token is missing or invalid"
           }
         }
       },
       "delete": {
         "tags": [
           "rental"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
         ],
         "summary": "Delete rental",
         "operationId": "room.deleteRental",
@@ -614,14 +742,22 @@
           "404": {
             "description": "Rental not found",
             "content": {}
+          },
+          "UnauthorizedError": {
+            "description": "Access token is missing or invalid"
           }
         }
       }
     },
-    "/rental/create": {
+    "/api/rental/create": {
       "post": {
         "tags": [
           "rental"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
         ],
         "summary": "Create rental",
         "operationId": "rental.createRental",
@@ -637,13 +773,16 @@
           }
         },
         "responses": {
+          "UnauthorizedError": {
+            "description": "Access token is missing or invalid"
+          },
           "default": {
             "description": "OK"
           }
         }
       }
     },
-    "/rental/filter": {
+    "/api/rental/filter": {
       "post": {
         "tags": [
           "rental"
@@ -746,10 +885,15 @@
         }
       }
     },
-    "/report/create": {
+    "/api/report/create": {
       "post": {
         "tags": [
           "report"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
         ],
         "summary": "Create report",
         "operationId": "report.createReport",
@@ -765,20 +909,31 @@
           }
         },
         "responses": {
+          "UnauthorizedError": {
+            "description": "Access token is missing or invalid"
+          },
           "default": {
             "description": "OK"
           }
         }
       }
     },
-    "/report/show": {
+    "/api/report/show": {
       "get": {
         "tags": [
           "report"
         ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
         "summary": "Show report",
         "operationId": "report.show",
         "responses": {
+          "UnauthorizedError": {
+            "description": "Access token is missing or invalid"
+          },
           "default": {
             "description": "OK",
             "content": {
@@ -795,10 +950,15 @@
         }
       }
     },
-    "/feedback/create": {
+    "/api/feedback/create": {
       "post": {
         "tags": [
           "feedback"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
         ],
         "summary": "Create feedback",
         "operationId": "feedback.createFeedback",
@@ -814,13 +974,16 @@
           }
         },
         "responses": {
+          "UnauthorizedError": {
+            "description": "Access token is missing or invalid"
+          },
           "default": {
             "description": "OK"
           }
         }
       }
     },
-    "/feedback/filter": {
+    "/api/feedback/filter": {
       "post": {
         "tags": [
           "feedback"
@@ -833,15 +996,20 @@
           "content": {
             "application/json": {
               "schema": {
-                "oneOf": [
-                  {
-                    "type": "integer"
-                  },
-                  {
-                    "type": "string"
+                "type": "object",
+                "properties": {
+                  "roomId": {
+                    "oneOf": [
+                      {
+                        "type": "integer"
+                      },
+                      {
+                        "type": "string"
+                      }
+                    ],
+                    "nullable": true
                   }
-                ],
-                "nullable": true
+                }
               }
             }
           }
@@ -863,10 +1031,15 @@
         }
       }
     },
-    "/image/create": {
+    "/api/image/create": {
       "post": {
         "tags": [
           "image"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
         ],
         "summary": "Create image",
         "operationId": "image.createImage",
@@ -882,13 +1055,16 @@
           }
         },
         "responses": {
+          "UnauthorizedError": {
+            "description": "Access token is missing or invalid"
+          },
           "default": {
             "description": "OK"
           }
         }
       }
     },
-    "/image/filter": {
+    "/api/image/filter": {
       "post": {
         "tags": [
           "image"
@@ -901,15 +1077,20 @@
           "content": {
             "application/json": {
               "schema": {
-                "oneOf": [
-                  {
-                    "type": "integer"
-                  },
-                  {
-                    "type": "string"
+                "type": "object",
+                "properties": {
+                  "roomId": {
+                    "oneOf": [
+                      {
+                        "type": "integer"
+                      },
+                      {
+                        "type": "string"
+                      }
+                    ],
+                    "nullable": true
                   }
-                ],
-                "nullable": true
+                }
               }
             }
           }
@@ -931,10 +1112,15 @@
         }
       }
     },
-    "/facility/create": {
+    "/api/facility/create": {
       "post": {
         "tags": [
           "facility"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
         ],
         "summary": "Create facility",
         "operationId": "facility.createFacility",
@@ -950,13 +1136,16 @@
           }
         },
         "responses": {
+          "UnauthorizedError": {
+            "description": "Access token is missing or invalid"
+          },
           "default": {
             "description": "OK"
           }
         }
       }
     },
-    "/facility/filter": {
+    "/api/facility/filter": {
       "post": {
         "tags": [
           "facility"
@@ -969,15 +1158,20 @@
           "content": {
             "application/json": {
               "schema": {
-                "oneOf": [
-                  {
-                    "type": "integer"
-                  },
-                  {
-                    "type": "string"
+                "type": "object",
+                "properties": {
+                  "roomId": {
+                    "oneOf": [
+                      {
+                        "type": "integer"
+                      },
+                      {
+                        "type": "string"
+                      }
+                    ],
+                    "nullable": true
                   }
-                ],
-                "nullable": true
+                }
               }
             }
           }
@@ -1002,10 +1196,10 @@
   },
   "components": {
     "securitySchemes": {
-      "ApiKeyAuth": {
-        "type": "apiKey",
-        "in": "header",
-        "name": "X-API-KEY"
+      "bearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT"
       }
     },
     "schemas": {
