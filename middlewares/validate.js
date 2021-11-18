@@ -1,7 +1,3 @@
-/**
- * Validate username & password
- */
-
 module.exports.validate_user = function(username) {
     if (username.length < 5 || username.length > 20) {
         return false;

@@ -12,26 +12,13 @@ passport.use('jwt', auth.jwtStrategy);
 passport.use('admin', auth.isAdmin);
 passport.use('host', auth.isHost);
 
-/**
- * Get all user
- * @author admin
- * @param req
- * @param res
- * @returns {Promise<void>}
- */
 async function getUsers(req, res) {
     const users = await models.user.findAll();
     res.status(200).json(users);
 }
 router.get('/', passport.authenticate('admin', {session: false}), getUsers);
 
-/**
- * Get user by userId
- * @author: all
- * @param req
- * @param res
- * @returns {Promise<void>}
- */
+
 async function getUserById(req, res) {
     const user = await models.user.findByPk(req.params["userId"]);
     if (!user) {
@@ -41,13 +28,7 @@ async function getUserById(req, res) {
 }
 router.get('/:userId', getUserById);
 
-/**
- * Update user by userId
- * @author: user
- * @param req
- * @param res
- * @returns {Promise<void>}
- */
+
 async function updateUser(req, res) {
     // console.log(req.headers.authorization.split(' ')[1]);
     const payload = jwt.decode(req.headers.authorization.split(' ')[1]);
@@ -95,13 +76,7 @@ async function updateUser(req, res) {
 }
 router.put('/:userId', passport.authenticate('jwt', {session: false}), updateUser);
 
-/**
- * Delete user by userId
- * @author: admin
- * @param req
- * @param res
- * @returns {Promise<void>}
- */
+
 async function deleteUser(req, res) {
     const user = await models.user.findByPk(req.params["userId"]);
     if (!user) {
@@ -117,13 +92,7 @@ async function deleteUser(req, res) {
 }
 router.delete('/:userId', passport.authenticate('admin', {session: false}), deleteUser);
 
-/**
- * Sign up new user
- * @author all
- * @param req
- * @param res
- * @returns {Promise<void>}
- */
+
 async function createUser(req, res) {
     const newUser = {
         id: req.body.id,
@@ -157,9 +126,7 @@ async function createUser(req, res) {
 }
 router.post('/create', createUser);
 
-/**
- * Login
- */
+
 router.post('/login',async (req, res, next) => {
     const {username, password} = req.body;
     if (username && password) {
@@ -182,10 +149,6 @@ router.post('/login',async (req, res, next) => {
     }
 });
 
-/**
- * Logout
- * @author: user
- */
 router.post('/logout', passport.authenticate('jwt', {session: false}), (req, res) => {
     res.status(200).send("Logged out!");
 });
