@@ -4,7 +4,6 @@ const YAML = require('yamljs');
 const swaggerDocument = YAML.load('./openapi/swagger.yaml');
 const passport = require('passport');
 const auth = require('./middlewares/auth');
-// const swaggerDocument = require('./openapi/openapi.json');
 
 const userRouter = require('./routes/user');
 const roomRouter = require('./routes/room');
