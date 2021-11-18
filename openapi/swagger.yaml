@@ -72,6 +72,8 @@ paths:
         - user
       summary: Update user
       operationId: user.updateUser
+      security:
+        - bearerAuth: [ ]
       parameters:
         - name: userId
           in: path
@@ -87,6 +89,8 @@ paths:
             schema:
               $ref: '#/components/schemas/User'
       responses:
+        UnauthorizedError:
+          description: Access token is missing or invalid
         '200':
           description: OK
           content: { }
@@ -101,6 +105,8 @@ paths:
         - user
       summary: Delete user
       operationId: user.deleteUser
+      security:
+        - bearerAuth: [ ]
       parameters:
         - name: userId
           in: path
@@ -110,6 +116,8 @@ paths:
               - type: string
               - type: integer
       responses:
+        UnauthorizedError:
+          description: Access token is missing or invalid
         '200':
           description: OK
           content: { }
