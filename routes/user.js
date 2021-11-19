@@ -20,7 +20,9 @@ passport.use('host', auth.isHost);
  * @returns {Promise<void>}
  */
 async function getUsers(req, res) {
-    const users = await models.user.findAll();
+    const users = await models.user.findAll({
+        limit: 100
+    });
     res.status(200).json(users);
 }
 router.get('/', passport.authenticate('admin', {session: false}), getUsers);
