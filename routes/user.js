@@ -7,6 +7,7 @@ const passport = require('passport');
 
 const bcrypt = require('bcrypt');
 const {validate_user, validate_pass} = require("../middlewares/validate");
+const {QueryTypes, Op} = require("sequelize");
 
 passport.use('jwt', auth.jwtStrategy);
 passport.use('admin', auth.isAdmin);
@@ -158,6 +159,65 @@ async function createUser(req, res) {
     res.status(200).json({'message': 'OK'});
 }
 router.post('/create', createUser);
+
+/**
+ * Filter users
+ * @author user
+ * @param req
+ * @param res
+ * @returns {Promise<void>}
+ */
+async function filterUser(req, res) {
+    const findObj = {
+        user_id: req.body.userId,
+        phone: req.body.phone,
+        name: req.body.name,
+        email: req.body.email
+    };
+    if (findObj.user_id) {
+        let users = await models.user.findAll({
+            where: {
+                user_id: findObj.user_id
+            },
+            limit: 100
+        });
+        res.status(200).json(users);
+        return;
+    }
+    if (findObj.name) {
+        let users = await models.user.findAll({
+            where: {
+                name: {
+                    [Op.like]: '%' + findObj.name + '%'
+                }
+            },
+            limit: 100
+        });
+        res.status(200).json(users);
+        return;
+    }
+    if (findObj.phone) {
+        let users = await models.user.findAll({
+            where: {
+                phone: findObj.phone
+            },
+            limit: 100
+        });
+        res.status(200).json(users);
+    }
+    if (findObj.email) {
+        let users = await models.user.findAll({
+            where: {
+                email: {
+                    [Op.like]: '%' + findObj.email + '%'
+                }
+            },
+            limit: 100
+        });
+        res.status(200).json(users);
+    }
+}
+router.post('/filter', passport.authenticate('jwt', {session: false}),filterUser);
 
 /**
  * Login
