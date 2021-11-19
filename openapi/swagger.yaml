@@ -143,6 +143,44 @@ paths:
       responses:
         default:
           description: OK
+  /api/user/filter:
+    post:
+      tags:
+        - user
+      summary: Filter user
+      operationId: user.filterUser
+      security:
+        - bearerAuth: [ ]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                userId:
+                  type: number
+                  nullable: true
+                name:
+                  type: string
+                  nullable: true
+                phone:
+                  type: string
+                  nullable: true
+                email:
+                  type: string
+                  nullable: true
+      responses:
+        UnauthorizedError:
+          description: Access token is missing or invalid
+        default:
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/User'
   /api/user/login:
     post:
       tags:
