@@ -39,6 +39,7 @@ async function getUserById(req, res) {
     const user = await models.user.findByPk(req.params["userId"]);
     if (!user) {
         res.status(400).send({'message': 'Invalid userId'});
+        return;
     }
     res.status(200).json(user);
 }
@@ -240,6 +241,7 @@ router.post('/login',async (req, res, next) => {
             res.status(200).json({'message': 'OK', 'token': token});
         } else {
             res.status(401).json({'message': 'Password is incorrect!'});
+            return;
         }
     }
 });
