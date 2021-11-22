@@ -23,7 +23,8 @@ module.exports.jwtStrategy = new jwtStrategy(
                 return done(null, false);
             }
         } catch (err) {
-            throw new Error(err);
+            console.error(err);
+            return done(null, false);
         }
     }
 );
@@ -45,7 +46,8 @@ module.exports.isAdmin = new jwtStrategy(
                 return done(null, false);
             }
         } catch (err) {
-            throw new Error(err);
+            console.error(err);
+            return done(null, false);
         }
     }
 );
@@ -67,7 +69,8 @@ module.exports.isHost = new jwtStrategy(
                 return done(null, false);
             }
         } catch (err) {
-            throw new Error(err);
+            console.error(err);
+            return done(null, false);
         }
     }
 );
