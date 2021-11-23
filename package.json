@@ -1,12 +1,15 @@
 {
   "name": "worldwidecircus",
+  "engines": {
+    "node": ">=10.0.0"
+  },
   "version": "0.0.0",
   "private": true,
   "scripts": {
     "start": "node ./bin/www"
   },
   "dependencies": {
-    "bcrypt": "^5.0.1",
+    "bcryptjs": "^2.4.3",
     "cookie-parser": "~1.4.4",
     "debug": "~2.6.9",
     "dotenv": "^10.0.0",

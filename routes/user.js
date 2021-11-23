@@ -5,7 +5,7 @@ const jwt = require('jsonwebtoken');
 const auth = require('../middlewares/auth');
 const passport = require('passport');
 
-const bcrypt = require('bcrypt');
+const bcrypt = require('bcryptjs');
 const {validate_user, validate_pass} = require("../middlewares/validate");
 const {QueryTypes, Op} = require("sequelize");
 
