@@ -22,6 +22,9 @@ passport.use('jwt', auth.jwtStrategy);
 app.use(passport.initialize());
 // app.use(passport.authenticate('jwt', {session: false}));
 
+app.get('/', (req, res) => {
+   res.send("Welcome to WeHome BackEnd!");
+});
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 app.use('/api/user', userRouter);
 app.use('/api/room', roomRouter);
