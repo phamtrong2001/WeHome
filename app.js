@@ -4,6 +4,7 @@ const YAML = require('yamljs');
 const swaggerDocument = YAML.load('./openapi/swagger.yaml');
 const passport = require('passport');
 const auth = require('./middlewares/auth');
+const cors = require('cors');
 
 const userRouter = require('./routes/user');
 const roomRouter = require('./routes/room');
@@ -21,6 +22,8 @@ app.use(express.urlencoded({extended: false}));
 passport.use('jwt', auth.jwtStrategy);
 app.use(passport.initialize());
 // app.use(passport.authenticate('jwt', {session: false}));
+
+app.use(cors());
 
 app.get('/', (req, res) => {
    res.send("Welcome to WeHome BackEnd!");
