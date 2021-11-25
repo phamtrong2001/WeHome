@@ -1,6 +1,12 @@
 const Sequelize = require('sequelize');
 module.exports = function (sequelize, DataTypes) {
     return sequelize.define('notification', {
+        id: {
+            autoIncrement: true,
+            type: DataTypes.INTEGER,
+            allowNull: false,
+            primaryKey: true
+        },
         user_id: {
             type: DataTypes.INTEGER,
             allowNull: false,
@@ -9,7 +15,11 @@ module.exports = function (sequelize, DataTypes) {
                 key: 'user_id'
             }
         },
-        details: {
+        content: {
+            type: DataTypes.TEXT,
+            allowNull: false
+        },
+        status: {
             type: DataTypes.TEXT,
             allowNull: false
         },
@@ -23,6 +33,14 @@ module.exports = function (sequelize, DataTypes) {
         tableName: 'notification',
         timestamps: false,
         indexes: [
+            {
+                name: "PRIMARY",
+                unique: true,
+                using: "BTREE",
+                fields: [
+                    {name: "id"},
+                ]
+            },
             {
                 name: "user_id",
                 using: "BTREE",
