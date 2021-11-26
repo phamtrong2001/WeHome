@@ -23,10 +23,14 @@ module.exports = function (sequelize, DataTypes) {
             type: DataTypes.DATEONLY,
             allowNull: false
         },
-        discount: {
-            type: DataTypes.DECIMAL(5, 2),
+        status: {
+            type: DataTypes.TEXT,
+            allowNull: true
+        },
+        cost: {
+            type: DataTypes.INTEGER,
             allowNull: false,
-            defaultValue: 0.00
+            defaultValue: 0
         },
         client_id: {
             type: DataTypes.INTEGER,
