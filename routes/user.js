@@ -43,7 +43,7 @@ async function getUserById(req, res) {
     try {
         const user = await models.user.findByPk(req.params["userId"]);
         if (!user) {
-            res.status(400).send({'message': 'Invalid userId'});
+            res.status(400).send({message: 'Invalid userId'});
             return;
         }
         res.status(200).json(user);
@@ -72,12 +72,11 @@ async function updateUser(req, res) {
             phone: req.body.phone,
             email: req.body.email,
             username: req.body.username,
-            password: req.body.password
         }
 
         if (role.user_type != 'admin') {
             if (payload.user_id != req.params["userId"]) {
-                res.status(400).json({'message': 'Invalid userId'});
+                res.status(400).json({message: 'Invalid userId'});
                 return;
             }
             if (newUser.username) {
@@ -87,17 +86,17 @@ async function updateUser(req, res) {
                     }
                 });
                 if (user) {
-                    res.status(400).json({'message': 'Failed! Username is already in use!'});
+                    res.status(400).json({message: 'Failed! Username is already in use!'});
                     return;
                 }
             }
-            if (newUser.username && !validate_user(newUser.username, newUser.password)) {
-                res.status(400).json({'message': 'Invalid username!'});
+            if (newUser.username && !validate_user(newUser.username)) {
+                res.status(400).json({message: 'Invalid username!'});
                 return;
             }
             if (newUser.username && newUser.password) {
                 if (!validate_pass(newUser.username, newUser.password)) {
-                    res.status(400).json({'message': 'Invalid password'});
+                    res.status(400).json({message: 'Invalid password'});
                     return;
                 } else {
                     newUser.password = bcrypt.hashSync(newUser.password, +process.env.SALT);
@@ -109,7 +108,7 @@ async function updateUser(req, res) {
                 user_id: req.params["userId"]
             }
         });
-        res.status(200).json({'message': 'OK'});
+        res.status(200).json({message: 'OK'});
     } catch (err) {
         res.status(500).json({message: err});
     }
@@ -127,7 +126,7 @@ async function deleteUser(req, res) {
     try {
         const user = await models.user.findByPk(req.params["userId"]);
         if (!user) {
-            res.status(400).json({'message': 'Invalid userId'});
+            res.status(400).json({message: 'Invalid userId'});
             return;
         }
         await models.user.destroy({
@@ -135,7 +134,7 @@ async function deleteUser(req, res) {
                 user_id: req.params["userId"]
             }
         });
-        res.status(200).json({'message': 'Success'});
+        res.status(200).json({message: 'Success'});
     } catch (err) {
         res.status(500).json({message: err});
     }
@@ -166,25 +165,64 @@ async function createUser(req, res) {
             }
         });
         if (user) {
-            res.status(400).json({'message': 'Failed! Username is already in use!'});
+            res.status(400).json({message: 'Failed! Username is already in use!'});
             return;
         }
         if (!validate_user(newUser.username, newUser.password)) {
-            res.status(400).json({'message': 'Invalid username!'});
+            res.status(400).json({message: 'Invalid username!'});
             return;
         }
         if (!validate_pass(newUser.username, newUser.password)) {
-            res.status(400).json({'message': 'Invalid password'});
+            res.status(400).json({message: 'Invalid password'});
             return;
         }
         newUser.password = bcrypt.hashSync(newUser.password, +process.env.SALT);
         await models.user.create(newUser);
-        res.status(200).json({'message': 'OK'});
+        res.status(200).json({message: 'OK'});
     } catch (err) {
         res.status(500).json({message: err});
     }
 }
 router.post('/create', createUser);
+
+async function changePassword(req, res) {
+    try {
+        const payload = jwt.decode(req.headers.authorization.split(' ')[1]);
+        const curUser = await models.user.findByPk(payload.user_id);
+        const role = await models.user_type.findByPk(curUser.user_type_id);
+
+        var newPassword = req.body.password;
+        const oldPassword = req.body.oldPassword;
+
+        if (role.user_type != 'admin') {
+            if (payload.user_id != req.params["userId"]) {
+                res.status(400).json({message: 'Invalid userId'});
+                return;
+            }
+
+            if (!bcrypt.compareSync(oldPassword, curUser.password)) {
+                res.status(401).json({message: 'Password is incorrect'});
+                return;
+            }
+
+            if (!validate_pass(curUser.username, newPassword)) {
+                res.status(400).json({message: 'Invalid password'});
+                return;
+            } else {
+                newPassword = bcrypt.hashSync(newPassword, +process.env.SALT);
+            }
+        }
+        await models.user.update({password: newPassword}, {
+            where: {
+                user_id: req.params["userId"]
+            }
+        });
+        res.status(200).json({message: 'OK'});
+    } catch (err) {
+        res.status(500).json({message: err});
+    }
+}
+router.post('/:userId/change-password', passport.authenticate('jwt', {session: false}), changePassword);
 
 /**
  * Filter users
@@ -233,15 +271,15 @@ router.post('/login',async (req, res, next) => {
                 }
             });
             if (!user) {
-                res.status(401).json({'message': 'No such user found'});
+                res.status(401).json({message: 'No such user found'});
                 return;
             }
             if (bcrypt.compareSync(password, user.password)) {
                 let payload = {user_id: user.user_id};
                 let token = jwt.sign(payload, process.env.SECRET_KEY, {expiresIn: '1d'});
-                res.status(200).json({'message': 'OK', 'token': token});
+                res.status(200).json({message: 'OK', 'token': token});
             } else {
-                res.status(401).json({'message': 'Password is incorrect!'});
+                res.status(401).json({message: 'Password is incorrect!'});
                 return;
             }
         }
