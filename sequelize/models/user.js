@@ -19,14 +19,6 @@ module.exports = function (sequelize, DataTypes) {
             type: DataTypes.TEXT,
             allowNull: true
         },
-        user_type_id: {
-            type: DataTypes.INTEGER,
-            allowNull: false,
-            references: {
-                model: 'user_type',
-                key: 'user_type_id'
-            }
-        },
         username: {
             type: DataTypes.TEXT,
             allowNull: true
@@ -34,6 +26,11 @@ module.exports = function (sequelize, DataTypes) {
         password: {
             type: DataTypes.TEXT,
             allowNull: true
+        },
+        role: {
+            type: DataTypes.STRING(100),
+            allowNull: false,
+            defaultValue: "client"
         },
         last_update: {
             type: DataTypes.DATE,
@@ -51,13 +48,6 @@ module.exports = function (sequelize, DataTypes) {
                 using: "BTREE",
                 fields: [
                     {name: "user_id"},
-                ]
-            },
-            {
-                name: "user_type_id",
-                using: "BTREE",
-                fields: [
-                    {name: "user_type_id"},
                 ]
             },
         ]

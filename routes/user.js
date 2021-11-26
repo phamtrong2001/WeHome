@@ -9,7 +9,7 @@ const bcrypt = require('bcryptjs');
 const {validate_user, validate_pass} = require("../middlewares/validate");
 const {QueryTypes, Op} = require("sequelize");
 
-passport.use('jwt', auth.jwtStrategy);
+passport.use('user', auth.jwtStrategy);
 passport.use('admin', auth.isAdmin);
 passport.use('host', auth.isHost);
 
@@ -65,7 +65,12 @@ async function updateUser(req, res) {
         // console.log(req.headers.authorization.split(' ')[1]);
         const payload = jwt.decode(req.headers.authorization.split(' ')[1]);
         const curUser = await models.user.findByPk(payload.user_id);
-        const role = await models.user_type.findByPk(curUser.user_type_id);
+
+        const user = await models.user.findByPk(req.params["userId"]);
+        if (!user) {
+            res.status(400).json({message: 'Invalid userId'});
+            return;
+        }
 
         const newUser = {
             name: req.body.name,
@@ -74,7 +79,7 @@ async function updateUser(req, res) {
             username: req.body.username,
         }
 
-        if (role.user_type != 'admin') {
+        if (curUser.role != 'admin') {
             if (payload.user_id != req.params["userId"]) {
                 res.status(400).json({message: 'Invalid userId'});
                 return;
@@ -113,7 +118,7 @@ async function updateUser(req, res) {
         res.status(500).json({message: err});
     }
 }
-router.put('/:userId', passport.authenticate('jwt', {session: false}), updateUser);
+router.put('/:userId', passport.authenticate('user', {session: false}), updateUser);
 
 /**
  * Delete user by userId
@@ -155,7 +160,7 @@ async function createUser(req, res) {
             name: req.body.name,
             phone: req.body.phone,
             email: req.body.email,
-            user_type_id: req.body.userType,
+            role: req.body.role,
             username: req.body.username,
             password: req.body.password
         }
@@ -189,12 +194,11 @@ async function changePassword(req, res) {
     try {
         const payload = jwt.decode(req.headers.authorization.split(' ')[1]);
         const curUser = await models.user.findByPk(payload.user_id);
-        const role = await models.user_type.findByPk(curUser.user_type_id);
 
         var newPassword = req.body.password;
         const oldPassword = req.body.oldPassword;
 
-        if (role.user_type != 'admin') {
+        if (curUser.role != 'admin') {
             if (payload.user_id != req.params["userId"]) {
                 res.status(400).json({message: 'Invalid userId'});
                 return;
@@ -222,7 +226,7 @@ async function changePassword(req, res) {
         res.status(500).json({message: err});
     }
 }
-router.post('/:userId/change-password', passport.authenticate('jwt', {session: false}), changePassword);
+router.post('/:userId/change-password', passport.authenticate('user', {session: false}), changePassword);
 
 /**
  * Filter users
@@ -256,7 +260,7 @@ async function filterUser(req, res) {
         res.status(500).json({message: err});
     }
 }
-router.post('/filter', passport.authenticate('jwt', {session: false}),filterUser);
+router.post('/filter', passport.authenticate('user', {session: false}),filterUser);
 
 /**
  * Login
@@ -292,7 +296,7 @@ router.post('/login',async (req, res, next) => {
  * Logout
  * @author: user
  */
-router.post('/logout', passport.authenticate('jwt', {session: false}), (req, res) => {
+router.post('/logout', passport.authenticate('user', {session: false}), (req, res) => {
     res.status(200).json({message: "Logged out!", token: null});
 });
 
