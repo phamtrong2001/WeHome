@@ -4,12 +4,12 @@ var _facility = require("./facility");
 var _facility_room = require("./facility_room");
 var _feedback = require("./feedback");
 var _image = require("./image");
+var _notification = require("./notification");
 var _rental = require("./rental");
 var _report = require("./report");
 var _room = require("./room");
 var _room_type = require("./room_type");
 var _user = require("./user");
-var _user_type = require("./user_type");
 
 function initModels(sequelize) {
     var address = _address(sequelize, DataTypes);
@@ -17,12 +17,12 @@ function initModels(sequelize) {
     var facility_room = _facility_room(sequelize, DataTypes);
     var feedback = _feedback(sequelize, DataTypes);
     var image = _image(sequelize, DataTypes);
+    var notification = _notification(sequelize, DataTypes);
     var rental = _rental(sequelize, DataTypes);
     var report = _report(sequelize, DataTypes);
     var room = _room(sequelize, DataTypes);
     var room_type = _room_type(sequelize, DataTypes);
     var user = _user(sequelize, DataTypes);
-    var user_type = _user_type(sequelize, DataTypes);
 
     facility.belongsToMany(room, {
         as: 'room_id_rooms',
@@ -52,14 +52,14 @@ function initModels(sequelize) {
     room_type.hasMany(room, {as: "rooms", foreignKey: "room_type_id"});
     feedback.belongsTo(user, {as: "client", foreignKey: "client_id"});
     user.hasMany(feedback, {as: "feedbacks", foreignKey: "client_id"});
+    notification.belongsTo(user, {as: "user", foreignKey: "user_id"});
+    user.hasMany(notification, {as: "notifications", foreignKey: "user_id"});
     rental.belongsTo(user, {as: "client", foreignKey: "client_id"});
     user.hasMany(rental, {as: "rentals", foreignKey: "client_id"});
     report.belongsTo(user, {as: "user", foreignKey: "user_id"});
     user.hasMany(report, {as: "reports", foreignKey: "user_id"});
     room.belongsTo(user, {as: "host", foreignKey: "host_id"});
     user.hasMany(room, {as: "rooms", foreignKey: "host_id"});
-    user.belongsTo(user_type, {as: "user_type", foreignKey: "user_type_id"});
-    user_type.hasMany(user, {as: "users", foreignKey: "user_type_id"});
 
     return {
         address,
@@ -67,12 +67,12 @@ function initModels(sequelize) {
         facility_room,
         feedback,
         image,
+        notification,
         rental,
         report,
         room,
         room_type,
         user,
-        user_type,
     };
 }
 

@@ -1,36 +1,27 @@
 const Sequelize = require('sequelize');
 module.exports = function (sequelize, DataTypes) {
-    return sequelize.define('user', {
-        user_id: {
+    return sequelize.define('notification', {
+        id: {
             autoIncrement: true,
             type: DataTypes.INTEGER,
             allowNull: false,
             primaryKey: true
         },
-        name: {
+        user_id: {
+            type: DataTypes.INTEGER,
+            allowNull: false,
+            references: {
+                model: 'user',
+                key: 'user_id'
+            }
+        },
+        content: {
             type: DataTypes.TEXT,
             allowNull: false
         },
-        phone: {
+        status: {
             type: DataTypes.TEXT,
-            allowNull: true
-        },
-        email: {
-            type: DataTypes.TEXT,
-            allowNull: true
-        },
-        username: {
-            type: DataTypes.TEXT,
-            allowNull: true
-        },
-        password: {
-            type: DataTypes.TEXT,
-            allowNull: true
-        },
-        role: {
-            type: DataTypes.STRING(100),
-            allowNull: false,
-            defaultValue: "client"
+            allowNull: false
         },
         last_update: {
             type: DataTypes.DATE,
@@ -39,12 +30,19 @@ module.exports = function (sequelize, DataTypes) {
         }
     }, {
         sequelize,
-        tableName: 'user',
+        tableName: 'notification',
         timestamps: false,
         indexes: [
             {
                 name: "PRIMARY",
                 unique: true,
+                using: "BTREE",
+                fields: [
+                    {name: "id"},
+                ]
+            },
+            {
+                name: "user_id",
                 using: "BTREE",
                 fields: [
                     {name: "user_id"},
