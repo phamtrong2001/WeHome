@@ -7,7 +7,7 @@ const models = require("../sequelize/conn");
  * Get all room
  */
 async function getRooms(req, res) {
-    const rooms = await models.room.findAll();
+    const rooms = await models.room.findAll({limit: 100});
     res.status(200).json(rooms);
 }
 
@@ -19,6 +19,7 @@ async function getRoomById(req, res) {
     const room = await models.room.findByPk(req.params["roomId"]);
     if (!room) {
         res.status(400).send({'message': 'Invalid roomId'});
+        return;
     }
     res.status(200).json(room);
 }
@@ -79,7 +80,6 @@ async function deleteRoom(req, res) {
 }
 router.delete('/:roomId', deleteRoom);
 
-module.exports = router;
 /**
  * Create room
  */
@@ -106,3 +106,16 @@ async function createRoom(req, res) {
 }
 
 router.get('/create', createRoom);
+
+async function filterRoom(res, req) {
+    const latitude = res.body.latitude;
+    const longitude = res.body.longitude;
+    const room = await models.room.findAll({
+        where: {
+
+        }
+    })
+}
+router.get('/filter', filterRoom);
+
+module.exports = router;

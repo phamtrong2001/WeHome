@@ -36,6 +36,7 @@ async function getUserById(req, res) {
     const user = await models.user.findByPk(req.params["userId"]);
     if (!user) {
         res.status(400).send({'message': 'Invalid userId'});
+        return;
     }
     res.status(200).json(user);
 }
