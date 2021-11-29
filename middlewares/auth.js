@@ -15,11 +15,15 @@ jwtOptions.secretOrKey = process.env.SECRET_KEY;
 module.exports.jwtStrategy = new jwtStrategy(
     jwtOptions,
     async (jwtPayload, done) => {
-        console.log(jwtPayload);
-        const user = await models.user.findByPk(jwtPayload.user_id);
-        if (user) {
-            return done(null, user);
-        } else {
+        try {
+            const user = await models.user.findByPk(jwtPayload.user_id);
+            if (user) {
+                return done(null, user);
+            } else {
+                return done(null, false);
+            }
+        } catch (err) {
+            console.error(err);
             return done(null, false);
         }
     }
@@ -32,12 +36,17 @@ module.exports.jwtStrategy = new jwtStrategy(
 module.exports.isAdmin = new jwtStrategy(
     jwtOptions,
     async (jwtPayload, done) => {
-        const user = await models.user.findByPk(jwtPayload.user_id);
-        const user_type = await models.user_type.findByPk(user.user_type_id);
-        const role = user_type.user_type;
-        if (role == 'admin') {
-            return done(null, user);
-        } else {
+        try {
+            const user = await models.user.findByPk(jwtPayload.user_id);
+            const user_type = await models.user_type.findByPk(user.user_type_id);
+            const role = user_type.user_type;
+            if (role == 'admin') {
+                return done(null, user);
+            } else {
+                return done(null, false);
+            }
+        } catch (err) {
+            console.error(err);
             return done(null, false);
         }
     }
@@ -50,12 +59,17 @@ module.exports.isAdmin = new jwtStrategy(
 module.exports.isHost = new jwtStrategy(
     jwtOptions,
     async (jwtPayload, done) => {
-        const user = await models.user.findByPk(jwtPayload.user_id);
-        const user_type = await models.user_type.findByPk(user.user_type_id);
-        const role = user_type.user_type;
-        if (role == 'admin' || role == 'host') {
-            return done(null, user);
-        } else {
+        try {
+            const user = await models.user.findByPk(jwtPayload.user_id);
+            const user_type = await models.user_type.findByPk(user.user_type_id);
+            const role = user_type.user_type;
+            if (role == 'admin' || role == 'host') {
+                return done(null, user);
+            } else {
+                return done(null, false);
+            }
+        } catch (err) {
+            console.error(err);
             return done(null, false);
         }
     }

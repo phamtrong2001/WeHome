@@ -5,8 +5,9 @@ const jwt = require('jsonwebtoken');
 const auth = require('../middlewares/auth');
 const passport = require('passport');
 
-const bcrypt = require('bcrypt');
+const bcrypt = require('bcryptjs');
 const {validate_user, validate_pass} = require("../middlewares/validate");
+const {QueryTypes, Op} = require("sequelize");
 
 passport.use('jwt', auth.jwtStrategy);
 passport.use('admin', auth.isAdmin);
@@ -20,8 +21,14 @@ passport.use('host', auth.isHost);
  * @returns {Promise<void>}
  */
 async function getUsers(req, res) {
-    const users = await models.user.findAll();
-    res.status(200).json(users);
+    try {
+        const users = await models.user.findAll({
+            limit: 100
+        });
+        res.status(200).json(users);
+    } catch (err) {
+        res.status(500).json({message: err});
+    }
 }
 router.get('/', passport.authenticate('admin', {session: false}), getUsers);
 
@@ -33,12 +40,16 @@ router.get('/', passport.authenticate('admin', {session: false}), getUsers);
  * @returns {Promise<void>}
  */
 async function getUserById(req, res) {
-    const user = await models.user.findByPk(req.params["userId"]);
-    if (!user) {
-        res.status(400).send({'message': 'Invalid userId'});
-        return;
+    try {
+        const user = await models.user.findByPk(req.params["userId"]);
+        if (!user) {
+            res.status(400).send({'message': 'Invalid userId'});
+            return;
+        }
+        res.status(200).json(user);
+    } catch (err) {
+        res.status(500).json({message: err});
     }
-    res.status(200).json(user);
 }
 router.get('/:userId', getUserById);
 
@@ -50,49 +61,58 @@ router.get('/:userId', getUserById);
  * @returns {Promise<void>}
  */
 async function updateUser(req, res) {
-    // console.log(req.headers.authorization.split(' ')[1]);
-    const payload = jwt.decode(req.headers.authorization.split(' ')[1]);
-    // console.log(payload);
-    if (payload.user_id != req.params["userId"]) {
-        res.status(400).json({'message': 'Invalid userId'});
-        return;
-    }
-    const newUser = {
-        name: req.body.name,
-        phone: req.body.phone,
-        email: req.body.email,
-        username: req.body.username,
-        password: req.body.password
-    }
-    if (newUser.username) {
-        let user = await models.user.findOne({
+    try {
+        // console.log(req.headers.authorization.split(' ')[1]);
+        const payload = jwt.decode(req.headers.authorization.split(' ')[1]);
+        const curUser = await models.user.findByPk(payload.user_id);
+        const role = await models.user_type.findByPk(curUser.user_type_id);
+
+        const newUser = {
+            name: req.body.name,
+            phone: req.body.phone,
+            email: req.body.email,
+            username: req.body.username,
+            password: req.body.password
+        }
+
+        if (role.user_type != 'admin') {
+            if (payload.user_id != req.params["userId"]) {
+                res.status(400).json({'message': 'Invalid userId'});
+                return;
+            }
+            if (newUser.username) {
+                let user = await models.user.findOne({
+                    where: {
+                        username: newUser.username
+                    }
+                });
+                if (user) {
+                    res.status(400).json({'message': 'Failed! Username is already in use!'});
+                    return;
+                }
+            }
+            if (newUser.username && !validate_user(newUser.username, newUser.password)) {
+                res.status(400).json({'message': 'Invalid username!'});
+                return;
+            }
+            if (newUser.username && newUser.password) {
+                if (!validate_pass(newUser.username, newUser.password)) {
+                    res.status(400).json({'message': 'Invalid password'});
+                    return;
+                } else {
+                    newUser.password = bcrypt.hashSync(newUser.password, +process.env.SALT);
+                }
+            }
+        }
+        await models.user.update(newUser, {
             where: {
-                username: newUser.username
+                user_id: req.params["userId"]
             }
         });
-        if (user) {
-            res.status(400).json({'message': 'Failed! Username is already in use!'});
-            return;
-        }
+        res.status(200).json({'message': 'OK'});
+    } catch (err) {
+        res.status(500).json({message: err});
     }
-    if (newUser.username && !validate_user(newUser.username, newUser.password)) {
-        res.status(400).json({'message': 'Invalid username!'});
-        return;
-    }
-    if (newUser.username && newUser.password) {
-        if (!validate_pass(newUser.username, newUser.password)) {
-            res.status(400).json({'message': 'Invalid password'});
-            return;
-        } else {
-            newUser.password = bcrypt.hashSync(newUser.password, +process.env.SALT);
-        }
-    }
-    await models.user.update(newUser, {
-        where: {
-            user_id: req.params["userId"]
-        }
-    });
-    res.status(200).json({'message': 'OK'});
 }
 router.put('/:userId', passport.authenticate('jwt', {session: false}), updateUser);
 
@@ -104,17 +124,21 @@ router.put('/:userId', passport.authenticate('jwt', {session: false}), updateUse
  * @returns {Promise<void>}
  */
 async function deleteUser(req, res) {
-    const user = await models.user.findByPk(req.params["userId"]);
-    if (!user) {
-        res.status(400).json({'message': 'Invalid userId'});
-        return;
-    }
-    await models.user.destroy({
-        where: {
-            user_id: req.params["userId"]
+    try {
+        const user = await models.user.findByPk(req.params["userId"]);
+        if (!user) {
+            res.status(400).json({'message': 'Invalid userId'});
+            return;
         }
-    });
-    res.status(200).json({'message': 'Success'});
+        await models.user.destroy({
+            where: {
+                user_id: req.params["userId"]
+            }
+        });
+        res.status(200).json({'message': 'Success'});
+    } catch (err) {
+        res.status(500).json({message: err});
+    }
 }
 router.delete('/:userId', passport.authenticate('admin', {session: false}), deleteUser);
 
@@ -126,60 +150,103 @@ router.delete('/:userId', passport.authenticate('admin', {session: false}), dele
  * @returns {Promise<void>}
  */
 async function createUser(req, res) {
-    const newUser = {
-        id: req.body.id,
-        name: req.body.name,
-        phone: req.body.phone,
-        email: req.body.email,
-        user_type_id: req.body.userType,
-        username: req.body.username,
-        password: req.body.password
-    }
-    const user = await models.user.findOne({
-        where: {
-            username: newUser.username
+    try {
+        const newUser = {
+            id: req.body.id,
+            name: req.body.name,
+            phone: req.body.phone,
+            email: req.body.email,
+            user_type_id: req.body.userType,
+            username: req.body.username,
+            password: req.body.password
         }
-    });
-    if (user) {
-        res.status(400).json({'message': 'Failed! Username is already in use!'});
-        return;
+        const user = await models.user.findOne({
+            where: {
+                username: newUser.username
+            }
+        });
+        if (user) {
+            res.status(400).json({'message': 'Failed! Username is already in use!'});
+            return;
+        }
+        if (!validate_user(newUser.username, newUser.password)) {
+            res.status(400).json({'message': 'Invalid username!'});
+            return;
+        }
+        if (!validate_pass(newUser.username, newUser.password)) {
+            res.status(400).json({'message': 'Invalid password'});
+            return;
+        }
+        newUser.password = bcrypt.hashSync(newUser.password, +process.env.SALT);
+        await models.user.create(newUser);
+        res.status(200).json({'message': 'OK'});
+    } catch (err) {
+        res.status(500).json({message: err});
     }
-    if (!validate_user(newUser.username, newUser.password)) {
-        res.status(400).json({'message': 'Invalid username!'});
-        return;
-    }
-    if (!validate_pass(newUser.username, newUser.password)) {
-        res.status(400).json({'message': 'Invalid password'});
-        return;
-    }
-    newUser.password = bcrypt.hashSync(newUser.password, +process.env.SALT);
-    await models.user.create(newUser);
-    res.status(200).json({'message': 'OK'});
 }
 router.post('/create', createUser);
+
+/**
+ * Filter users
+ * @author user
+ * @param req
+ * @param res
+ * @returns {Promise<void>}
+ */
+async function filterUser(req, res) {
+    try {
+        const findObj = {
+            phone: req.body.phone,
+            name: req.body.name,
+            email: req.body.email
+        };
+        const users = await models.user.findAll({
+            where: {
+                name: {
+                    [Op.like]: '%' + (findObj.name ? findObj.name : '') + '%'
+                },
+                phone: {
+                    [Op.like]: '%' + (findObj.phone ? findObj.phone : '') + '%'
+                },
+                email: {
+                    [Op.like]: '%' + (findObj.email ? findObj.email : '') + '%'
+                }
+            }
+        });
+        res.status(200).json(users);
+    } catch (err) {
+        res.status(500).json({message: err});
+    }
+}
+router.post('/filter', passport.authenticate('jwt', {session: false}),filterUser);
 
 /**
  * Login
  */
 router.post('/login',async (req, res, next) => {
-    const {username, password} = req.body;
-    if (username && password) {
-        let user = await models.user.findOne({
-            where: {
-                username: username
+    try {
+        const {username, password} = req.body;
+        if (username && password) {
+            let user = await models.user.findOne({
+                where: {
+                    username: username
+                }
+            });
+            if (!user) {
+                res.status(401).json({'message': 'No such user found'});
+                return;
             }
-        });
-        if (!user) {
-            res.status(401).json({'message': 'No such user found'});
-            return;
+            if (bcrypt.compareSync(password, user.password)) {
+                let payload = {user_id: user.user_id};
+                let token = jwt.sign(payload, process.env.SECRET_KEY, {expiresIn: '1d'});
+                res.status(200).json({'message': 'OK', 'token': token});
+            } else {
+                res.status(401).json({'message': 'Password is incorrect!'});
+                return;
+            }
         }
-        if (bcrypt.compareSync(password, user.password)) {
-            let payload = {user_id: user.user_id};
-            let token = jwt.sign(payload, process.env.SECRET_KEY, {expiresIn: '1d'});
-            res.status(200).json({'message': 'OK', 'token': token});
-        } else {
-            res.status(401).json({'message': 'Password is incorrect!'});
-        }
+    } catch (err) {
+        res.status(500).json({message: err});
     }
 });
 
@@ -188,7 +255,7 @@ router.post('/login',async (req, res, next) => {
  * @author: user
  */
 router.post('/logout', passport.authenticate('jwt', {session: false}), (req, res) => {
-    res.status(200).send("Logged out!");
+    res.status(200).json({message: "Logged out!", token: null});
 });
 
 module.exports = router;

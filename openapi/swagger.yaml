@@ -11,6 +11,7 @@ externalDocs:
   url: http://swagger.io
 servers:
   - url: http://localhost:8889
+  - url: http://113.167.196.55:8889
 tags:
   - name: user
   - name: room
@@ -72,6 +73,8 @@ paths:
         - user
       summary: Update user
       operationId: user.updateUser
+      security:
+        - bearerAuth: [ ]
       parameters:
         - name: userId
           in: path
@@ -87,6 +90,8 @@ paths:
             schema:
               $ref: '#/components/schemas/User'
       responses:
+        UnauthorizedError:
+          description: Access token is missing or invalid
         '200':
           description: OK
           content: { }
@@ -101,6 +106,8 @@ paths:
         - user
       summary: Delete user
       operationId: user.deleteUser
+      security:
+        - bearerAuth: [ ]
       parameters:
         - name: userId
           in: path
@@ -110,6 +117,8 @@ paths:
               - type: string
               - type: integer
       responses:
+        UnauthorizedError:
+          description: Access token is missing or invalid
         '200':
           description: OK
           content: { }
@@ -135,6 +144,44 @@ paths:
       responses:
         default:
           description: OK
+  /api/user/filter:
+    post:
+      tags:
+        - user
+      summary: Filter user
+      operationId: user.filterUser
+      security:
+        - bearerAuth: [ ]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                userId:
+                  type: number
+                  nullable: true
+                name:
+                  type: string
+                  nullable: true
+                phone:
+                  type: string
+                  nullable: true
+                email:
+                  type: string
+                  nullable: true
+      responses:
+        UnauthorizedError:
+          description: Access token is missing or invalid
+        default:
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/User'
   /api/user/login:
     post:
       tags:
