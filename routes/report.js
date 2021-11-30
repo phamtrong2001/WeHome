@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const models = require("../sequelize/conn");
+const {models, db} = require("../sequelize/conn");
 
 /**
  * Create report
