@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
-const models = require("../sequelize/conn");
-
+const {models, db} = require('../sequelize/conn');
+const {Sequelize, Op, QueryTypes} = require("sequelize");
 
 /**
  * Get all room
@@ -14,8 +14,8 @@ async function getRooms(req, res) {
         res.status(500).json({message: err});
     }
 }
-
 router.get('/', getRooms);
+
 /**
  * Get room by id
  */
@@ -30,7 +30,6 @@ async function getRoomById(req, res) {
         res.status(500).json({message: err});
     }
 }
-
 router.get('/:roomId', getRoomById);
 
 /**
@@ -95,7 +94,45 @@ async function deleteRoom(req, res) {
 }
 router.delete('/:roomId', deleteRoom);
 
-module.exports = router;
+/**
+ * Search room by geo coordinate
+ * @param req
+ * @param res
+ * @returns {Promise<void>}
+ */
+async function search(req, res) {
+    try {
+        const lat = req.body.latitude;
+        const long = req.body.longitude;
+        const radius = req.body.radius;
+        const distance = db.Sequelize.literal("6371 * acos(cos(radians("+lat+")) * cos(radians(latitude)) * cos(radians("+long+") - radians(longitude)) + sin(radians("+lat+")) * sin(radians(latitude)))");
+        const rooms = await models.room.findAll({
+            attributes: [
+                'room_id',
+                'room_name',
+                'latitude',
+                'longitude',
+                'host_id',
+                'price',
+                [distance,'distance']
+            ],
+            where: db.Sequelize.where(distance, "<=", radius),
+            // having: {
+            //     distance: {
+            //         [Op.lte]: radius
+            //     }
+            // },
+            order: db.Sequelize.col('distance'),
+            limit: 100
+        });
+        res.status(200).send(rooms);
+    } catch (err) {
+        console.log(err);
+        res.status(500).send(err);
+    }
+}
+router.post('/search', search);
+
 /**
  * Create room
  */
@@ -124,5 +161,6 @@ async function createRoom(req, res) {
         res.status(500).json({message: err});
     }
 }
-
 router.get('/create', createRoom);
+
+module.exports = router;
