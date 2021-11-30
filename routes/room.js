@@ -28,7 +28,25 @@ async function search(req, res) {
             order: db.Sequelize.col('distance'),
             limit: 100
         });
-        res.status(200).send(rooms);
+        var response = [];
+        for (let room of rooms) {
+            let images = await models.image.findAll({
+                where: {
+                    room_id: room.room_id
+                }
+            });
+            response.push({
+                'room_id': room.room_id,
+                'room_name': room.room_name,
+                'latitude': room.latitude,
+                'longitude': room.longitude,
+                'host_id': room.host_id,
+                'price': room.price,
+                'image': images
+            });
+        }
+        // console.log(response);
+        res.status(200).json(response);
     } catch (err) {
         console.log(err);
         res.status(500).send(err);
