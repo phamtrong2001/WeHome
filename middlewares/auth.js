@@ -1,4 +1,4 @@
-const models = require('../sequelize/conn');
+const {models, db} = require('../sequelize/conn');
 const passportJWT = require('passport-jwt');
 
 const ExtractJwt = passportJWT.ExtractJwt;
@@ -38,9 +38,7 @@ module.exports.isAdmin = new jwtStrategy(
     async (jwtPayload, done) => {
         try {
             const user = await models.user.findByPk(jwtPayload.user_id);
-            const user_type = await models.user_type.findByPk(user.user_type_id);
-            const role = user_type.user_type;
-            if (role == 'admin') {
+            if (user.role == 'admin') {
                 return done(null, user);
             } else {
                 return done(null, false);
@@ -61,9 +59,7 @@ module.exports.isHost = new jwtStrategy(
     async (jwtPayload, done) => {
         try {
             const user = await models.user.findByPk(jwtPayload.user_id);
-            const user_type = await models.user_type.findByPk(user.user_type_id);
-            const role = user_type.user_type;
-            if (role == 'admin' || role == 'host') {
+            if (user.role == 'admin' || user.role == 'host') {
                 return done(null, user);
             } else {
                 return done(null, false);

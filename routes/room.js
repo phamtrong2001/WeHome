@@ -1,9 +1,8 @@
 const express = require('express');
 const router = express.Router();
-const models = require("../sequelize/conn");
-const {Op} = require("sequelize");
 const {filters} = require("pug");
-
+const {models, db} = require('../sequelize/conn');
+const {Sequelize, Op, QueryTypes} = require("sequelize");
 
 /**
  * Get all room
@@ -16,8 +15,8 @@ async function getRooms(req, res) {
         res.status(500).json({message: err});
     }
 }
-
 router.get('/', getRooms);
+
 /**
  * Get room by id
  */
@@ -32,7 +31,6 @@ async function getRoomById(req, res) {
         res.status(500).json({message: err});
     }
 }
-
 router.get('/:roomId', getRoomById);
 
 /**
@@ -125,9 +123,14 @@ async function createRoom(req, res) {
         res.status(500).json({message: err});
     }
 }
-
 router.post('/create', createRoom);
 
+/**
+ * Get rooms by hostId
+ * @param req
+ * @param res
+ * @returns {Promise<void>}
+ */
 async function filterRoom(req, res) {
     try {
         let room;
@@ -137,47 +140,9 @@ async function filterRoom(req, res) {
                     host_id: req.body.hostId
                 }
             });
-        } else if (req.body.lat && req.body.long) {
-            let findObj = {
-                latitude: req.body.lat,
-                longitude: req.body.long,
-            };
-
-            room = await models.room.findAll({
-                where: {
-                    latitude: {
-                        [Op.gt]: findObj.latitude - 0.5,
-                        [Op.lt]: findObj.latitude + 0.5
-                    },
-                    longitude: {
-                        [Op.gt]: findObj.longitude - 0.5,
-                        [Op.lt]: findObj.longitude + 0.5
-                    }
-                }
-            });
-            room = room.filter(value1 => {
-                let lat1 = findObj.latitude;
-                let lat2 = value1.get("latitude");
-                let lon1 = findObj.longitude;
-                let lon2 = value1.get("longitude")
-                const R = 6371e3; // metres
-                const φ1 = lat1 * Math.PI/180; // φ, λ in radians
-                const φ2 = lat2 * Math.PI/180;
-                const Δφ = (lat2-lat1) * Math.PI/180;
-                const Δλ = (lon2-lon1) * Math.PI/180;
-
-                const a = Math.sin(Δφ/2) * Math.sin(Δφ/2) +
-                    Math.cos(φ1) * Math.cos(φ2) *
-                    Math.sin(Δλ/2) * Math.sin(Δλ/2);
-                const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
-
-                let d = R * c; // in metres
-                return d < 20000;
-            })
         }
-
         if (!room) {
-            res.status(400).send({'message': 'No room'});
+            res.status(200).send({message: 'No room'});
         }
         res.status(200).json(room);
     } catch (err) {
