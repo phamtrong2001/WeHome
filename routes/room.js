@@ -23,7 +23,7 @@ async function getRoomById(req, res) {
     try {
         const room = await models.room.findByPk(req.params["roomId"]);
         if (!room) {
-            res.status(400).send({'message': 'Invalid roomId'});
+            res.status(400).send({message: 'Invalid roomId'});
         }
         res.status(200).json(room);
     } catch (err) {
@@ -39,7 +39,7 @@ async function updateRoom(req, res) {
     try {
         const room = await models.room.findByPk(req.params["roomId"]);
         if (!room) {
-            res.status(400).json({'message': 'Invalid roomId'});
+            res.status(400).json({message: 'Invalid roomId'});
             return;
         }
         const newRoom = {
@@ -65,7 +65,7 @@ async function updateRoom(req, res) {
                 room_id: req.params["roomId"]
             }
         });
-        res.status(200).json({'message': 'OK'});
+        res.status(200).json({message: 'OK'});
     } catch (err) {
         res.status(500).json({message: err});
     }
@@ -79,7 +79,7 @@ async function deleteRoom(req, res) {
     try {
         const room = await models.room.findByPk(req.params["roomId"]);
         if (!room) {
-            res.status(400).json({'message': 'Invalid roomId'});
+            res.status(400).json({message: 'Invalid roomId'});
             return;
         }
         await models.room.destroy({
@@ -87,7 +87,7 @@ async function deleteRoom(req, res) {
                 room_id: req.params["roomId"]
             }
         });
-        res.status(200).json({'message': 'Success'});
+        res.status(200).json({message: 'Success'});
     } catch (err) {
         res.status(500).json({message: err});
     }
@@ -156,7 +156,7 @@ async function createRoom(req, res) {
             rate: req.body.rate
         }
         await models.room.create(newRoom);
-        res.status(200).json({'message': 'OK'});
+        res.status(200).json({message: 'OK'});
     } catch (err) {
         res.status(500).json({message: err});
     }

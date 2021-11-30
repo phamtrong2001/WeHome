@@ -190,6 +190,12 @@ async function createUser(req, res) {
 }
 router.post('/create', createUser);
 
+/**
+ * Change password
+ * @param req
+ * @param res
+ * @returns {Promise<void>}
+ */
 async function changePassword(req, res) {
     try {
         const payload = jwt.decode(req.headers.authorization.split(' ')[1]);
@@ -289,7 +295,6 @@ router.post('/login',async (req, res, next) => {
                 });
             } else {
                 res.status(401).json({message: 'Password is incorrect!'});
-                return;
             }
         }
     } catch (err) {
