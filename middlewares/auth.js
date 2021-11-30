@@ -1,4 +1,4 @@
-const models = require('../sequelize/conn');
+const {models, db} = require('../sequelize/conn');
 const passportJWT = require('passport-jwt');
 
 const ExtractJwt = passportJWT.ExtractJwt;
