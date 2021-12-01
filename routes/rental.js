@@ -29,7 +29,7 @@ async function getRentalByUserId(req, res) {
         where: {
             user_id : userId
         }
-    }).then( async function (project) {
+    }).then(async function (project) {
         if (project) {
             await models.rental.findAll({
                 where: {
@@ -41,8 +41,8 @@ async function getRentalByUserId(req, res) {
                     return
                 }
                 res.status(404).json({'message': 'Rental not found'});
-                return
             })
+            return
         }
         res.status(400).json({'message' : 'Invalid UserId supplied'})
     });
