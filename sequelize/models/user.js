@@ -27,19 +27,20 @@ module.exports = function (sequelize, DataTypes) {
             type: DataTypes.TEXT,
             allowNull: true
         },
+        last_update: {
+            type: DataTypes.DATE,
+            allowNull: false,
+            defaultValue: Sequelize.Sequelize.literal('CURRENT_TIMESTAMP')
+        },
         role: {
             type: DataTypes.STRING(100),
             allowNull: false,
             defaultValue: "client"
-        },
-        last_update: {
-            type: DataTypes.DATE,
-            allowNull: false,
-            defaultValue: Sequelize.Sequelize.fn('current_timestamp')
         }
     }, {
         sequelize,
         tableName: 'user',
+        hasTrigger: true,
         timestamps: false,
         indexes: [
             {
