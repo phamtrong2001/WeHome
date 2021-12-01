@@ -1,5 +1,6 @@
 const express = require('express');
 const router = express.Router();
+const Image = require('../controllers/image');
 const {models, db} = require('../sequelize/conn');
 const {Sequelize, Op, QueryTypes} = require("sequelize");
 
@@ -9,7 +10,30 @@ const {Sequelize, Op, QueryTypes} = require("sequelize");
 async function getRooms(req, res) {
     try {
         const rooms = await models.room.findAll({limit: 100});
-        res.status(200).json(rooms);
+        let response = [];
+        for (let room of rooms) {
+            let images = await Image.getImage(room.room_id);
+            response.push({
+                'room_id': room.room_id,
+                'room_name': room.room_name,
+                'latitude': room.latitude,
+                'longitude': room.longitude,
+                'address_id': room.address_id,
+                'roomType': room.room_type_id,
+                'numGuest': room.num_guest,
+                'numBed': room.num_bed,
+                'numBedroom': room.num_bedroom,
+                'numBathroom': room.num_bathroom,
+                'rule': room.rule,
+                'accommodationType': room.accommodation_type,
+                'confirmed': room.confirmed,
+                'rate': room.rate,
+                'host_id': room.host_id,
+                'price': room.price,
+                'image': images
+            });
+        }
+        res.status(200).json(response);
     } catch (err) {
         res.status(500).json({message: err});
     }
@@ -24,8 +48,29 @@ async function getRoomById(req, res) {
         const room = await models.room.findByPk(req.params["roomId"]);
         if (!room) {
             res.status(400).send({message: 'Invalid roomId'});
+            return;
         }
-        res.status(200).json(room);
+        let images = await Image.getImage(room.room_id);
+        let response = {
+            'room_id': room.room_id,
+            'room_name': room.room_name,
+            'latitude': room.latitude,
+            'longitude': room.longitude,
+            'address_id': room.address_id,
+            'roomType': room.room_type_id,
+            'numGuest': room.num_guest,
+            'numBed': room.num_bed,
+            'numBedroom': room.num_bedroom,
+            'numBathroom': room.num_bathroom,
+            'rule': room.rule,
+            'accommodationType': room.accommodation_type,
+            'confirmed': room.confirmed,
+            'rate': room.rate,
+            'host_id': room.host_id,
+            'price': room.price,
+            'image': images
+        };
+        res.status(200).json(response);
     } catch (err) {
         res.status(500).json({message: err});
     }
@@ -43,8 +88,8 @@ async function updateRoom(req, res) {
             return;
         }
         const newRoom = {
-            name: req.body.name,
-            address_id: req.body.address_id,
+            room_name: req.body.roomName,
+            address_id: req.body.addressId,
             latitude: req.body.latitude,
             longitude: req.body.longitude,
             roomType: req.body.roomType,
@@ -54,17 +99,22 @@ async function updateRoom(req, res) {
             numBedroom: req.body.numBedroom,
             numBathroom: req.body.numBathroom,
             rule: req.body.rule,
-            accommodationType: req.body.accommodation_type,
+            accommodationType: req.body.accommodationType,
             price: req.body.price,
             confirmed: req.body.confirmed,
             rate: req.body.rate
         }
-
         await models.room.update(newRoom, {
             where: {
                 room_id: req.params["roomId"]
             }
         });
+
+        await Image.deletImage(req.params["roomId"]);
+
+        const images = req.body.image;
+        await Image.createImage(req.params["roomId"], images);
+
         res.status(200).json({message: 'OK'});
     } catch (err) {
         res.status(500).json({message: err});
@@ -87,6 +137,7 @@ async function deleteRoom(req, res) {
                 room_id: req.params["roomId"]
             }
         });
+        await Image.deleteImage(req.params["roomId"]);
         res.status(200).json({message: 'Success'});
     } catch (err) {
         res.status(500).json({message: err});
@@ -125,18 +176,24 @@ async function search(req, res) {
             order: db.Sequelize.col('distance'),
             limit: 100
         });
-        var response = [];
+        let response = [];
         for (let room of rooms) {
-            let images = await models.image.findAll({
-                where: {
-                    room_id: room.room_id
-                }
-            });
+            let images = await Image.getImage(room.room_id);
             response.push({
                 'room_id': room.room_id,
                 'room_name': room.room_name,
                 'latitude': room.latitude,
                 'longitude': room.longitude,
+                'address_id': room.address_id,
+                'roomType': room.room_type_id,
+                'numGuest': room.num_guest,
+                'numBed': room.num_bed,
+                'numBedroom': room.num_bedroom,
+                'numBathroom': room.num_bathroom,
+                'rule': room.rule,
+                'accommodationType': room.accommodation_type,
+                'confirmed': room.confirmed,
+                'rate': room.rate,
                 'host_id': room.host_id,
                 'price': room.price,
                 'image': images
@@ -157,8 +214,8 @@ router.post('/search', search);
 async function createRoom(req, res) {
     try {
         const newRoom = {
-            name: req.body.name,
-            address_id: req.body.address_id,
+            room_name: req.body.roomName,
+            address_id: req.body.addressId,
             latitude: req.body.latitude,
             longitude: req.body.longitude,
             roomType: req.body.roomType,
@@ -168,12 +225,19 @@ async function createRoom(req, res) {
             numBedroom: req.body.numBedroom,
             numBathroom: req.body.numBathroom,
             rule: req.body.rule,
-            accommodationType: req.body.accommodation_type,
+            accommodationType: req.body.accommodationType,
             price: req.body.price,
             confirmed: req.body.confirmed,
             rate: req.body.rate
         }
         await models.room.create(newRoom);
+        let room = await models.room.findOne({
+            where: {
+                room_name: newRoom.room_name
+            }
+        });
+        const images = req.body.image;
+        await Image.createImage(room.room_id, images);
         res.status(200).json({message: 'OK'});
     } catch (err) {
         res.status(500).json({message: err});
@@ -189,18 +253,42 @@ router.post('/create', createRoom);
  */
 async function filterRoom(req, res) {
     try {
-        let room;
+        let rooms;
         if (req.body.hostId) {
-            room = await models.room.findAll({
+            rooms = await models.room.findAll({
                 where: {
                     host_id: req.body.hostId
                 }
             });
         }
-        if (!room) {
+        if (!rooms) {
             res.status(200).send({message: 'No room'});
+            return;
         }
-        res.status(200).json(room);
+        let response = [];
+        for (let room of rooms) {
+            let images = await Image.getImage(room.room_id);
+            response.push({
+                'room_id': room.room_id,
+                'room_name': room.room_name,
+                'latitude': room.latitude,
+                'longitude': room.longitude,
+                'address_id': room.address_id,
+                'roomType': room.room_type_id,
+                'numGuest': room.num_guest,
+                'numBed': room.num_bed,
+                'numBedroom': room.num_bedroom,
+                'numBathroom': room.num_bathroom,
+                'rule': room.rule,
+                'accommodationType': room.accommodation_type,
+                'confirmed': room.confirmed,
+                'rate': room.rate,
+                'host_id': room.host_id,
+                'price': room.price,
+                'image': images
+            });
+        }
+        res.status(200).json(response);
     } catch (err) {
         res.status(500).json({message: err});
     }
