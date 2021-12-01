@@ -160,7 +160,7 @@ async function createUser(req, res) {
             name: req.body.name,
             phone: req.body.phone,
             email: req.body.email,
-            role: req.body.role,
+            role: (req.body.role != 'admin' ? req.body.role : 'client'),
             username: req.body.username,
             password: req.body.password
         }
