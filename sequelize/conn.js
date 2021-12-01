@@ -19,4 +19,5 @@ dbConnection.authenticate().then(() => {
     console.log('success');
 }).catch(err => console.error(err));
 
-module.exports = initModels(dbConnection);
+module.exports.models = initModels(dbConnection);
+module.exports.db = dbConnection;

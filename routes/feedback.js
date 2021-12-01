@@ -20,7 +20,6 @@ async function createFeedback(req, res) {
         res.status(500).json({message: err});
     }
 }
-
 router.post('/create', createFeedback);
 
 module.exports = router;
