@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const models = require("../sequelize/conn");
-const {Op} = require("sequelize");
+const {Op, Sequelize} = require("sequelize");
 const {filters} = require("pug");
 
 
@@ -128,53 +128,45 @@ async function createRoom(req, res) {
 
 router.post('/create', createRoom);
 
-async function filterRoom(req, res) {
+async function filterRoomByLatLong(req, res) {
     try {
-        let room;
-        if (req.body.hostId) {
-            room = await models.room.findAll({
-                where: {
-                    host_id: req.body.hostId
+        let findObj = {
+            latitude: req.body.lat,
+            longitude: req.body.long,
+        };
+
+        let room = await models.room.findAll({
+            where: {
+                latitude: {
+                    [Op.gt]: findObj.latitude - 0.5,
+                    [Op.lt]: findObj.latitude + 0.5
+                },
+                longitude: {
+                    [Op.gt]: findObj.longitude - 0.5,
+                    [Op.lt]: findObj.longitude + 0.5
                 }
-            });
-        } else if (req.body.lat && req.body.long) {
-            let findObj = {
-                latitude: req.body.lat,
-                longitude: req.body.long,
-            };
+            }
+        });
+        room = room.filter(value1 => {
+            let lat1 = findObj.latitude;
+            let lat2 = value1.get("latitude");
+            let lon1 = findObj.longitude;
+            let lon2 = value1.get("longitude")
+            const R = 6371e3; // metres
+            const φ1 = lat1 * Math.PI/180; // φ, λ in radians
+            const φ2 = lat2 * Math.PI/180;
+            const Δφ = (lat2-lat1) * Math.PI/180;
+            const Δλ = (lon2-lon1) * Math.PI/180;
 
-            room = await models.room.findAll({
-                where: {
-                    latitude: {
-                        [Op.gt]: findObj.latitude - 0.5,
-                        [Op.lt]: findObj.latitude + 0.5
-                    },
-                    longitude: {
-                        [Op.gt]: findObj.longitude - 0.5,
-                        [Op.lt]: findObj.longitude + 0.5
-                    }
-                }
-            });
-            room = room.filter(value1 => {
-                let lat1 = findObj.latitude;
-                let lat2 = value1.get("latitude");
-                let lon1 = findObj.longitude;
-                let lon2 = value1.get("longitude")
-                const R = 6371e3; // metres
-                const φ1 = lat1 * Math.PI/180; // φ, λ in radians
-                const φ2 = lat2 * Math.PI/180;
-                const Δφ = (lat2-lat1) * Math.PI/180;
-                const Δλ = (lon2-lon1) * Math.PI/180;
+            const a = Math.sin(Δφ/2) * Math.sin(Δφ/2) +
+                Math.cos(φ1) * Math.cos(φ2) *
+                Math.sin(Δλ/2) * Math.sin(Δλ/2);
+            const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
 
-                const a = Math.sin(Δφ/2) * Math.sin(Δφ/2) +
-                    Math.cos(φ1) * Math.cos(φ2) *
-                    Math.sin(Δλ/2) * Math.sin(Δλ/2);
-                const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+            let d = R * c; // in metres
+            return d < 20000;
+        })
 
-                let d = R * c; // in metres
-                return d < 20000;
-            })
-        }
 
         if (!room) {
             res.status(400).send({'message': 'No room'});
@@ -184,6 +176,45 @@ async function filterRoom(req, res) {
         res.status(500).json({message: err});
     }
 }
+
+
+async function filterRoomByHostId(req, res) {
+    try {
+        const sequelize = new Sequelize(process.env.DB_NAME, process.env.DB_USER, process.env.DB_PASS, {
+            host: process.env.DB_HOST,
+            port: process.env.DB_PORT,
+            dialect: 'mysql'});
+        let room;
+        if (req.body.hostId) {
+            room = await models.room.findAll({
+                where: {
+                    room_id: {
+                        [Op.in]: sequelize.literal(
+                            '( Select room_id From rental' +
+                            ' Where rental.room_id = room.room_id' +
+                            ' And begin_date >= Current_date() - 3' +
+                            ' And begin_date < Current_date()' +
+                            ')'
+                        )
+                    }
+                }
+            });
+        }
+        if (!room) {
+            res.status(400).send({'message': 'No room'});
+        }
+        res.status(200).json(room);
+    } catch (err) {
+        res.status(500).json({message: err});
+    }
+
+}
+
+async function filterRoom(req, res) {
+    if (req.body.hostId) await filterRoomByHostId(req, res);
+}
 router.post('/filter', filterRoom);
+
+
 
 module.exports = router;
