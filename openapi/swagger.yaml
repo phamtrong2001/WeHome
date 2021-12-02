@@ -28,7 +28,19 @@ paths:
         - bearerAuth: [ ]
       summary: Get all user
       operationId: user.getUsers
-      parameters: [ ]
+      parameters:
+        - name: limit
+          in: query
+          description: number of items per page
+          required: false
+          schema:
+            type: number
+        - name: page
+          in: query
+          description: index of page
+          required: false
+          schema:
+            type: number
       responses:
         '401':
           description: Access token is missing or invalid
@@ -155,6 +167,19 @@ paths:
       operationId: user.filterUser
       security:
         - bearerAuth: [ ]
+      parameters:
+        - name: limit
+          in: query
+          description: number of items per page
+          required: false
+          schema:
+            type: number
+        - name: page
+          in: query
+          description: index of page
+          required: false
+          schema:
+            type: number
       requestBody:
         required: true
         content:
@@ -197,9 +222,7 @@ paths:
           in: path
           required: true
           schema:
-            oneOf:
-              - type: string
-              - type: integer
+            type: number
       requestBody:
         required: true
         content:
@@ -291,7 +314,19 @@ paths:
         - room
       summary: Get all room
       operationId: room.getRooms
-      parameters: [ ]
+      parameters:
+        - name: limit
+          in: query
+          description: number of items per page
+          required: false
+          schema:
+            type: number
+        - name: page
+          in: query
+          description: index of page
+          required: false
+          schema:
+            type: number
       responses:
         '500':
           description: System error
@@ -419,6 +454,19 @@ paths:
         - room
       summary: Search room by geo coordinate
       operationId: room.search
+      parameters:
+        - name: limit
+          in: query
+          description: number of items per page
+          required: false
+          schema:
+            type: number
+        - name: page
+          in: query
+          description: index of page
+          required: false
+          schema:
+            type: number
       requestBody:
         required: true
         content:
@@ -453,6 +501,19 @@ paths:
         - room
       summary: Filter room by host ID
       operationId: room.filterRoom
+      parameters:
+        - name: limit
+          in: query
+          description: number of items per page
+          required: false
+          schema:
+            type: number
+        - name: page
+          in: query
+          description: index of page
+          required: false
+          schema:
+            type: number
       requestBody:
         required: true
         content:

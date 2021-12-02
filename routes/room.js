@@ -3,6 +3,21 @@ const router = express.Router();
 const Image = require('../controllers/image');
 const {models, db} = require('../sequelize/conn');
 const {Sequelize, Op, QueryTypes} = require("sequelize");
+const jwt = require("jsonwebtoken");
+const passport = require("passport");
+const auth = require("../middlewares/auth");
+
+passport.use('host', auth.isHost);
+
+async function getRoomType(room_type_id) {
+    try {
+        let roomType = await models.room_type.findByPk(room_type_id);
+        return roomType.room_type;
+    } catch (err) {
+        console.log(err);
+        return "";
+    }
+}
 
 /**
  * Get all room
@@ -14,16 +29,17 @@ async function getRooms(req, res) {
         const rooms = await models.room.findAll();
         let response = [];
         for (let i = (page-1) * limit; i < page * limit; i++) {
+            if (i >= rooms.length) break;
             let room = rooms[i];
-            if (!room) break;
             let images = await Image.getImage(room.room_id);
+            let roomType = await getRoomType(room.room_type_id);
             response.push({
                 'room_id': room.room_id,
                 'room_name': room.room_name,
                 'latitude': room.latitude,
                 'longitude': room.longitude,
                 'address_id': room.address_id,
-                'roomType': room.room_type_id,
+                'roomType': roomType,
                 'numGuest': room.num_guest,
                 'numBed': room.num_bed,
                 'numBedroom': room.num_bedroom,
@@ -55,13 +71,14 @@ async function getRoomById(req, res) {
             return;
         }
         let images = await Image.getImage(room.room_id);
+        let roomType = await getRoomType(room.room_type_id);
         let response = {
             'room_id': room.room_id,
             'room_name': room.room_name,
             'latitude': room.latitude,
             'longitude': room.longitude,
             'address_id': room.address_id,
-            'roomType': room.room_type_id,
+            'roomType': roomType,
             'numGuest': room.num_guest,
             'numBed': room.num_bed,
             'numBedroom': room.num_bedroom,
@@ -86,9 +103,16 @@ router.get('/:roomId', getRoomById);
  */
 async function updateRoom(req, res) {
     try {
+        const payload = jwt.decode(req.headers.authorization.split(' ')[1]);
+        const curUser = await models.user.findByPk(payload.user_id);
+
         const room = await models.room.findByPk(req.params["roomId"]);
         if (!room) {
             res.status(400).json({message: 'Invalid roomId'});
+            return;
+        }
+        if (curUser.role != 'admin' && room.hostId !== curUser.user_id) {
+            res.status(401).send('Unauthorized');
             return;
         }
         const newRoom = {
@@ -96,14 +120,13 @@ async function updateRoom(req, res) {
             address_id: req.body.addressId,
             latitude: req.body.latitude,
             longitude: req.body.longitude,
-            roomType: req.body.roomType,
-            hostId: req.body.hostId,
-            numGuest: req.body.numGuest,
-            numBed: req.body.numBed,
-            numBedroom: req.body.numBedroom,
-            numBathroom: req.body.numBathroom,
+            room_type_id: req.body.roomType,
+            num_guest: req.body.numGuest,
+            num_bed: req.body.numBed,
+            num_bedroom: req.body.numBedroom,
+            num_bathroom: req.body.numBathroom,
             rule: req.body.rule,
-            accommodationType: req.body.accommodationType,
+            accommodation_type: req.body.accommodationType,
             price: req.body.price,
             confirmed: req.body.confirmed,
             rate: req.body.rate
@@ -114,26 +137,34 @@ async function updateRoom(req, res) {
             }
         });
 
-        await Image.deletImage(req.params["roomId"]);
-
         const images = req.body.image;
-        await Image.createImage(req.params["roomId"], images);
+        if (images) {
+            await Image.deletImage(req.params["roomId"]);
+            await Image.createImage(req.params["roomId"], images);
+        }
 
         res.status(200).json({message: 'OK'});
     } catch (err) {
         res.status(500).json({message: err});
     }
 }
-router.put('/:roomId', updateRoom);
+router.put('/:roomId', passport.authenticate('host', {session: false}), updateRoom);
 
 /**
  * Delete room by id
  */
 async function deleteRoom(req, res) {
     try {
+        const payload = jwt.decode(req.headers.authorization.split(' ')[1]);
+        const curUser = await models.user.findByPk(payload.user_id);
+
         const room = await models.room.findByPk(req.params["roomId"]);
         if (!room) {
             res.status(400).json({message: 'Invalid roomId'});
+            return;
+        }
+        if (curUser.role != 'admin' && room.hostId !== curUser.user_id) {
+            res.status(401).send('Unauthorized');
             return;
         }
         await models.room.destroy({
@@ -147,7 +178,7 @@ async function deleteRoom(req, res) {
         res.status(500).json({message: err});
     }
 }
-router.delete('/:roomId', deleteRoom);
+router.delete('/:roomId', passport.authenticate('host', {session: false}), deleteRoom);
 
 /**
  * Search room by geo coordinate
@@ -195,16 +226,17 @@ async function search(req, res) {
         });
         let response = [];
         for (let i = (page-1) * limit; i < page * limit; i++) {
+            if (i >= rooms.length) break;
             let room = rooms[i];
-            if (!room) break;
             let images = await Image.getImage(room.room_id);
+            let roomType = await getRoomType(room.room_type_id);
             response.push({
                 'room_id': room.room_id,
                 'room_name': room.room_name,
                 'latitude': room.latitude,
                 'longitude': room.longitude,
                 'address_id': room.address_id,
-                'roomType': room.room_type_id,
+                'roomType': roomType,
                 'numGuest': room.num_guest,
                 'numBed': room.num_bed,
                 'numBedroom': room.num_bedroom,
@@ -232,19 +264,21 @@ router.post('/search', search);
  */
 async function createRoom(req, res) {
     try {
+        const payload = jwt.decode(req.headers.authorization.split(' ')[1]);
+
         const newRoom = {
             room_name: req.body.roomName,
             address_id: req.body.addressId,
             latitude: req.body.latitude,
             longitude: req.body.longitude,
-            roomType: req.body.roomType,
-            hostId: req.body.hostId,
-            numGuest: req.body.numGuest,
-            numBed: req.body.numBed,
-            numBedroom: req.body.numBedroom,
-            numBathroom: req.body.numBathroom,
+            room_type_id: req.body.roomType,
+            host_id: req.body.hostId || payload.user_id,
+            num_guest: req.body.numGuest,
+            num_bed: req.body.numBed,
+            num_bedroom: req.body.numBedroom,
+            num_bathroom: req.body.numBathroom,
             rule: req.body.rule,
-            accommodationType: req.body.accommodationType,
+            accommodation_type: req.body.accommodationType,
             price: req.body.price,
             confirmed: req.body.confirmed,
             rate: req.body.rate
@@ -262,7 +296,7 @@ async function createRoom(req, res) {
         res.status(500).json({message: err});
     }
 }
-router.post('/create', createRoom);
+router.post('/create', passport.authenticate('host', {session: false}), createRoom);
 
 /**
  * Get rooms by hostId
@@ -289,16 +323,17 @@ async function filterRoom(req, res) {
         }
         let response = [];
         for (let i = (page-1) * limit; i < page * limit; i++) {
+            if (i >= rooms.length) break;
             let room = rooms[i];
-            if (!room) break;
             let images = await Image.getImage(room.room_id);
+            let roomType = await getRoomType(room.room_type_id);
             response.push({
                 'room_id': room.room_id,
                 'room_name': room.room_name,
                 'latitude': room.latitude,
                 'longitude': room.longitude,
                 'address_id': room.address_id,
-                'roomType': room.room_type_id,
+                'roomType': roomType,
                 'numGuest': room.num_guest,
                 'numBed': room.num_bed,
                 'numBedroom': room.num_bedroom,
