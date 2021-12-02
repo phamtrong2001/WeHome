@@ -19,6 +19,7 @@ tags:
   - name: rental
   - name: report
   - name: feedback
+  - name: facility
 paths:
   /api/user:
     get:
@@ -522,9 +523,7 @@ paths:
               type: object
               properties:
                 hostId:
-                  oneOf:
-                    - type: string
-                    - type: integer
+                  type: number
       responses:
         '200':
           description: OK
@@ -581,6 +580,57 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/Feedback'
+      responses:
+        '401':
+          description: Access token is missing or invalid
+        '500':
+          description: System error
+        default:
+          description: OK
+
+  /api/facility/create:
+    post:
+      tags:
+        - facility
+      security:
+        - bearerAuth: [ ]
+      summary: Admin create some new facilities
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                facilities:
+                  type: array
+                  items:
+                    $ref: '#/components/schemas/Facility'
+      responses:
+        '401':
+          description: Access token is missing or invalid
+        '500':
+          description: System error
+        default:
+          description: OK
+  /api/facility/delete:
+    post:
+      tags:
+        - facility
+      security:
+        - bearerAuth: [ ]
+      summary: Admin delete some facilities
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                facilities:
+                  type: array
+                  items:
+                    type: string
       responses:
         '401':
           description: Access token is missing or invalid
@@ -667,6 +717,10 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/Image'
+        facility:
+          type: array
+          items:
+            type: string
       example:
         room_id: 102
         room_name: Family Room with balcony (Ruby Hotel Bac Ninh)
@@ -691,7 +745,10 @@ components:
           - image_id: 1137
             room_id: 102
             url: https://a0.muscache.com/im/pictures/98b73564-2d61-4ac8-b90d-966c07fe9695.jpg?im_w=720
-
+        facility:
+            - wifi
+            - Chỗ để ô tô
+            - Dịch vụ dọn phòng
     Rental:
       type: object
       properties:
@@ -748,10 +805,14 @@ components:
     Facility:
       type: object
       properties:
-        roomId:
-          type: number
         facilityId:
           type: number
+        facility:
+          type: string
         description:
           type: string
           nullable: true
+      example:
+        facility_id: 5
+        facility: Dịch vụ dọn phòng
+        description: Dọn phòng vào mỗi buổi sáng
