@@ -9,9 +9,13 @@ const {Sequelize, Op, QueryTypes} = require("sequelize");
  */
 async function getRooms(req, res) {
     try {
-        const rooms = await models.room.findAll({limit: 100});
+        const limit = req.query.limit || 20;
+        const page = req.query.page || 1;
+        const rooms = await models.room.findAll();
         let response = [];
-        for (let room of rooms) {
+        for (let i = (page-1) * limit; i < page * limit; i++) {
+            let room = rooms[i];
+            if (!room) break;
             let images = await Image.getImage(room.room_id);
             response.push({
                 'room_id': room.room_id,
@@ -153,6 +157,9 @@ router.delete('/:roomId', deleteRoom);
  */
 async function search(req, res) {
     try {
+        const limit = req.query.limit || 20;
+        const page = req.query.page || 1;
+
         const lat = req.body.latitude;
         const long = req.body.longitude;
         const radius = req.body.radius;
@@ -187,7 +194,9 @@ async function search(req, res) {
             limit: 100
         });
         let response = [];
-        for (let room of rooms) {
+        for (let i = (page-1) * limit; i < page * limit; i++) {
+            let room = rooms[i];
+            if (!room) break;
             let images = await Image.getImage(room.room_id);
             response.push({
                 'room_id': room.room_id,
@@ -263,6 +272,9 @@ router.post('/create', createRoom);
  */
 async function filterRoom(req, res) {
     try {
+        const limit = req.query.limit || 20;
+        const page = req.query.page || 1;
+
         let rooms;
         if (req.body.hostId) {
             rooms = await models.room.findAll({
@@ -276,7 +288,9 @@ async function filterRoom(req, res) {
             return;
         }
         let response = [];
-        for (let room of rooms) {
+        for (let i = (page-1) * limit; i < page * limit; i++) {
+            let room = rooms[i];
+            if (!room) break;
             let images = await Image.getImage(room.room_id);
             response.push({
                 'room_id': room.room_id,
