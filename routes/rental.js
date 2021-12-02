@@ -138,15 +138,19 @@ async function updateRentalById(req, res) {
                 cost: req.body.cost,
                 client_id: req.body.clientIdId
             }
+            let change = false;
+            if (project.status !== req.body.status) change = true;
             await models.rental.update(updateRental, {
                 where: {
                     rental_id: rentalId
                 }
             })
             res.status(200).json({'message': 'OK'});
+            if (!change) return;
             let content;
-            if(req.body.status === 1) content = "Landlord has accepted your rental";
-            else content = "Your landlord has rejected your rental";
+            if(req.body.status === "CONFIRMED") content = "Landlord has accepted your rental";
+            if(req.body.status === "RETURNED") content = "The host has confirmed check-out";
+            if(req.body.status === "REJECTED") content = "Your landlord has rejected your rental";
             const createNotification = {
                 user_id: req.body.client_id,
                 content: content,
@@ -184,7 +188,7 @@ async function createRental(req, res) {
         const newNotification = {
             user_id: project.host_id,
             content: "The user has created a rental of your room",
-            status: 0
+            status: "UNCONFIRMED"
         }
         await models.notification.create(newNotification)
     })
