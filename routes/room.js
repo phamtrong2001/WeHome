@@ -332,6 +332,51 @@ async function filterRoom(req, res) {
                     host_id: req.body.hostId
                 }
             });
+            if (!req.body.filter) {
+                rooms = await models.room.findAll({
+                    where: {
+                        host_id: req.body.hostId
+                    }
+                });
+            } else if (req.body.filter != 'Empty') {
+                let condition;
+                if (req.body.filter == 'Arriving soon') {
+                    condition = 'begin_date BETWEEN Current_date() AND (Current_date() + 3)';
+                } else if (req.body.filter == 'Checking out') {
+                    condition = 'end_date BETWEEN Current_date() AND (Current_date() + 3)'
+                } else if (req.body.filter == 'Currently hosting') {
+                    condition = 'begin_date <= Current_date() AND end_date > Current_date()';
+                }
+                rooms = await models.room.findAll({
+                    where: {
+                        host_id: req.body.hostId,
+                        room_id: {
+                            [Op.in]: db.literal(
+                                '( SELECT room_id FROM rental' +
+                                ' WHERE rental.room_id = room.room_id' +
+                                ' AND ' + condition +
+                                ' AND status = CONFIRMED' +
+                                ')'
+                            )
+                        }
+                    }
+                });
+            } else {
+                rooms = await models.room.findAll({
+                    where: {
+                        host_id: req.body.hostId,
+                        room_id: {
+                            [Op.notIn]: db.literal(
+                                '( SELECT room_id FROM rental' +
+                                ' WHERE rental.room_id = room.room_id' +
+                                ' AND begin_date < Current_date() ' +
+                                ' AND status = CONFIRMED' +
+                                ')'
+                            )
+                        }
+                    }
+                });
+            }
         }
         if (!rooms) {
             res.status(200).send({message: 'No room'});
