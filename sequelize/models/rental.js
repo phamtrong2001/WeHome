@@ -43,12 +43,11 @@ module.exports = function (sequelize, DataTypes) {
         last_update: {
             type: DataTypes.DATE,
             allowNull: false,
-            defaultValue: Sequelize.Sequelize.fn('current_timestamp')
+            defaultValue: Sequelize.Sequelize.literal('CURRENT_TIMESTAMP')
         }
     }, {
         sequelize,
         tableName: 'rental',
-        hasTrigger: true,
         timestamps: false,
         indexes: [
             {

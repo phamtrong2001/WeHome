@@ -75,6 +75,10 @@ module.exports = function (sequelize, DataTypes) {
             type: DataTypes.INTEGER,
             allowNull: false
         },
+        rate: {
+            type: DataTypes.FLOAT,
+            allowNull: true
+        },
         confirmed: {
             type: DataTypes.BOOLEAN,
             allowNull: false,
@@ -83,7 +87,7 @@ module.exports = function (sequelize, DataTypes) {
         last_update: {
             type: DataTypes.DATE,
             allowNull: false,
-            defaultValue: Sequelize.Sequelize.fn('current_timestamp')
+            defaultValue: Sequelize.Sequelize.literal('CURRENT_TIMESTAMP')
         }
     }, {
         sequelize,
