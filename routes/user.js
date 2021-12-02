@@ -22,10 +22,10 @@ passport.use('host', auth.isHost);
  */
 async function getUsers(req, res) {
     try {
-        const users = await models.user.findAll({
-            limit: 100
-        });
-        res.status(200).json(users);
+        const users = await models.user.findAll();
+        const limit = req.query.limit || 20;
+        const page = req.query.page || 1;
+        res.status(200).json(users.slice((page-1) * limit, page * limit));
     } catch (err) {
         res.status(500).json({message: err});
     }
@@ -237,6 +237,8 @@ router.post('/:userId/change-password', passport.authenticate('user', {session: 
  */
 async function filterUser(req, res) {
     try {
+        const limit = req.query.limit || 20;
+        const page = req.query.page || 1;
         const findObj = {
             phone: req.body.phone,
             name: req.body.name,
@@ -255,7 +257,7 @@ async function filterUser(req, res) {
                 }
             }
         });
-        res.status(200).json(users);
+        res.status(200).json(users.slice((page-1) * limit, page * limit));
     } catch (err) {
         res.status(500).json({message: err});
     }
