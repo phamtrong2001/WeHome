@@ -135,11 +135,53 @@ async function filterRoom(req, res) {
     try {
         let room;
         if (req.body.hostId) {
-            room = await models.room.findAll({
-                where: {
-                    host_id: req.body.hostId
+            if (!req.body.filter) {
+                room = await models.room.findAll({
+                    where: {
+                        host_id: req.body.hostId
+                    }
+                });
+            } else if (req.body.filter != 'Empty') {
+                let condition;
+                if (req.body.filter == 'Arriving soon') {
+                    condition = 'begin_date Between Current_date() AND (Current_date() + 3)';
+                } else if (req.body.filter == 'Checking out') {
+                    condition = 'end_date Between Current_date() AND (Current_date() + 3)'
+                } else if (req.body.filter == 'Currently hosting') {
+                    condition = 'begin_date <= Current_date() AND end_date > Current_date()';
                 }
-            });
+                room = await models.room.findAll({
+                    where: {
+                        host_id: req.body.hostId,
+                        room_id: {
+                            [Op.in]: db.literal(
+                                '( Select room_id From rental' +
+                                ' Where rental.room_id = room.room_id' +
+                                ' And ' + condition +
+                                ' And status = CONFIRMED' +
+                                ')'
+                            )
+                        }
+                    }
+                });
+            } else {
+                room = await models.room.findAll({
+                    where: {
+                        host_id: req.body.hostId,
+                        room_id: {
+                            [Op.notIn]: db.literal(
+                                '( Select room_id From rental' +
+                                ' Where rental.room_id = room.room_id' +
+                                ' And begin_date > Current_date() ' +
+                                'And end_date < Current_date()' +
+                                ' And status = CONFIRMED' +
+                                ')'
+                            )
+                        }
+                    }
+                });
+            }
+
         }
         if (!room) {
             res.status(200).send({message: 'No room'});
@@ -150,42 +192,6 @@ async function filterRoom(req, res) {
     }
 }
 
-
-async function filterRoomByHostId(req, res) {
-    try {
-        const sequelize = new Sequelize(process.env.DB_NAME, process.env.DB_USER, process.env.DB_PASS, {
-            host: process.env.DB_HOST,
-            port: process.env.DB_PORT,
-            dialect: 'mysql'});
-        let room;
-        if (req.body.hostId) {
-            room = await models.room.findAll({
-                where: {
-                    room_id: {
-                        [Op.in]: sequelize.literal(
-                            '( Select room_id From rental' +
-                            ' Where rental.room_id = room.room_id' +
-                            ' And begin_date >= Current_date() - 3' +
-                            ' And begin_date < Current_date()' +
-                            ')'
-                        )
-                    }
-                }
-            });
-        }
-        if (!room) {
-            res.status(400).send({'message': 'No room'});
-        }
-        res.status(200).json(room);
-    } catch (err) {
-        res.status(500).json({message: err});
-    }
-
-}
-
-async function filterRoom(req, res) {
-    if (req.body.hostId) await filterRoomByHostId(req, res);
-}
 router.post('/filter', filterRoom);
 
 module.exports = router;
