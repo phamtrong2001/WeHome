@@ -53,9 +53,7 @@ paths:
           in: path
           required: true
           schema:
-            oneOf:
-              - type: string
-              - type: integer
+            type: number
       responses:
         '200':
           description: OK
@@ -83,9 +81,7 @@ paths:
           in: path
           required: true
           schema:
-            oneOf:
-              - type: string
-              - type: integer
+            type: number
       requestBody:
         required: true
         content:
@@ -118,9 +114,7 @@ paths:
           in: path
           required: true
           schema:
-            oneOf:
-              - type: string
-              - type: integer
+            type: number
       responses:
         '401':
           description: Access token is missing or invalid
@@ -320,9 +314,7 @@ paths:
           in: path
           required: true
           schema:
-            oneOf:
-              - type: string
-              - type: integer
+            type: number
       responses:
         '200':
           description: OK
@@ -350,9 +342,7 @@ paths:
           in: path
           required: true
           schema:
-            oneOf:
-              - type: string
-              - type: integer
+            type: number
       requestBody:
         description: Updated room object
         required: true
@@ -386,9 +376,7 @@ paths:
           in: path
           required: true
           schema:
-            oneOf:
-              - type: string
-              - type: integer
+            type: number
       responses:
         '401':
           description: Access token is missing or invalid
@@ -493,7 +481,7 @@ paths:
 
 
   /api/report/create:
-    get:
+    post:
       tags:
         - report
       security:
