@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const Image = require('../controllers/image');
+const Facility = require('../controllers/facility');
 const {models, db} = require('../sequelize/conn');
 const {Sequelize, Op, QueryTypes} = require("sequelize");
 const jwt = require("jsonwebtoken");
@@ -14,8 +15,8 @@ async function getRoomType(room_type_id) {
         let roomType = await models.room_type.findByPk(room_type_id);
         return roomType.room_type;
     } catch (err) {
-        console.log(err);
-        return "";
+        // console.log(err);
+        throw err;
     }
 }
 
@@ -32,6 +33,7 @@ async function getRooms(req, res) {
             if (i >= rooms.length) break;
             let room = rooms[i];
             let images = await Image.getImage(room.room_id);
+            let facilities = await Facility.getFacilityRoom(room.room_id);
             let roomType = await getRoomType(room.room_type_id);
             response.push({
                 'room_id': room.room_id,
@@ -50,12 +52,13 @@ async function getRooms(req, res) {
                 'rate': room.rate,
                 'host_id': room.host_id,
                 'price': room.price,
-                'image': images
+                'image': images,
+                'facility': facilities
             });
         }
         res.status(200).json(response);
     } catch (err) {
-        res.status(500).json({message: err});
+        res.status(500).send(err);
     }
 }
 router.get('/', getRooms);
@@ -71,6 +74,7 @@ async function getRoomById(req, res) {
             return;
         }
         let images = await Image.getImage(room.room_id);
+        let facilities = await Facility.getFacilityRoom(room.room_id);
         let roomType = await getRoomType(room.room_type_id);
         let response = {
             'room_id': room.room_id,
@@ -89,11 +93,12 @@ async function getRoomById(req, res) {
             'rate': room.rate,
             'host_id': room.host_id,
             'price': room.price,
-            'image': images
+            'image': images,
+            'facility': facilities
         };
         res.status(200).json(response);
     } catch (err) {
-        res.status(500).json({message: err});
+        res.status(500).send(err);
     }
 }
 router.get('/:roomId', getRoomById);
@@ -139,13 +144,19 @@ async function updateRoom(req, res) {
 
         const images = req.body.image;
         if (images) {
-            await Image.deletImage(req.params["roomId"]);
+            await Image.deleteImage(req.params["roomId"]);
             await Image.createImage(req.params["roomId"], images);
+        }
+
+        const facilities = req.body.facility;
+        if (facilities) {
+            await Facility.deleteFacilityRoom(req.params["roomId"]);
+            await Facility.addFacilityRoom(req.params["roomId"], facilities);
         }
 
         res.status(200).json({message: 'OK'});
     } catch (err) {
-        res.status(500).json({message: err});
+        res.status(500).send(err);
     }
 }
 router.put('/:roomId', passport.authenticate('host', {session: false}), updateRoom);
@@ -173,9 +184,10 @@ async function deleteRoom(req, res) {
             }
         });
         await Image.deleteImage(req.params["roomId"]);
+        await Facility.deleteFacilityRoom(req.params["roomId"]);
         res.status(200).json({message: 'Success'});
     } catch (err) {
-        res.status(500).json({message: err});
+        res.status(500).send(err);
     }
 }
 router.delete('/:roomId', passport.authenticate('host', {session: false}), deleteRoom);
@@ -229,6 +241,7 @@ async function search(req, res) {
             if (i >= rooms.length) break;
             let room = rooms[i];
             let images = await Image.getImage(room.room_id);
+            let facilites = await Facility.getFacilityRoom(room.room_id);
             let roomType = await getRoomType(room.room_type_id);
             response.push({
                 'room_id': room.room_id,
@@ -247,7 +260,8 @@ async function search(req, res) {
                 'rate': room.rate,
                 'host_id': room.host_id,
                 'price': room.price,
-                'image': images
+                'image': images,
+                'facility': facilites
             });
         }
         // console.log(response);
@@ -291,9 +305,11 @@ async function createRoom(req, res) {
         });
         const images = req.body.image;
         await Image.createImage(room.room_id, images);
+        const facilities = req.body.facility;
+        await Facility.addFacilityRoom(room.room_id, facilities);
         res.status(200).json({message: 'OK'});
     } catch (err) {
-        res.status(500).json({message: err});
+        res.status(500).send(err);
     }
 }
 router.post('/create', passport.authenticate('host', {session: false}), createRoom);
@@ -326,6 +342,7 @@ async function filterRoom(req, res) {
             if (i >= rooms.length) break;
             let room = rooms[i];
             let images = await Image.getImage(room.room_id);
+            let facilities = await Facility.getFacilityRoom(room.room_id);
             let roomType = await getRoomType(room.room_type_id);
             response.push({
                 'room_id': room.room_id,
@@ -344,12 +361,13 @@ async function filterRoom(req, res) {
                 'rate': room.rate,
                 'host_id': room.host_id,
                 'price': room.price,
-                'image': images
+                'image': images,
+                'facility': facilities
             });
         }
         res.status(200).json(response);
     } catch (err) {
-        res.status(500).json({message: err});
+        res.status(500).send(err);
     }
 }
 router.post('/filter', filterRoom);

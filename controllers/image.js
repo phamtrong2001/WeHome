@@ -1,6 +1,6 @@
 const {models} = require("../sequelize/conn");
 
-module.exports.deletImage = async function deleteImage(room_id) {
+module.exports.deleteImage = async function deleteImage(room_id) {
     try {
         await models.image.destroy({
             where: {
@@ -9,6 +9,7 @@ module.exports.deletImage = async function deleteImage(room_id) {
         });
     } catch (err) {
         console.error(err);
+        throw err;
     }
 }
 
@@ -23,6 +24,7 @@ module.exports.createImage = async function createImage(room_id, images) {
         }
     } catch (err) {
         console.error(err);
+        throw err;
     }
 }
 
@@ -35,6 +37,6 @@ module.exports.getImage = async function getImage(room_id) {
         });
     } catch (err) {
         console.error(err);
-        return [];
+        throw err;
     }
 }

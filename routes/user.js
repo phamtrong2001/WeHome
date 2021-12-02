@@ -27,7 +27,7 @@ async function getUsers(req, res) {
         const page = req.query.page || 1;
         res.status(200).json(users.slice((page-1) * limit, page * limit));
     } catch (err) {
-        res.status(500).json({message: err});
+        res.status(500).send(err);
     }
 }
 router.get('/', passport.authenticate('admin', {session: false}), getUsers);
@@ -48,7 +48,7 @@ async function getUserById(req, res) {
         }
         res.status(200).json(user);
     } catch (err) {
-        res.status(500).json({message: err});
+        res.status(500).send(err);
     }
 }
 router.get('/:userId', getUserById);
@@ -115,7 +115,7 @@ async function updateUser(req, res) {
         });
         res.status(200).json({message: 'OK'});
     } catch (err) {
-        res.status(500).json({message: err});
+        res.status(500).send(err);
     }
 }
 router.put('/:userId', passport.authenticate('user', {session: false}), updateUser);
@@ -141,7 +141,7 @@ async function deleteUser(req, res) {
         });
         res.status(200).json({message: 'Success'});
     } catch (err) {
-        res.status(500).json({message: err});
+        res.status(500).send(err);
     }
 }
 router.delete('/:userId', passport.authenticate('admin', {session: false}), deleteUser);
@@ -185,7 +185,7 @@ async function createUser(req, res) {
         await models.user.create(newUser);
         res.status(200).json({message: 'OK'});
     } catch (err) {
-        res.status(500).json({message: err});
+        res.status(500).send(err);
     }
 }
 router.post('/create', createUser);
@@ -229,7 +229,7 @@ async function changePassword(req, res) {
         });
         res.status(200).json({message: 'OK'});
     } catch (err) {
-        res.status(500).json({message: err});
+        res.status(500).send(err);
     }
 }
 router.post('/:userId/change-password', passport.authenticate('user', {session: false}), changePassword);
@@ -265,7 +265,7 @@ async function filterUser(req, res) {
         });
         res.status(200).json(users.slice((page-1) * limit, page * limit));
     } catch (err) {
-        res.status(500).json({message: err});
+        res.status(500).send(err);
     }
 }
 router.post('/filter', passport.authenticate('user', {session: false}),filterUser);
@@ -300,7 +300,7 @@ router.post('/login',async (req, res, next) => {
             }
         }
     } catch (err) {
-        res.status(500).json({message: err});
+        res.status(500).send(err);
     }
 });
 
