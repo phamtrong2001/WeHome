@@ -172,8 +172,7 @@ async function filterRoom(req, res) {
                             [Op.notIn]: db.literal(
                                 '( Select room_id From rental' +
                                 ' Where rental.room_id = room.room_id' +
-                                ' And begin_date > Current_date() ' +
-                                'And end_date < Current_date()' +
+                                ' And begin_date < Current_date() ' +
                                 ' And status = CONFIRMED' +
                                 ')'
                             )
