@@ -327,11 +327,6 @@ async function filterRoom(req, res) {
 
         let rooms;
         if (req.body.hostId) {
-            rooms = await models.room.findAll({
-                where: {
-                    host_id: req.body.hostId
-                }
-            });
             if (!req.body.filter) {
                 rooms = await models.room.findAll({
                     where: {
