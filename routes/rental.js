@@ -176,7 +176,6 @@ async function updateRentalById(req, res) {
                     }
                 });
                 const updateRental = {
-                    rental_id: rental_id,
                     room_id: req.body.room_id,
                     begin_date: req.body.begin_date,
                     end_date: req.body.end_date,
@@ -224,13 +223,12 @@ async function createRental(req, res) {
         const curUser = await models.user.findByPk(payload.user_id);
 
         const newRental = {
-            rental_id: req.body.rental_id,
             room_id: req.body.room_id,
             begin_date: req.body.begin_date,
             end_date: req.body.end_date,
-            status: 0,
+            status: "UNCONFIRMED",
             cost: req.body.cost,
-            client_id: payload.user_id
+            client_id: req.body.client_id || payload.user_id
         }
         await models.rental.create(newRental);
         res.status(200).json({'message': 'OK'});
