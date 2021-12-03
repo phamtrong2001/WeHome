@@ -26,7 +26,7 @@ paths:
       tags:
         - user
       security:
-        - bearerAuth: [ ]
+        - bearerAuth: []
       summary: Get all user
       operationId: user.getUsers
       parameters:
@@ -43,18 +43,18 @@ paths:
           schema:
             type: number
       responses:
-        '401':
-          description: Access token is missing or invalid
-        '500':
-          description: System error
-        default:
+        '200':
           description: OK
           content:
             application/json:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/User'
+                  $ref: '#/components/schemas/User_response'
+        '401':
+          description: Access token is missing or invalid
+        '500':
+          description: System error
   /api/user/{userId}:
     get:
       tags:
@@ -73,13 +73,13 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/User'
+                $ref: '#/components/schemas/User_response'
         '400':
           description: Invalid userId supplied
-          content: { }
+          content: {}
         '404':
           description: User not found
-          content: { }
+          content: {}
         '500':
           description: System error
     put:
@@ -88,7 +88,7 @@ paths:
       summary: Update user
       operationId: user.updateUser
       security:
-        - bearerAuth: [ ]
+        - bearerAuth: []
       parameters:
         - name: userId
           in: path
@@ -100,19 +100,19 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/User'
+              $ref: '#/components/schemas/User_request'
       responses:
-        '401':
-          description: Access token is missing or invalid
         '200':
           description: OK
-          content: { }
+          content: {}
         '400':
           description: Invalid userId supplied
-          content: { }
+          content: {}
+        '401':
+          description: Access token is missing or invalid
         '404':
           description: User not found
-          content: { }
+          content: {}
         '500':
           description: System error
     delete:
@@ -121,7 +121,7 @@ paths:
       summary: Delete user
       operationId: user.deleteUser
       security:
-        - bearerAuth: [ ]
+        - bearerAuth: []
       parameters:
         - name: userId
           in: path
@@ -129,17 +129,17 @@ paths:
           schema:
             type: number
       responses:
-        '401':
-          description: Access token is missing or invalid
         '200':
           description: OK
-          content: { }
+          content: {}
         '400':
           description: Invalid userId supplied
-          content: { }
+          content: {}
+        '401':
+          description: Access token is missing or invalid
         '404':
           description: User not found
-          content: { }
+          content: {}
         '500':
           description: System error
   /api/user/create:
@@ -154,9 +154,9 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/User'
+              $ref: '#/components/schemas/User_request'
       responses:
-        default:
+        '200':
           description: OK
         '500':
           description: System error
@@ -167,7 +167,7 @@ paths:
       summary: Filter user
       operationId: user.filterUser
       security:
-        - bearerAuth: [ ]
+        - bearerAuth: []
       parameters:
         - name: limit
           in: query
@@ -198,18 +198,18 @@ paths:
                   type: string
                   nullable: true
       responses:
-        '401':
-          description: Access token is missing or invalid
-        '500':
-          description: System error
-        default:
+        '200':
           description: OK
           content:
             application/json:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/User'
+                  $ref: '#/components/schemas/User_response'
+        '401':
+          description: Access token is missing or invalid
+        '500':
+          description: System error
   /api/user/{userId}/change-password:
     post:
       tags:
@@ -217,7 +217,7 @@ paths:
       summary: Change password
       operationId: user.changePassword
       security:
-        - bearerAuth: [ ]
+        - bearerAuth: []
       parameters:
         - name: userId
           in: path
@@ -233,15 +233,15 @@ paths:
               properties:
                 oldPassword:
                   type: string
-                pasword:
+                password:
                   type: string
       responses:
-        '401':
-          description: Access token is missing or invalid
-        '400':
-          description: Invalid userId/password supplied
         '200':
           description: OK
+        '400':
+          description: Invalid userId/password supplied
+        '401':
+          description: Access token is missing or invalid
         '500':
           description: System error
   /api/user/login:
@@ -287,15 +287,11 @@ paths:
       tags:
         - user
       security:
-        - bearerAuth: [ ]
+        - bearerAuth: []
       summary: Logs out current logged in user session
       operationId: user.logout
       responses:
-        '401':
-          description: Access token is missing or invalid
-        '500':
-          description: System error
-        default:
+        '200':
           description: OK
           content:
             application/json:
@@ -308,7 +304,10 @@ paths:
                   token:
                     type: string
                     default: null
-
+        '401':
+          description: Access token is missing or invalid
+        '500':
+          description: System error
   /api/room:
     get:
       tags:
@@ -329,16 +328,16 @@ paths:
           schema:
             type: number
       responses:
-        '500':
-          description: System error
-        default:
+        '200':
           description: OK
           content:
             application/json:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/Room'
+                  $ref: '#/components/schemas/Room_response'
+        '500':
+          description: System error
   /api/room/{roomId}:
     get:
       tags:
@@ -357,20 +356,20 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Room'
+                $ref: '#/components/schemas/Room_response'
         '400':
           description: Invalid roomId supplied
-          content: { }
+          content: {}
         '404':
           description: Room not found
-          content: { }
+          content: {}
         '500':
           description: System error
     put:
       tags:
         - room
       security:
-        - bearerAuth: [ ]
+        - bearerAuth: []
       summary: Update room
       operationId: room.updateRoom
       parameters:
@@ -385,26 +384,26 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/Room'
+              $ref: '#/components/schemas/Room_request'
       responses:
-        '401':
-          description: Access token is missing or invalid
         '200':
           description: OK
-          content: { }
+          content: {}
         '400':
           description: Invalid roomId supplied
-          content: { }
+          content: {}
+        '401':
+          description: Access token is missing or invalid
         '404':
           description: Room not found
-          content: { }
+          content: {}
         '500':
           description: System error
     delete:
       tags:
         - room
       security:
-        - bearerAuth: [ ]
+        - bearerAuth: []
       summary: Delete room
       operationId: room.deleteRoom
       parameters:
@@ -414,17 +413,17 @@ paths:
           schema:
             type: number
       responses:
-        '401':
-          description: Access token is missing or invalid
         '200':
           description: OK
-          content: { }
+          content: {}
         '400':
           description: Invalid roomId supplied
-          content: { }
+          content: {}
+        '401':
+          description: Access token is missing or invalid
         '404':
           description: Room not found
-          content: { }
+          content: {}
         '500':
           description: System error
   /api/room/create:
@@ -432,7 +431,7 @@ paths:
       tags:
         - room
       security:
-        - bearerAuth: [ ]
+        - bearerAuth: []
       summary: Create room
       operationId: room.createRoom
       requestBody:
@@ -441,14 +440,14 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/Room'
+              $ref: '#/components/schemas/Room_request'
       responses:
+        '200':
+          description: OK
         '401':
           description: Access token is missing or invalid
         '500':
           description: System error
-        default:
-          description: OK
   /api/room/search:
     post:
       tags:
@@ -486,8 +485,6 @@ paths:
                   format: float
                   description: km
       responses:
-        '500':
-          description: System error
         '200':
           description: OK
           content:
@@ -495,7 +492,9 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/Room'
+                  $ref: '#/components/schemas/Room_response'
+        '500':
+          description: System error
   /api/room/filter:
     post:
       tags:
@@ -539,20 +538,273 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/Room'
+                  $ref: '#/components/schemas/Room_response'
         '404':
           description: No room
-          content: { }
+          content: {}
         '500':
           description: System error
-
-
+  /api/room/room-type:
+    get:
+      tags:
+        - room
+      description: Get all type of room
+      parameters:
+        - name: limit
+          in: query
+          description: number of items per page
+          required: false
+          schema:
+            type: number
+        - name: page
+          in: query
+          description: index of page
+          required: false
+          schema:
+            type: number
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    room_type_id:
+                      type: number
+                    room_type:
+                      type: string
+                    description:
+                      type: string
+                      nullable: true
+        '500':
+          description: System error
+  /api/rental:
+    get:
+      tags:
+        - rental
+      security:
+        - bearerAuth: []
+      summary: Admin get all rental
+      parameters:
+        - name: limit
+          in: query
+          description: number of items per page
+          required: false
+          schema:
+            type: number
+        - name: page
+          in: query
+          description: index of page
+          required: false
+          schema:
+            type: number
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Rental_response'
+        '401':
+          description: Access token is missing or invalid
+        '404':
+          description: Rental not found
+        '500':
+          description: System error
+  /api/rental/user/{userId}:
+    get:
+      tags:
+        - rental
+      security:
+        - bearerAuth: []
+      summary: User get their rental
+      parameters:
+        - name: userId
+          in: path
+          description: user_id of user
+          required: true
+          schema:
+            type: number
+        - name: limit
+          in: query
+          description: number of items per page
+          required: false
+          schema:
+            type: number
+        - name: page
+          in: query
+          description: index of page
+          required: false
+          schema:
+            type: number
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Rental_response'
+        '400':
+          description: Invalid userId supplied
+        '401':
+          description: Access token is missing or invalid
+        '404':
+          description: Rental not found
+        '500':
+          description: System error
+  /api/rental/host/{hostId}:
+    get:
+      tags:
+        - rental
+      security:
+        - bearerAuth: []
+      summary: Host get their rental
+      parameters:
+        - name: hostId
+          in: path
+          description: user_id of host
+          required: true
+          schema:
+            type: number
+        - name: limit
+          in: query
+          description: number of items per page
+          required: false
+          schema:
+            type: number
+        - name: page
+          in: query
+          description: index of page
+          required: false
+          schema:
+            type: number
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Rental_response'
+        '400':
+          description: Invalid hostId supplied
+        '401':
+          description: Access token is missing or invalid
+        '404':
+          description: Rental not found
+        '500':
+          description: System error
+  /api/rental/{rentalId}:
+    get:
+      tags:
+        - rental
+      security:
+        - bearerAuth: []
+      summary: Get user's rental
+      parameters:
+        - name: rentalId
+          in: path
+          description: id of rental
+          required: true
+          schema:
+            type: number
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Rental_response'
+        '401':
+          description: Access token is missing or invalid
+        '404':
+          description: Rental not found
+        '500':
+          description: System error
+    put:
+      tags:
+        - rental
+      security:
+        - bearerAuth: []
+      summary: Update user's rental
+      parameters:
+        - name: rentalId
+          in: path
+          description: id of rental
+          required: true
+          schema:
+            type: number
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Rental_request'
+      responses:
+        '200':
+          description: OK
+        '401':
+          description: Access token is missing or invalid
+        '404':
+          description: Rental not found
+        '500':
+          description: System error
+    delete:
+      tags:
+        - rental
+      security:
+        - bearerAuth: []
+      summary: Delete user's rental
+      parameters:
+        - name: rentalId
+          in: path
+          description: id of rental
+          required: true
+          schema:
+            type: number
+      responses:
+        '200':
+          description: OK
+        '401':
+          description: Access token is missing or invalid
+        '404':
+          description: Rental not found
+        '500':
+          description: System error
+  /api/rental/create:
+    post:
+      tags:
+        - rental
+      security:
+        - bearerAuth: []
+      summary: Create new rental
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Rental_request'
+      responses:
+        '200':
+          description: OK
+        '401':
+          description: Access token is missing or invalid
+        '500':
+          description: System error
   /api/report/create:
     post:
       tags:
         - report
       security:
-        - bearerAuth: [ ]
+        - bearerAuth: []
       summary: Create report
       operationId: report.createReport
       requestBody:
@@ -562,22 +814,21 @@ paths:
             schema:
               type: object
               properties:
-                userId:
+                user_id:
                   type: number
                 description:
                   type: string
       responses:
+        '200':
+          description: OK
         '401':
           description: Access token is missing or invalid
-        default:
-          description: OK
-
   /api/feedback/create:
     post:
       tags:
         - feedback
       security:
-        - bearerAuth: [ ]
+        - bearerAuth: []
       summary: Create feedback
       operationId: feedback.createFeedback
       requestBody:
@@ -588,19 +839,47 @@ paths:
             schema:
               $ref: '#/components/schemas/Feedback'
       responses:
+        '200':
+          description: OK
         '401':
           description: Access token is missing or invalid
         '500':
           description: System error
-        default:
+  /api/facility/:
+    get:
+      tags:
+        - facility
+      security:
+        - bearerAuth: []
+      summary: User view facilities
+      parameters:
+        - name: limit
+          in: query
+          description: number of items per page
+          required: false
+          schema:
+            type: number
+        - name: page
+          in: query
+          description: index of page
+          required: false
+          schema:
+            type: number
+      responses:
+        '200':
           description: OK
-
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Facility_response'
   /api/facility/create:
     post:
       tags:
         - facility
       security:
-        - bearerAuth: [ ]
+        - bearerAuth: []
       summary: Admin create some new facilities
       requestBody:
         required: true
@@ -612,20 +891,20 @@ paths:
                 facilities:
                   type: array
                   items:
-                    $ref: '#/components/schemas/Facility'
+                    $ref: '#/components/schemas/Facility_request'
       responses:
+        '200':
+          description: OK
         '401':
           description: Access token is missing or invalid
         '500':
           description: System error
-        default:
-          description: OK
   /api/facility/delete:
     post:
       tags:
         - facility
       security:
-        - bearerAuth: [ ]
+        - bearerAuth: []
       summary: Admin delete some facilities
       requestBody:
         required: true
@@ -639,21 +918,45 @@ paths:
                   items:
                     type: string
       responses:
+        '200':
+          description: OK
         '401':
           description: Access token is missing or invalid
         '500':
           description: System error
-        default:
-          description: OK
-
 components:
   securitySchemes:
-    bearerAuth: # arbitrary name for the security scheme
+    bearerAuth:
       type: http
       scheme: bearer
       bearerFormat: JWT
   schemas:
-    User:
+    User_request:
+      type: object
+      properties:
+        name:
+          type: string
+        phone:
+          type: string
+        email:
+          type: string
+        role:
+          type: string
+          enum:
+            - host
+            - client
+        username:
+          type: string
+        password:
+          type: string
+      example:
+        name: Test Client
+        phone: '0123456789'
+        email: hello@gmail.com
+        role: client
+        username: client
+        password: abcd12345
+    User_response:
       type: object
       properties:
         userId:
@@ -670,21 +973,22 @@ components:
           type: string
         password:
           type: string
+        last_update:
+          type: string
+          format: timestamp
       example:
-        user_id: 10013
-        name: Trong
-        phone: '19001000'
-        email: abc123@gmail.com
-        username: tieuphonghy01
-        password: $2a$08$IeZeErqqW9ZitijjJyFi9O7LxqUt0TEliiHAsXLhWozDIg58wyIjG
+        user_id: 10012
+        name: Test Client
+        phone: '0123456789'
+        email: hello@gmail.com
         role: client
-
-    Room:
+        username: client
+        password: $2a$08$d3vpDmgChTKG2sQGs7QQx.OwOaSlZ.nCRmx31fMdoxuxTXsfKkK1q
+        last_update: '2021-12-01T14:05:43.000Z'
+    Room_request:
       type: object
       properties:
-        roomId:
-          type: number
-        name:
+        room_name:
           type: string
         address_id:
           type: number
@@ -694,22 +998,22 @@ components:
         longitude:
           type: number
           format: float
-        roomType:
+        room_type_id:
           type: number
-        hostId:
+        host_id:
           type: number
-        numGuest:
+        num_guest:
           type: integer
-        numBed:
+        num_bed:
           type: integer
-        numBedroom:
+        num_bedroom:
           type: integer
-        numBathroom:
+        num_bathroom:
           type: integer
         rule:
           type: string
           nullable: true
-        accommodationType:
+        accommodation_type:
           type: string
         price:
           type: number
@@ -727,53 +1031,184 @@ components:
         facility:
           type: array
           items:
-            type: string
+            type: number
       example:
-        room_id: 102
-        room_name: Family Room with balcony (Ruby Hotel Bac Ninh)
-        latitude: 20.0313
-        longitude: 105.863
-        address_id: 6
-        roomType: 2
-        numGuest: 4
-        numBed: 2
-        numBedroom: 2
-        numBathroom: 3
-        rule: 'Nhận phòng: Sau 13:00;Trả phòng: 13:00;Không thú cưng;Cho phép hút thuốc'
-        accommodationType: Toàn bộ nhà
+        room_name: căn hộ chính chủ Lạc Hồng WestLake nội thất mới
+        latitude: 10.2995
+        longitude: 106.342
+        address_id: 1
+        room_type_id: 2
+        num_guest: 10
+        num_bed: 3
+        num_bedroom: 3
+        num_bathroom: 1
+        rule: 'Nhận phòng: 14:00 - 23:00;Trả phòng: 10:00;Được phép mang theo thú cưng;Cho phép hút thuốc'
+        accommodation_type: Bể bơi
         confirmed: true
         rate: 3.8
-        host_id: 86
-        price: 2400000
-        image:
-          - https://a0.muscache.com/im/pictures/47c9affe-c88d-438e-bbc2-63da61d51305.jpg?im_w=720
-          - https://a0.muscache.com/im/pictures/98b73564-2d61-4ac8-b90d-966c07fe9695.jpg?im_w=720
-        facility:
-            - wifi
-            - Chỗ để ô tô
-            - Dịch vụ dọn phòng
-    Rental:
+        host_id: 11
+        price: 3000000
+        images:
+          - https://a0.muscache.com/im/pictures/33ff66d7-2f27-4991-a4b9-1022e2a2d7c8.jpg?im_w=720
+          - https://a0.muscache.com/im/pictures/84254c40-ecaa-4b19-9904-836df303329d.jpg?im_w=720
+          - https://a0.muscache.com/im/pictures/565c9700-6599-453c-9b92-b15e787c6ee1.jpg?im_w=720
+          - https://a0.muscache.com/im/pictures/2b063cea-67a5-44a0-ac22-6946da5b4b72.jpg?im_w=720
+          - https://a0.muscache.com/im/pictures/af6f6699-bda3-47b3-a0e1-af5e57faef8f.jpg?im_w=720
+          - https://a0.muscache.com/im/pictures/9e162dea-5728-49ac-a0f2-dbb734e0357c.jpg?im_w=720
+          - https://a0.muscache.com/im/pictures/e9e65ecd-47d9-4cee-ac71-ca49bb4c9e75.jpg?im_w=720
+        facilities:
+          - 1
+          - 4
+          - 5
+    Room_response:
       type: object
       properties:
-        rentalId:
+        room_id:
           type: number
-        roomId:
+        room_name:
+          type: string
+        address_id:
           type: number
-        beginDate:
+        latitude:
+          type: number
+          format: float
+        longitude:
+          type: number
+          format: float
+        room_type:
+          type: string
+        host_id:
+          type: number
+        num_guest:
+          type: integer
+        num_bed:
+          type: integer
+        num_bedroom:
+          type: integer
+        num_bathroom:
+          type: integer
+        rule:
+          type: string
+          nullable: true
+        accommodation_type:
+          type: string
+        price:
+          type: number
+        confirmed:
+          type: boolean
+          default: false
+        rate:
+          type: number
+          format: float
+          nullable: true
+        images:
+          type: array
+          items:
+            type: string
+        facilities:
+          type: array
+          items:
+            type: string
+      example:
+        room_id: 12
+        room_name: căn hộ chính chủ Lạc Hồng WestLake nội thất mới
+        latitude: 10.2995
+        longitude: 106.342
+        address_id: 1
+        room_type: Nhà
+        num_guest: 10
+        num_bed: 3
+        num_bedroom: 3
+        num_bathroom: 1
+        rule: 'Nhận phòng: 14:00 - 23:00;Trả phòng: 10:00;Được phép mang theo thú cưng;Cho phép hút thuốc'
+        accommodation_type: Bể bơi
+        confirmed: true
+        rate: 3.8
+        host_id: 11
+        price: 3000000
+        images:
+          - https://a0.muscache.com/im/pictures/33ff66d7-2f27-4991-a4b9-1022e2a2d7c8.jpg?im_w=720
+          - https://a0.muscache.com/im/pictures/84254c40-ecaa-4b19-9904-836df303329d.jpg?im_w=720
+          - https://a0.muscache.com/im/pictures/565c9700-6599-453c-9b92-b15e787c6ee1.jpg?im_w=720
+          - https://a0.muscache.com/im/pictures/2b063cea-67a5-44a0-ac22-6946da5b4b72.jpg?im_w=720
+          - https://a0.muscache.com/im/pictures/af6f6699-bda3-47b3-a0e1-af5e57faef8f.jpg?im_w=720
+          - https://a0.muscache.com/im/pictures/9e162dea-5728-49ac-a0f2-dbb734e0357c.jpg?im_w=720
+          - https://a0.muscache.com/im/pictures/e9e65ecd-47d9-4cee-ac71-ca49bb4c9e75.jpg?im_w=720
+        facilities:
+          - wifi
+          - Chỗ để ô tô
+          - Dịch vụ dọn phòng
+    Rental_request:
+      type: object
+      properties:
+        room_id:
+          type: number
+        begin_date:
           type: string
           format: date
-        endDate:
+        end_date:
           type: string
           format: date
-        discount:
+        status:
+          type: string
+          enum:
+            - UNCONFIRMED
+            - CONFIRMED
+            - RETURNED
+            - REJECTED
+        cost:
           type: number
-        clientId:
+        client_id:
           type: number
           nullable: true
+      example:
+        room_id: 12
+        begin_date: '2021-11-12'
+        end_date: '2021-11-20'
+        status: UNCONFIRMED
+        cost: 1000000
+        client_id: 10012
+    Rental_response:
+      type: object
+      properties:
+        rental_id:
+          type: number
+        room_id:
+          type: number
+        begin_date:
+          type: string
+          format: date
+        end_date:
+          type: string
+          format: date
+        status:
+          type: string
+          enum:
+            - UNCONFIRMED
+            - CONFIRMED
+            - RETURNED
+            - REJECTED
+        cost:
+          type: string
+        client_id:
+          type: number
+          nullable: true
+        last_update:
+          type: string
+          format: timestamp
+      example:
+        rental_id: 1
+        room_id: 12
+        begin_date: '2021-11-12'
+        end_date: '2021-11-20'
+        status: UNCONFIRMED
+        cost: 1000000
+        client_id: 10012
+        last_update: '2021-11-30T14:46:07.000Z'
     Report:
       type: object
       properties:
-        userId:
+        user_id:
           type: number
         description:
           type: string
@@ -781,9 +1216,9 @@ components:
     Feedback:
       type: object
       properties:
-        roomId:
+        room_id:
           type: number
-        clientId:
+        client_id:
           type: number
         feedback:
           type: string
@@ -794,7 +1229,7 @@ components:
     Image:
       type: object
       properties:
-        imageId:
+        image_id:
           type: number
         roomId:
           type: number
@@ -804,11 +1239,10 @@ components:
         image_id: 1136
         room_id: 102
         url: https://a0.muscache.com/im/pictures/47c9affe-c88d-438e-bbc2-63da61d51305.jpg?im_w=720
-
-    Facility:
+    Facility_response:
       type: object
       properties:
-        facilityId:
+        facility_id:
           type: number
         facility:
           type: string
@@ -817,5 +1251,16 @@ components:
           nullable: true
       example:
         facility_id: 5
+        facility: Dịch vụ dọn phòng
+        description: Dọn phòng vào mỗi buổi sáng
+    Facility_request:
+      type: object
+      properties:
+        facility:
+          type: string
+        description:
+          type: string
+          nullable: true
+      example:
         facility: Dịch vụ dọn phòng
         description: Dọn phòng vào mỗi buổi sáng
