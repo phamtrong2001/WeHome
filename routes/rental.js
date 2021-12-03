@@ -176,13 +176,13 @@ async function updateRentalById(req, res) {
                     }
                 });
                 const updateRental = {
-                    rental_id: rentalId,
-                    room_id: req.body.roomId,
-                    begin_date: req.body.beginDate,
-                    end_date: req.body.endDate,
+                    rental_id: rental_id,
+                    room_id: req.body.room_id,
+                    begin_date: req.body.begin_date,
+                    end_date: req.body.end_date,
                     status: req.body.status || project.status,
                     cost: req.body.cost,
-                    client_id: req.body.clientId
+                    client_id: req.body.client_id
                 }
                 let change = false;
                 if (project.status !== updateRental.status && updateRental.status !== "UNCONFIRMED") change = true;
@@ -224,10 +224,10 @@ async function createRental(req, res) {
         const curUser = await models.user.findByPk(payload.user_id);
 
         const newRental = {
-            rental_id: req.body.rentalId,
-            room_id: req.body.roomId,
-            begin_date: req.body.beginDate,
-            end_date: req.body.endDate,
+            rental_id: req.body.rental_id,
+            room_id: req.body.room_id,
+            begin_date: req.body.begin_date,
+            end_date: req.body.end_date,
             status: 0,
             cost: req.body.cost,
             client_id: payload.user_id
@@ -236,7 +236,7 @@ async function createRental(req, res) {
         res.status(200).json({'message': 'OK'});
         await models.room.findOne({
             where: {
-                room_id: req.body.roomId
+                room_id: req.body.room_id
             }
         }).then(async function (project) {
             const newNotification = {

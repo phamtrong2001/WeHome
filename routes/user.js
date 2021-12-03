@@ -210,7 +210,7 @@ async function changePassword(req, res) {
         const oldPassword = req.body.oldPassword;
 
         if (curUser.role != 'admin') {
-            if (payload.user_id != req.params["userId"]) {
+            if (payload.user_id !== req.params["userId"]) {
                 res.status(400).json({message: 'Invalid userId'});
                 return;
             }

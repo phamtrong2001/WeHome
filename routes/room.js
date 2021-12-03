@@ -52,19 +52,19 @@ async function getRooms(req, res) {
                 'latitude': room.latitude,
                 'longitude': room.longitude,
                 'address_id': room.address_id,
-                'roomType': roomType,
-                'numGuest': room.num_guest,
-                'numBed': room.num_bed,
-                'numBedroom': room.num_bedroom,
-                'numBathroom': room.num_bathroom,
+                'room_type': roomType,
+                'num_guest': room.num_guest,
+                'num_bed': room.num_bed,
+                'num_bedroom': room.num_bedroom,
+                'num_bathroom': room.num_bathroom,
                 'rule': room.rule,
-                'accommodationType': room.accommodation_type,
+                'accommodation_type': room.accommodation_type,
                 'confirmed': room.confirmed,
                 'rate': room.rate,
                 'host_id': room.host_id,
                 'price': room.price,
-                'image': images,
-                'facility': facilities
+                'images': images,
+                'facilities': facilities
             });
         }
         res.status(200).json(response);
@@ -94,19 +94,19 @@ async function getRoomById(req, res) {
             'latitude': room.latitude,
             'longitude': room.longitude,
             'address_id': room.address_id,
-            'roomType': roomType,
-            'numGuest': room.num_guest,
-            'numBed': room.num_bed,
-            'numBedroom': room.num_bedroom,
-            'numBathroom': room.num_bathroom,
+            'room_type': roomType,
+            'num_guest': room.num_guest,
+            'num_bed': room.num_bed,
+            'num_bedroom': room.num_bedroom,
+            'num_bathroom': room.num_bathroom,
             'rule': room.rule,
-            'accommodationType': room.accommodation_type,
+            'accommodation_type': room.accommodation_type,
             'confirmed': room.confirmed,
             'rate': room.rate,
             'host_id': room.host_id,
             'price': room.price,
-            'image': images,
-            'facility': facilities
+            'images': images,
+            'facilities': facilities
         };
         res.status(200).json(response);
     } catch (err) {
@@ -134,17 +134,17 @@ async function updateRoom(req, res) {
             return;
         }
         const newRoom = {
-            room_name: req.body.roomName,
-            address_id: req.body.addressId,
+            room_name: req.body.room_name,
+            address_id: req.body.address_id,
             latitude: req.body.latitude,
             longitude: req.body.longitude,
-            room_type_id: req.body.roomType,
-            num_guest: req.body.numGuest,
-            num_bed: req.body.numBed,
-            num_bedroom: req.body.numBedroom,
-            num_bathroom: req.body.numBathroom,
+            room_type_id: req.body.room_type_id,
+            num_guest: req.body.num_guest,
+            num_bed: req.body.num_bed,
+            num_bedroom: req.body.num_bedroom,
+            num_bathroom: req.body.num_bathroom,
             rule: req.body.rule,
-            accommodation_type: req.body.accommodationType,
+            accommodation_type: req.body.accommodation_type,
             price: req.body.price,
             confirmed: req.body.confirmed,
             rate: req.body.rate
@@ -155,13 +155,13 @@ async function updateRoom(req, res) {
             }
         });
 
-        const images = req.body.image;
+        const images = req.body.images;
         if (images) {
             await Image.deleteImage(req.params["roomId"]);
             await Image.createImage(req.params["roomId"], images);
         }
 
-        const facilities = req.body.facility;
+        const facilities = req.body.facilities;
         if (facilities) {
             await Facility.deleteFacilityRoom(req.params["roomId"]);
             await Facility.addFacilityRoom(req.params["roomId"], facilities);
@@ -256,7 +256,7 @@ async function search(req, res) {
             if (i >= rooms.length) break;
             let room = rooms[i];
             let images = await Image.getImage(room.room_id);
-            let facilites = await Facility.getFacilityRoom(room.room_id);
+            let facilities = await Facility.getFacilityRoom(room.room_id);
             let roomType = await getRoomType(room.room_type_id);
             response.push({
                 'room_id': room.room_id,
@@ -264,19 +264,19 @@ async function search(req, res) {
                 'latitude': room.latitude,
                 'longitude': room.longitude,
                 'address_id': room.address_id,
-                'roomType': roomType,
-                'numGuest': room.num_guest,
-                'numBed': room.num_bed,
-                'numBedroom': room.num_bedroom,
-                'numBathroom': room.num_bathroom,
+                'room_type': roomType,
+                'num_guest': room.num_guest,
+                'num_bed': room.num_bed,
+                'num_bedroom': room.num_bedroom,
+                'num_bathroom': room.num_bathroom,
                 'rule': room.rule,
-                'accommodationType': room.accommodation_type,
+                'accommodation_type': room.accommodation_type,
                 'confirmed': room.confirmed,
                 'rate': room.rate,
                 'host_id': room.host_id,
                 'price': room.price,
-                'image': images,
-                'facility': facilites
+                'images': images,
+                'facilities': facilities
             });
         }
         // console.log(response);
@@ -297,18 +297,18 @@ async function createRoom(req, res) {
         const payload = jwt.decode(req.headers.authorization.split(' ')[1]);
 
         const newRoom = {
-            room_name: req.body.roomName,
-            address_id: req.body.addressId,
+            room_name: req.body.room_name,
+            address_id: req.body.address_id,
             latitude: req.body.latitude,
             longitude: req.body.longitude,
-            room_type_id: req.body.roomType,
-            host_id: req.body.hostId || payload.user_id,
-            num_guest: req.body.numGuest,
-            num_bed: req.body.numBed,
-            num_bedroom: req.body.numBedroom,
-            num_bathroom: req.body.numBathroom,
+            room_type_id: req.body.room_type_id,
+            host_id: req.body.host_id || payload.user_id,
+            num_guest: req.body.num_guest,
+            num_bed: req.body.num_bed,
+            num_bedroom: req.body.num_bedroom,
+            num_bathroom: req.body.num_bathroom,
             rule: req.body.rule,
-            accommodation_type: req.body.accommodationType,
+            accommodation_type: req.body.accommodation_type,
             price: req.body.price,
             confirmed: req.body.confirmed,
             rate: req.body.rate
@@ -319,9 +319,9 @@ async function createRoom(req, res) {
                 room_name: newRoom.room_name
             }
         });
-        const images = req.body.image;
+        const images = req.body.images;
         await Image.createImage(room.room_id, images);
-        const facilities = req.body.facility;
+        const facilities = req.body.facilities;
         await Facility.addFacilityRoom(room.room_id, facilities);
         res.status(200).json({message: 'OK'});
     } catch (err) {
@@ -407,19 +407,19 @@ async function filterRoom(req, res) {
                 'latitude': room.latitude,
                 'longitude': room.longitude,
                 'address_id': room.address_id,
-                'roomType': roomType,
-                'numGuest': room.num_guest,
-                'numBed': room.num_bed,
-                'numBedroom': room.num_bedroom,
-                'numBathroom': room.num_bathroom,
+                'room_type': roomType,
+                'num_guest': room.num_guest,
+                'num_bed': room.num_bed,
+                'num_bedroom': room.num_bedroom,
+                'num_bathroom': room.num_bathroom,
                 'rule': room.rule,
-                'accommodationType': room.accommodation_type,
+                'accommodation_type': room.accommodation_type,
                 'confirmed': room.confirmed,
                 'rate': room.rate,
                 'host_id': room.host_id,
                 'price': room.price,
-                'image': images,
-                'facility': facilities
+                'images': images,
+                'facilities': facilities
             });
         }
         res.status(200).json(response);
