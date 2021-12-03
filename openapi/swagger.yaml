@@ -799,6 +799,39 @@ paths:
           description: Access token is missing or invalid
         '500':
           description: System error
+  /api/report:
+    get:
+      tags:
+        - report
+      security:
+        - bearerAuth: [ ]
+      summary: Admin get all report
+      parameters:
+        - name: limit
+          in: query
+          description: number of items per page
+          required: false
+          schema:
+            type: number
+        - name: page
+          in: query
+          description: index of page
+          required: false
+          schema:
+            type: number
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Report'
+        '401':
+          description: Access token is missing or invalid
+        '500':
+          description: System error
   /api/report/create:
     post:
       tags:
@@ -841,6 +874,46 @@ paths:
       responses:
         '200':
           description: OK
+        '401':
+          description: Access token is missing or invalid
+        '500':
+          description: System error
+  /api/feedback/{roomId}:
+    get:
+      tags:
+        - feedback
+      security:
+        - bearerAuth: [ ]
+      summary: Get feedback by roomId
+      operationId: feedback.getFeedbackByRoomId
+      parameters:
+        - name: roomId
+          in: path
+          description: id of room that you want to get feedback
+          required: true
+          schema:
+            type: number
+        - name: limit
+          in: query
+          description: number of items per page
+          required: false
+          schema:
+            type: number
+        - name: page
+          in: query
+          description: index of page
+          required: false
+          schema:
+            type: number
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Feedback'
         '401':
           description: Access token is missing or invalid
         '500':

@@ -1,7 +1,11 @@
 const express = require('express');
 const {models, db} = require("../sequelize/conn");
 const router = express.Router();
+const Room = require("../controllers/room");
+const passport = require("passport");
+const auth = require("../middlewares/auth");
 
+passport.use('user', auth.jwtStrategy);
 
 /**
  * Create Feedback
@@ -14,6 +18,9 @@ async function createFeedback(req, res) {
             feedback: req.body.feedback,
             rate: req.body.rate
         }
+        if (newFeedback.rate) {
+            await Room.ratedRoom(newFeedback.room_id);
+        }
         await models.feedback.create(newFeedback);
         res.status(200).json({'message': 'OK'});
     } catch (err) {
@@ -21,6 +28,25 @@ async function createFeedback(req, res) {
     }
 }
 
-router.post('/create', createFeedback);
+router.post('/create', passport.authenticate('user', {session: false}), createFeedback);
+
+async function getFeedbackByRoomId(req, res) {
+    try {
+        const limit = req.query.limit || 20;
+        const page = req.query.page || 1;
+
+        const feedbacks = await models.feedback.findAll({
+            where: {
+                room_id: req.params.room_id
+            },
+            order: ["last_update", "DESC"]
+        });
+        res.status(200).send(feedbacks.slice((page - 1) * limit, page * limit));
+    } catch (err) {
+        res.status(500).send(err);
+    }
+}
+
+router.get('/:roomId', passport.authenticate('user', {session: false}), getFeedbackByRoomId);
 
 module.exports = router;
