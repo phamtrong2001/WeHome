@@ -8,7 +8,7 @@ const {models, db} = require("../sequelize/conn");
 async function createReport(req, res) {
     try {
         const newReport = {
-            user_id: req.body.userId,
+            user_id: req.body.user_id,
             description: req.body.description,
         }
         await models.report.create(newReport);

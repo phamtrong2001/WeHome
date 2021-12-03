@@ -9,8 +9,8 @@ const router = express.Router();
 async function createFeedback(req, res) {
     try {
         const newFeedback = {
-            roomId: req.body.roomId,
-            clientId: req.body.clientId,
+            room_id: req.body.room_id,
+            client_id: req.body.client_id,
             feedback: req.body.feedback,
             rate: req.body.rate
         }
