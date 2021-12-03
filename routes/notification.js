@@ -7,7 +7,7 @@ const passport = require('passport');
  * Get notification by user id
  * @author: admin, host, user
  */
-router.get('/', passport.authenticate('admin', {session: false}), async function (rep,res){
+router.get('/', passport.authenticate('jwt', {session: false}), async function (rep,res){
     const payload = jwt.decode(req.headers.authorization.split(' ')[1]);
     await models.rental.findAll({
         where: {
