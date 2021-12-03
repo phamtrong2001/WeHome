@@ -10,6 +10,17 @@ const auth = require("../middlewares/auth");
 
 passport.use('host', auth.isHost);
 
+router.get('/room-type', async function (req, res) {
+    try {
+        const limit = req.query.limit || 20;
+        const page = req.query.page || 1;
+        let roomTypes = await models.room_type.findAll();
+        res.status(200).json(roomTypes.slice((page - 1) * limit, page * limit));
+    } catch (err) {
+        res.status(500).send(err);
+    }
+})
+
 async function getRoomType(room_type_id) {
     try {
         let roomType = await models.room_type.findByPk(room_type_id);
@@ -29,7 +40,7 @@ async function getRooms(req, res) {
         const page = req.query.page || 1;
         const rooms = await models.room.findAll();
         let response = [];
-        for (let i = (page-1) * limit; i < page * limit; i++) {
+        for (let i = (page - 1) * limit; i < page * limit; i++) {
             if (i >= rooms.length) break;
             let room = rooms[i];
             let images = await Image.getImage(room.room_id);
@@ -61,6 +72,7 @@ async function getRooms(req, res) {
         res.status(500).send(err);
     }
 }
+
 router.get('/', getRooms);
 
 /**
@@ -101,6 +113,7 @@ async function getRoomById(req, res) {
         res.status(500).send(err);
     }
 }
+
 router.get('/:roomId', getRoomById);
 
 /**
@@ -159,6 +172,7 @@ async function updateRoom(req, res) {
         res.status(500).send(err);
     }
 }
+
 router.put('/:roomId', passport.authenticate('host', {session: false}), updateRoom);
 
 /**
@@ -190,6 +204,7 @@ async function deleteRoom(req, res) {
         res.status(500).send(err);
     }
 }
+
 router.delete('/:roomId', passport.authenticate('host', {session: false}), deleteRoom);
 
 /**
@@ -206,7 +221,7 @@ async function search(req, res) {
         const lat = req.body.latitude;
         const long = req.body.longitude;
         const radius = req.body.radius;
-        const distance = db.Sequelize.literal("6371 * acos(cos(radians("+lat+")) * cos(radians(latitude)) * cos(radians("+long+") - radians(longitude)) + sin(radians("+lat+")) * sin(radians(latitude)))");
+        const distance = db.Sequelize.literal("6371 * acos(cos(radians(" + lat + ")) * cos(radians(latitude)) * cos(radians(" + long + ") - radians(longitude)) + sin(radians(" + lat + ")) * sin(radians(latitude)))");
         const rooms = await models.room.findAll({
             attributes: [
                 'room_id',
@@ -225,7 +240,7 @@ async function search(req, res) {
                 'rate',
                 'host_id',
                 'price',
-                [distance,'distance']
+                [distance, 'distance']
             ],
             where: db.Sequelize.where(distance, "<=", radius),
             // having: {
@@ -237,7 +252,7 @@ async function search(req, res) {
             limit: 100
         });
         let response = [];
-        for (let i = (page-1) * limit; i < page * limit; i++) {
+        for (let i = (page - 1) * limit; i < page * limit; i++) {
             if (i >= rooms.length) break;
             let room = rooms[i];
             let images = await Image.getImage(room.room_id);
@@ -271,6 +286,7 @@ async function search(req, res) {
         res.status(500).send(err);
     }
 }
+
 router.post('/search', search);
 
 /**
@@ -312,6 +328,7 @@ async function createRoom(req, res) {
         res.status(500).send(err);
     }
 }
+
 router.post('/create', passport.authenticate('host', {session: false}), createRoom);
 
 /**
@@ -378,7 +395,7 @@ async function filterRoom(req, res) {
             return;
         }
         let response = [];
-        for (let i = (page-1) * limit; i < page * limit; i++) {
+        for (let i = (page - 1) * limit; i < page * limit; i++) {
             if (i >= rooms.length) break;
             let room = rooms[i];
             let images = await Image.getImage(room.room_id);
@@ -410,6 +427,7 @@ async function filterRoom(req, res) {
         res.status(500).send(err);
     }
 }
+
 router.post('/filter', filterRoom);
 
 module.exports = router;

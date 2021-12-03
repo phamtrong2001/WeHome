@@ -25,11 +25,12 @@ async function getUsers(req, res) {
         const users = await models.user.findAll();
         const limit = req.query.limit || 20;
         const page = req.query.page || 1;
-        res.status(200).json(users.slice((page-1) * limit, page * limit));
+        res.status(200).json(users.slice((page - 1) * limit, page * limit));
     } catch (err) {
         res.status(500).send(err);
     }
 }
+
 router.get('/', passport.authenticate('admin', {session: false}), getUsers);
 
 /**
@@ -51,6 +52,7 @@ async function getUserById(req, res) {
         res.status(500).send(err);
     }
 }
+
 router.get('/:userId', getUserById);
 
 /**
@@ -118,6 +120,7 @@ async function updateUser(req, res) {
         res.status(500).send(err);
     }
 }
+
 router.put('/:userId', passport.authenticate('user', {session: false}), updateUser);
 
 /**
@@ -144,6 +147,7 @@ async function deleteUser(req, res) {
         res.status(500).send(err);
     }
 }
+
 router.delete('/:userId', passport.authenticate('admin', {session: false}), deleteUser);
 
 /**
@@ -188,6 +192,7 @@ async function createUser(req, res) {
         res.status(500).send(err);
     }
 }
+
 router.post('/create', createUser);
 
 /**
@@ -232,6 +237,7 @@ async function changePassword(req, res) {
         res.status(500).send(err);
     }
 }
+
 router.post('/:userId/change-password', passport.authenticate('user', {session: false}), changePassword);
 
 /**
@@ -263,17 +269,18 @@ async function filterUser(req, res) {
                 }
             }
         });
-        res.status(200).json(users.slice((page-1) * limit, page * limit));
+        res.status(200).json(users.slice((page - 1) * limit, page * limit));
     } catch (err) {
         res.status(500).send(err);
     }
 }
-router.post('/filter', passport.authenticate('user', {session: false}),filterUser);
+
+router.post('/filter', passport.authenticate('user', {session: false}), filterUser);
 
 /**
  * Login
  */
-router.post('/login',async (req, res, next) => {
+router.post('/login', async (req, res, next) => {
     try {
         const {username, password} = req.body;
         if (username && password) {

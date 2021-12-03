@@ -30,11 +30,14 @@ module.exports.createImage = async function createImage(room_id, images) {
 
 module.exports.getImage = async function getImage(room_id) {
     try {
-        return await models.image.findAll({
+        let images = await models.image.findAll({
             where: {
                 room_id: room_id
             }
         });
+        return images.map(image => {
+            return image.url;
+        })
     } catch (err) {
         console.error(err);
         throw err;

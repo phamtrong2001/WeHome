@@ -6,20 +6,20 @@ const jwt = require("jsonwebtoken");
 const passport = require("passport");
 const auth = require("../middlewares/auth");
 
-router.use(bodyParser.urlencoded({ extended: false }))
+router.use(bodyParser.urlencoded({extended: false}))
 router.use(bodyParser.json())
 
 passport.use('user', auth.jwtStrategy);
 passport.use('admin', auth.isAdmin);
 passport.use('host', auth.isHost);
 
-router.get('/', passport.authenticate('admin', {session: false}), async function (req,res){
+router.get('/', passport.authenticate('admin', {session: false}), async function (req, res) {
     try {
         const limit = req.query.limit || 20;
         const page = req.query.page || 1;
 
-        await models.rental.findAll().then(function (project){
-            if (project.length) res.status(200).json(project.slice((page-1) * limit, page * limit));
+        await models.rental.findAll().then(function (project) {
+            if (project.length) res.status(200).json(project.slice((page - 1) * limit, page * limit));
             else res.status(404).json({'message': 'Rental not found'});
         })
     } catch (err) {
@@ -41,13 +41,13 @@ async function getRentalByUserId(req, res) {
 
         let userId = req.params.userId;
 
-        if (curUser.role != 'admin' && curUser.user_id !== userId){
-            res.status(400).json({'message' : 'Invalid UserId supplied'})
+        if (curUser.role != 'admin' && curUser.user_id !== userId) {
+            res.status(400).json({'message': 'Invalid UserId supplied'})
             return
         }
         await models.user.findOne({
             where: {
-                user_id : userId
+                user_id: userId
             }
         }).then(async function (project) {
             if (project) {
@@ -57,14 +57,14 @@ async function getRentalByUserId(req, res) {
                     }
                 }).then(async function (project) {
                     if (project.length) {
-                        res.status(200).json(project.slice((page-1) * limit, page * limit))
+                        res.status(200).json(project.slice((page - 1) * limit, page * limit))
                         return
                     }
                     res.status(404).json({'message': 'Rental not found'});
                 })
                 return
             }
-            res.status(400).json({'message' : 'Invalid UserId supplied'})
+            res.status(400).json({'message': 'Invalid UserId supplied'})
         });
     } catch (err) {
         res.status(500).send(err);
@@ -88,15 +88,15 @@ async function getRentalByHostId(req, res) {
 
         let hostId = req.params.hostId;
 
-        if (curUser.role != 'admin' && curUser.user_id !== hostId){
-            res.status(400).json({'message' : 'Invalid HostId supplied'})
+        if (curUser.role != 'admin' && curUser.user_id !== hostId) {
+            res.status(400).json({'message': 'Invalid HostId supplied'})
             return
         }
         await models.user.findOne({
             where: {
-                user_id : hostId
+                user_id: hostId
             }
-        }).then( async function (project) {
+        }).then(async function (project) {
             console.log(project);
             if (project) {
                 if (project.role !== "host") {
@@ -110,14 +110,13 @@ async function getRentalByHostId(req, res) {
                         where: {host_id: hostId}
                     }
                 }).then(function (project) {
-                    if (project.length){
-                        res.status(200).json(project.slice((page-1) * limit, page * limit))
-                    }
-                    else res.status(404).json({'message': 'Rental not found'});
+                    if (project.length) {
+                        res.status(200).json(project.slice((page - 1) * limit, page * limit))
+                    } else res.status(404).json({'message': 'Rental not found'});
                 })
                 return;
             }
-            res.status(400).json({'message' : 'Invalid HostId supplied'})
+            res.status(400).json({'message': 'Invalid HostId supplied'})
         });
     } catch (err) {
         res.status(500).send(err);
@@ -195,9 +194,9 @@ async function updateRentalById(req, res) {
                 res.status(200).json({'message': 'OK'});
                 if (!change) return;
                 let content;
-                if(req.body.status === "CONFIRMED") content = curUser.name + " has accepted your rental";
-                if(req.body.status === "RETURNED") content = "The "+ curUser.name +" has confirmed check-out";
-                if(req.body.status === "REJECTED") content = curUser.name + " has rejected your rental";
+                if (req.body.status === "CONFIRMED") content = curUser.name + " has accepted your rental";
+                if (req.body.status === "RETURNED") content = "The " + curUser.name + " has confirmed check-out";
+                if (req.body.status === "REJECTED") content = curUser.name + " has rejected your rental";
                 const createNotification = {
                     user_id: project.client_id,
                     content: content,
@@ -212,6 +211,7 @@ async function updateRentalById(req, res) {
         res.status(500).send(err);
     }
 }
+
 router.put('/:rentalId', passport.authenticate('user', {session: false}), updateRentalById);
 
 /**
@@ -224,7 +224,7 @@ async function createRental(req, res) {
         const curUser = await models.user.findByPk(payload.user_id);
 
         const newRental = {
-            rental_id : req.body.rentalId,
+            rental_id: req.body.rentalId,
             room_id: req.body.roomId,
             begin_date: req.body.beginDate,
             end_date: req.body.endDate,
@@ -238,7 +238,7 @@ async function createRental(req, res) {
             where: {
                 room_id: req.body.roomId
             }
-        }).then(async function(project){
+        }).then(async function (project) {
             const newNotification = {
                 user_id: project.host_id,
                 content: "The " + curUser.name + " has created a rental of your room",
@@ -250,6 +250,7 @@ async function createRental(req, res) {
         res.status(500).send(err);
     }
 }
+
 router.post('/create', passport.authenticate('user', {session: false}), createRental);
 
 /**
@@ -284,6 +285,7 @@ async function deleteRentalById(req, res) {
         res.status(500).send(err);
     }
 }
+
 router.delete('/:rentalId', passport.authenticate('user', {session: false}), deleteRentalById);
 
 module.exports = router;

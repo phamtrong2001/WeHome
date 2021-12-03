@@ -10,12 +10,15 @@ passport.use('admin', auth.isAdmin);
 passport.use('user', auth.jwtStrategy);
 
 router.get('/', passport.authenticate('user', {session: false}), async function (req, res) {
-   try {
+    try {
+        const limit = req.query.limit || 20;
+        const page = req.query.page || 1;
+
         const facilities = await models.facility.findAll();
-        res.status(200).json(facilities);
-   } catch (err) {
-       res.status(500).send(err);
-   }
+        res.status(200).json(facilities.slice((page - 1) * limit, page * limit));
+    } catch (err) {
+        res.status(500).send(err);
+    }
 });
 
 router.post('/create', passport.authenticate('admin', {session: false}), async function (req, res) {

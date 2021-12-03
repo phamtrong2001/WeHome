@@ -17,6 +17,7 @@ async function createReport(req, res) {
         res.status(500).json({message: err});
     }
 }
+
 router.post('/create', createReport);
 
 module.exports = router;

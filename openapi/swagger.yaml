@@ -723,7 +723,7 @@ components:
         image:
           type: array
           items:
-            $ref: '#/components/schemas/Image'
+            type: string
         facility:
           type: array
           items:
@@ -746,12 +746,8 @@ components:
         host_id: 86
         price: 2400000
         image:
-          - image_id: 1136
-            room_id: 102
-            url: https://a0.muscache.com/im/pictures/47c9affe-c88d-438e-bbc2-63da61d51305.jpg?im_w=720
-          - image_id: 1137
-            room_id: 102
-            url: https://a0.muscache.com/im/pictures/98b73564-2d61-4ac8-b90d-966c07fe9695.jpg?im_w=720
+          - https://a0.muscache.com/im/pictures/47c9affe-c88d-438e-bbc2-63da61d51305.jpg?im_w=720
+          - https://a0.muscache.com/im/pictures/98b73564-2d61-4ac8-b90d-966c07fe9695.jpg?im_w=720
         facility:
             - wifi
             - Chỗ để ô tô

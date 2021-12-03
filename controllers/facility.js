@@ -12,7 +12,9 @@ module.exports.getFacilityRoom = async function getFacilityRoom(room_id) {
                 type: QueryTypes.SELECT
             }
         );
-        return ans.map(obj => {return obj["facility"];});
+        return ans.map(obj => {
+            return obj["facility"];
+        });
     } catch (err) {
         throw err;
     }
