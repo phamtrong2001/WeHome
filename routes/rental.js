@@ -13,10 +13,13 @@ passport.use('user', auth.jwtStrategy);
 passport.use('admin', auth.isAdmin);
 passport.use('host', auth.isHost);
 
-router.get('/', passport.authenticate('admin', {session: false}), async function (rep,res){
+router.get('/', passport.authenticate('admin', {session: false}), async function (req,res){
     try {
+        const limit = req.query.limit || 20;
+        const page = req.query.page || 1;
+
         await models.rental.findAll().then(function (project){
-            if (project.length) res.status(200).json(project);
+            if (project.length) res.status(200).json(project.slice((page-1) * limit, page * limit));
             else res.status(404).json({'message': 'Rental not found'});
         })
     } catch (err) {
@@ -28,11 +31,13 @@ router.get('/', passport.authenticate('admin', {session: false}), async function
  * Get rental by user id
  * @author: user
  */
-
 async function getRentalByUserId(req, res) {
     try {
         const payload = jwt.decode(req.headers.authorization.split(' ')[1]);
         const curUser = await models.user.findByPk(payload.user_id);
+
+        const limit = req.query.limit || 20;
+        const page = req.query.page || 1;
 
         let userId = req.params.userId;
 
@@ -52,7 +57,7 @@ async function getRentalByUserId(req, res) {
                     }
                 }).then(async function (project) {
                     if (project.length) {
-                        res.status(200).json(project)
+                        res.status(200).json(project.slice((page-1) * limit, page * limit))
                         return
                     }
                     res.status(404).json({'message': 'Rental not found'});
@@ -78,6 +83,9 @@ async function getRentalByHostId(req, res) {
         const payload = jwt.decode(req.headers.authorization.split(' ')[1]);
         const curUser = await models.user.findByPk(payload.user_id);
 
+        const limit = req.query.limit || 20;
+        const page = req.query.page || 1;
+
         let hostId = req.params.hostId;
 
         if (curUser.role != 'admin' && curUser.user_id !== hostId){
@@ -89,13 +97,12 @@ async function getRentalByHostId(req, res) {
                 user_id : hostId
             }
         }).then( async function (project) {
+            console.log(project);
             if (project) {
                 if (project.role !== "host") {
                     res.status(400).json({'message': 'Invalid HostId supplied'})
                     return
                 }
-                models.room.hasMany(models.rental, {foreignKey: 'room_id'})
-                models.rental.belongsTo(models.room, {foreignKey: 'room_id'})
                 await models.rental.findAll({
                     include: {
                         model: models.room,
@@ -104,7 +111,7 @@ async function getRentalByHostId(req, res) {
                     }
                 }).then(function (project) {
                     if (project.length){
-                        res.status(200).json(project)
+                        res.status(200).json(project.slice((page-1) * limit, page * limit))
                     }
                     else res.status(404).json({'message': 'Rental not found'});
                 })
