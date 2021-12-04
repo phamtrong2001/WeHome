@@ -3,17 +3,13 @@ const {QueryTypes} = require("sequelize");
 
 module.exports.getFacilityRoom = async function getFacilityRoom(room_id) {
     try {
-        let ans = await db.query(
-            "SELECT DISTINCT f.facility FROM facility_room AS fr JOIN facility AS f ON fr.facility_id = f.facility_id WHERE fr.room_id = :room_id",
-            {
-                replacements: {
-                    room_id: room_id
-                },
-                type: QueryTypes.SELECT
+        let facilities = await models.facility_room.findAll({
+            where: {
+                room_id: room_id
             }
-        );
-        return ans.map(obj => {
-            return obj["facility"];
+        });
+        return facilities.map(obj => {
+            return obj.facility_id;
         });
     } catch (err) {
         throw err;

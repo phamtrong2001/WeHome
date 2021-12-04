@@ -45,14 +45,14 @@ async function getRooms(req, res) {
             let room = rooms[i];
             let images = await Image.getImage(room.room_id);
             let facilities = await Facility.getFacilityRoom(room.room_id);
-            let roomType = await getRoomType(room.room_type_id);
+            // let roomType = await getRoomType(room.room_type_id);
             response.push({
                 'room_id': room.room_id,
                 'room_name': room.room_name,
                 'latitude': room.latitude,
                 'longitude': room.longitude,
                 'address_id': room.address_id,
-                'room_type': roomType,
+                'room_type': room.room_type_id,
                 'num_guest': room.num_guest,
                 'num_bed': room.num_bed,
                 'num_bedroom': room.num_bedroom,
@@ -87,14 +87,14 @@ async function getRoomById(req, res) {
         }
         let images = await Image.getImage(room.room_id);
         let facilities = await Facility.getFacilityRoom(room.room_id);
-        let roomType = await getRoomType(room.room_type_id);
+        // let roomType = await getRoomType(room.room_type_id);
         let response = {
             'room_id': room.room_id,
             'room_name': room.room_name,
             'latitude': room.latitude,
             'longitude': room.longitude,
             'address_id': room.address_id,
-            'room_type': roomType,
+            'room_type': room.room_type_id,
             'num_guest': room.num_guest,
             'num_bed': room.num_bed,
             'num_bedroom': room.num_bedroom,
@@ -257,14 +257,14 @@ async function search(req, res) {
             let room = rooms[i];
             let images = await Image.getImage(room.room_id);
             let facilities = await Facility.getFacilityRoom(room.room_id);
-            let roomType = await getRoomType(room.room_type_id);
+            // let roomType = await getRoomType(room.room_type_id);
             response.push({
                 'room_id': room.room_id,
                 'room_name': room.room_name,
                 'latitude': room.latitude,
                 'longitude': room.longitude,
                 'address_id': room.address_id,
-                'room_type': roomType,
+                'room_type': room.room_type_id,
                 'num_guest': room.num_guest,
                 'num_bed': room.num_bed,
                 'num_bedroom': room.num_bedroom,
@@ -400,14 +400,14 @@ async function filterRoom(req, res) {
             let room = rooms[i];
             let images = await Image.getImage(room.room_id);
             let facilities = await Facility.getFacilityRoom(room.room_id);
-            let roomType = await getRoomType(room.room_type_id);
+            // let roomType = await getRoomType(room.room_type_id);
             response.push({
                 'room_id': room.room_id,
                 'room_name': room.room_name,
                 'latitude': room.latitude,
                 'longitude': room.longitude,
                 'address_id': room.address_id,
-                'room_type': roomType,
+                'room_type': room.room_type_id,
                 'num_guest': room.num_guest,
                 'num_bed': room.num_bed,
                 'num_bedroom': room.num_bedroom,

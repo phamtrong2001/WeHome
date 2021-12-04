@@ -9,7 +9,7 @@ const router = express.Router();
 passport.use('admin', auth.isAdmin);
 passport.use('user', auth.jwtStrategy);
 
-router.get('/', passport.authenticate('user', {session: false}), async function (req, res) {
+router.get('/', /*passport.authenticate('user', {session: false}),*/ async function (req, res) {
     try {
         const limit = req.query.limit || 20;
         const page = req.query.page || 1;

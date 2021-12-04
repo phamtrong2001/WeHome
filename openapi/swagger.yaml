@@ -1148,8 +1148,8 @@ components:
         longitude:
           type: number
           format: float
-        room_type:
-          type: string
+        room_type_id:
+          type: number
         host_id:
           type: number
         num_guest:
@@ -1181,14 +1181,14 @@ components:
         facilities:
           type: array
           items:
-            type: string
+            type: number
       example:
         room_id: 12
         room_name: căn hộ chính chủ Lạc Hồng WestLake nội thất mới
         latitude: 10.2995
         longitude: 106.342
         address_id: 1
-        room_type: Nhà
+        room_type_id: 1
         num_guest: 10
         num_bed: 3
         num_bedroom: 3
@@ -1208,9 +1208,9 @@ components:
           - https://a0.muscache.com/im/pictures/9e162dea-5728-49ac-a0f2-dbb734e0357c.jpg?im_w=720
           - https://a0.muscache.com/im/pictures/e9e65ecd-47d9-4cee-ac71-ca49bb4c9e75.jpg?im_w=720
         facilities:
-          - wifi
-          - Chỗ để ô tô
-          - Dịch vụ dọn phòng
+          - 1
+          - 4
+          - 5
     Rental_request:
       type: object
       properties:
