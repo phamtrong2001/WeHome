@@ -922,8 +922,6 @@ paths:
     get:
       tags:
         - facility
-      security:
-        - bearerAuth: []
       summary: User view facilities
       parameters:
         - name: limit
