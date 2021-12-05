@@ -286,8 +286,6 @@ paths:
     post:
       tags:
         - user
-      security:
-        - bearerAuth: []
       summary: Logs out current logged in user session
       operationId: user.logout
       responses:
@@ -304,10 +302,6 @@ paths:
                   token:
                     type: string
                     default: null
-        '401':
-          description: Access token is missing or invalid
-        '500':
-          description: System error
   /api/room:
     get:
       tags:

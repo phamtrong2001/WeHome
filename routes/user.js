@@ -315,7 +315,7 @@ router.post('/login', async (req, res, next) => {
  * Logout
  * @author: user
  */
-router.post('/logout', passport.authenticate('user', {session: false}), (req, res) => {
+router.post('/logout', (req, res) => {
     res.status(200).json({message: "Logged out!", token: null});
 });
 
