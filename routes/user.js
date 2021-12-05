@@ -210,7 +210,7 @@ async function changePassword(req, res) {
         const oldPassword = req.body.oldPassword;
 
         if (curUser.role != 'admin') {
-            if (payload.user_id !== req.params["userId"]) {
+            if (payload.user_id != req.params["userId"]) {
                 res.status(400).json({message: 'Invalid userId'});
                 return;
             }
@@ -318,5 +318,9 @@ router.post('/login', async (req, res, next) => {
 router.post('/logout', (req, res) => {
     res.status(200).json({message: "Logged out!", token: null});
 });
+
+router.get('/ping/current-user', passport.authenticate('user', {session: false}), (req, res) => {
+    res.status(200).send('OK');
+})
 
 module.exports = router;

@@ -41,8 +41,8 @@ async function getRentalByUserId(req, res) {
 
         let userId = req.params.userId;
 
-        if (curUser.role != 'admin' && curUser.user_id !== userId) {
-            res.status(400).json({'message': 'Invalid UserId supplied'})
+        if (curUser.role != 'admin' && curUser.user_id != userId) {
+            res.status(401).json({'message': 'Unauthorized'})
             return
         }
         await models.user.findOne({
@@ -139,7 +139,7 @@ async function getRentalById(req, res) {
         await models.rental.findByPk(rentalId).then(async function (project) {
             if (project) {
                 await models.room.findByPk(project.room_id).then(async function (room) {
-                    if (curUser.role != 'admin' && curUser.user_id !== room.host_id && curUser.user_id !== project.client_id) {
+                    if (curUser.role != 'admin' && curUser.user_id != room.host_id && curUser.user_id != project.client_id) {
                         res.status(401).send("Unauthorized");
                         return
                     }
@@ -170,7 +170,7 @@ async function updateRentalById(req, res) {
         await models.rental.findByPk(rentalId).then(async function (project) {
             if (project) {
                 await models.room.findByPk(project.room_id).then(async function (room) {
-                    if (curUser.role != 'admin' && curUser.user_id !== room.host_id && curUser.user_id !== project.client_id) {
+                    if (curUser.role != 'admin' && curUser.user_id != room.host_id && curUser.user_id != project.client_id) {
                         res.status(401).send("Unauthorized");
                         return;
                     }
@@ -265,7 +265,7 @@ async function deleteRentalById(req, res) {
 
         await models.rental.findByPk(rentalId).then(async function (project) {
             if (project) {
-                if (curUser.role != 'admin' && project.client_id !== curUser.user_id) {
+                if (curUser.role != 'admin' && project.client_id != curUser.user_id) {
                     res.status(401).send('Unauthorized');
                     return;
                 }

@@ -129,7 +129,7 @@ async function updateRoom(req, res) {
             res.status(400).json({message: 'Invalid roomId'});
             return;
         }
-        if (curUser.role != 'admin' && room.hostId !== curUser.user_id) {
+        if (curUser.role != 'admin' && room.hostId != curUser.user_id) {
             res.status(401).send('Unauthorized');
             return;
         }
@@ -188,7 +188,7 @@ async function deleteRoom(req, res) {
             res.status(400).json({message: 'Invalid roomId'});
             return;
         }
-        if (curUser.role != 'admin' && room.hostId !== curUser.user_id) {
+        if (curUser.role != 'admin' && room.hostId != curUser.user_id) {
             res.status(401).send('Unauthorized');
             return;
         }

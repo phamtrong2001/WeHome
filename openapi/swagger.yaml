@@ -244,6 +244,18 @@ paths:
           description: Access token is missing or invalid
         '500':
           description: System error
+  /api/user/ping/current-user:
+    get:
+      tags:
+        - user
+      summary: Check current user
+      security:
+        - bearerAuth: [ ]
+      responses:
+        '200':
+          description: OK
+        '401':
+          description: Access token is missing or invalid
   /api/user/login:
     post:
       tags:
