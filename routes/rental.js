@@ -5,6 +5,8 @@ const bodyParser = require('body-parser')
 const jwt = require("jsonwebtoken");
 const passport = require("passport");
 const auth = require("../middlewares/auth");
+const Image = require("../controllers/image");
+const Facility = require("../controllers/facility");
 
 router.use(bodyParser.urlencoded({extended: false}))
 router.use(bodyParser.json())
@@ -18,9 +20,27 @@ router.get('/', passport.authenticate('admin', {session: false}), async function
         const limit = req.query.limit || 20;
         const page = req.query.page || 1;
 
-        await models.rental.findAll().then(function (project) {
-            if (project.length) res.status(200).json(project.slice((page - 1) * limit, page * limit));
-            else res.status(404).json({'message': 'Rental not found'});
+        await models.rental.findAll().then(async function (project) {
+            let response = [];
+            for (let i = (page - 1) * limit; i < page * limit; i++) {
+                if (i >= project.length) break;
+                let rental = project[i];
+                let images = await Image.getImage(rental.room_id);
+                let room = await models.room.findByPk(rental.room_id);
+                response.push({
+                    rental_id: rental.rental_id,
+                    room_id: rental.room_id,
+                    room_name: room.room_name,
+                    begin_date: rental.begin_date,
+                    end_date: rental.end_date,
+                    status: rental.status,
+                    cost: rental.cost,
+                    client_id: rental.client_id,
+                    images: images,
+                    last_update: rental.last_update
+                });
+            }
+            res.status(200).json(response);
         })
     } catch (err) {
         res.status(500).send(err);
@@ -57,7 +77,26 @@ async function getRentalByUserId(req, res) {
                     }
                 }).then(async function (project) {
                     if (project.length) {
-                        res.status(200).json(project.slice((page - 1) * limit, page * limit))
+                        let response = [];
+                        for (let i = (page - 1) * limit; i < page * limit; i++) {
+                            if (i >= project.length) break;
+                            let rental = project[i];
+                            let images = await Image.getImage(rental.room_id);
+                            let room = await models.room.findByPk(rental.room_id);
+                            response.push({
+                                rental_id: rental.rental_id,
+                                room_id: rental.room_id,
+                                room_name: room.room_name,
+                                begin_date: rental.begin_date,
+                                end_date: rental.end_date,
+                                status: rental.status,
+                                cost: rental.cost,
+                                client_id: rental.client_id,
+                                images: images,
+                                last_update: rental.last_update
+                            });
+                        }
+                        res.status(200).json(response);
                         return
                     }
                     res.status(404).json({'message': 'Rental not found'});
@@ -109,10 +148,27 @@ async function getRentalByHostId(req, res) {
                         required: true,
                         where: {host_id: hostId}
                     }
-                }).then(function (project) {
-                    if (project.length) {
-                        res.status(200).json(project.slice((page - 1) * limit, page * limit))
-                    } else res.status(404).json({'message': 'Rental not found'});
+                }).then(async function (project) {
+                    let response = [];
+                    for (let i = (page - 1) * limit; i < page * limit; i++) {
+                        if (i >= project.length) break;
+                        let rental = project[i];
+                        let images = await Image.getImage(rental.room_id);
+                        let room = await models.room.findByPk(rental.room_id);
+                        response.push({
+                            rental_id: rental.rental_id,
+                            room_id: rental.room_id,
+                            room_name: room.room_name,
+                            begin_date: rental.begin_date,
+                            end_date: rental.end_date,
+                            status: rental.status,
+                            cost: rental.cost,
+                            client_id: rental.client_id,
+                            images: images,
+                            last_update: rental.last_update
+                        });
+                    }
+                    res.status(200).json(response);
                 })
                 return;
             }
@@ -143,8 +199,22 @@ async function getRentalById(req, res) {
                         res.status(401).send("Unauthorized");
                         return
                     }
+                    let response;
+                    let images = await Image.getImage(project.room_id);
+                    response = {
+                        rental_id: project.rental_id,
+                        room_id: project.room_id,
+                        room_name: room.room_name,
+                        begin_date: project.begin_date,
+                        end_date: project.end_date,
+                        status: project.status,
+                        cost: project.cost,
+                        client_id: project.client_id,
+                        images: images,
+                        last_update: project.last_update
+                    };
+                    res.status(200).json(response);
                 });
-                res.status(200).json(project);
                 return
             }
             res.status(404).json({'message': 'Rental not found'});
