@@ -526,7 +526,6 @@ paths:
       tags:
         - room
       summary: Filter room by host ID
-      operationId: room.filterRoom
       parameters:
         - name: limit
           in: query
@@ -547,7 +546,7 @@ paths:
             schema:
               type: object
               properties:
-                hostId:
+                host_id:
                   type: number
                 filter:
                   type: string

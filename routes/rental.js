@@ -133,7 +133,7 @@ async function getRentalByHostId(req, res) {
 
         let hostId = req.params.hostId;
 
-        if (curUser.role != 'admin' && curUser.user_id !== hostId) {
+        if (curUser.role != 'admin' && curUser.user_id != hostId) {
             res.status(400).json({'message': 'Invalid HostId supplied'})
             return
         }

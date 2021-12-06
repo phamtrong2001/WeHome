@@ -408,7 +408,7 @@ async function filterRoom(req, res) {
             }
         }
         if (!rooms) {
-            res.status(200).send({message: 'No room'});
+            res.status(404).send({message: 'No room'});
             return;
         }
         let response = [];
