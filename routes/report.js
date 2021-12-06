@@ -33,7 +33,10 @@ router.get('/', passport.authenticate('admin', {session: false}), async function
        const reports = await models.report.findAll({
            order: ["last_update", "DESC"]
        });
-       res.status(200).json(reports.slice((page - 1) * limit, page * limit));
+       res.status(200).json({
+           total: reports.length,
+           reports: reports.slice((page - 1) * limit, page * limit)
+       });
    } catch (err) {
        res.status(500).send(err);
    }

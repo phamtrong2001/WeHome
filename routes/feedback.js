@@ -41,7 +41,10 @@ async function getFeedbackByRoomId(req, res) {
             },
             order: ["last_update", "DESC"]
         });
-        res.status(200).send(feedbacks.slice((page - 1) * limit, page * limit));
+        res.status(200).json({
+            total: feedbacks.length,
+            feedbacks: feedbacks.slice((page - 1) * limit, page * limit)
+        });
     } catch (err) {
         res.status(500).send(err);
     }

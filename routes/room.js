@@ -15,7 +15,10 @@ router.get('/room-type', async function (req, res) {
         const limit = req.query.limit || 20;
         const page = req.query.page || 1;
         let roomTypes = await models.room_type.findAll();
-        res.status(200).json(roomTypes.slice((page - 1) * limit, page * limit));
+        res.status(200).json({
+            total: roomTypes.length,
+            roomTypes: roomTypes.slice((page - 1) * limit, page * limit)
+        });
     } catch (err) {
         res.status(500).send(err);
     }
@@ -67,7 +70,10 @@ async function getRooms(req, res) {
                 'facilities': facilities
             });
         }
-        res.status(200).json(response);
+        res.status(200).json({
+            total: rooms.length,
+            rooms: response
+        });
     } catch (err) {
         res.status(500).send(err);
     }
@@ -280,7 +286,10 @@ async function search(req, res) {
             });
         }
         // console.log(response);
-        res.status(200).json(response);
+        res.status(200).json({
+            total: rooms.length,
+            rooms: response
+        });
     } catch (err) {
         console.log(err);
         res.status(500).send(err);
@@ -422,7 +431,10 @@ async function filterRoom(req, res) {
                 'facilities': facilities
             });
         }
-        res.status(200).json(response);
+        res.status(200).json({
+            total: rooms.length,
+            rooms: response
+        });
     } catch (err) {
         res.status(500).send(err);
     }

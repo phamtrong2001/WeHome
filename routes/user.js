@@ -25,7 +25,10 @@ async function getUsers(req, res) {
         const users = await models.user.findAll();
         const limit = req.query.limit || 20;
         const page = req.query.page || 1;
-        res.status(200).json(users.slice((page - 1) * limit, page * limit));
+        res.status(200).json({
+            total: users.length,
+            users: users.slice((page - 1) * limit, page * limit)
+        });
     } catch (err) {
         res.status(500).send(err);
     }
@@ -269,7 +272,10 @@ async function filterUser(req, res) {
                 }
             }
         });
-        res.status(200).json(users.slice((page - 1) * limit, page * limit));
+        res.status(200).json({
+            total: users.length,
+            users: users.slice((page - 1) * limit, page * limit)
+        });
     } catch (err) {
         res.status(500).send(err);
     }

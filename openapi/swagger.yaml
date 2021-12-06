@@ -48,9 +48,14 @@ paths:
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/User_response'
+                type: object
+                properties:
+                  total:
+                    type: number
+                  users:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/User_response'
         '401':
           description: Access token is missing or invalid
         '500':
@@ -203,9 +208,14 @@ paths:
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/User_response'
+                type: object
+                properties:
+                  total:
+                    type: number
+                  users:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/User_response'
         '401':
           description: Access token is missing or invalid
         '500':
@@ -339,9 +349,14 @@ paths:
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/Room_response'
+                type: object
+                properties:
+                  total:
+                    type: number
+                  rooms:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Room_response'
         '500':
           description: System error
   /api/room/{roomId}:
@@ -496,9 +511,14 @@ paths:
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/Room_response'
+                type: object
+                properties:
+                  total:
+                    type: number
+                  rooms:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Room_response'
         '500':
           description: System error
   /api/room/filter:
@@ -542,9 +562,14 @@ paths:
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/Room_response'
+                type: object
+                properties:
+                  total:
+                    type: number
+                  rooms:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Room_response'
         '404':
           description: No room
           content: {}
@@ -574,17 +599,22 @@ paths:
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  type: object
+                type: object
                   properties:
-                    room_type_id:
+                    total:
                       type: number
-                    room_type:
-                      type: string
-                    description:
-                      type: string
-                      nullable: true
+                    roomTypes:
+                      type: array
+                      items:
+                        type: object
+                        properties:
+                          room_type_id:
+                            type: number
+                          room_type:
+                            type: string
+                          description:
+                            type: string
+                            nullable: true
         '500':
           description: System error
   /api/rental:
@@ -613,9 +643,14 @@ paths:
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/Rental_response'
+                type: object
+                properties:
+                  total:
+                    type: number
+                  rentals:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Rental_response'
         '401':
           description: Access token is missing or invalid
         '404':
@@ -654,9 +689,14 @@ paths:
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/Rental_response'
+                type: object
+                properties:
+                  total:
+                    type: number
+                  rentals:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Rental_response'
         '400':
           description: Invalid userId supplied
         '401':
@@ -697,9 +737,14 @@ paths:
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/Rental_response'
+                type: object
+                properties:
+                  total:
+                    type: number
+                  rentals:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Rental_response'
         '400':
           description: Invalid hostId supplied
         '401':
@@ -831,9 +876,14 @@ paths:
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/Report'
+                type: object
+                properties:
+                  total:
+                    type: number
+                  reports:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Report'
         '401':
           description: Access token is missing or invalid
         '500':
@@ -917,9 +967,14 @@ paths:
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/Feedback'
+                type: object
+                properties:
+                  total:
+                    type: number
+                  feedbacks:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Feedback'
         '401':
           description: Access token is missing or invalid
         '500':
@@ -948,9 +1003,14 @@ paths:
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/Facility_response'
+                type: object
+                properties:
+                  total:
+                    type: number
+                  facilities:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Facility_response'
   /api/facility/create:
     post:
       tags:

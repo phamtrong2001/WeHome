@@ -15,7 +15,10 @@ router.get('/', /*passport.authenticate('user', {session: false}),*/ async funct
         const page = req.query.page || 1;
 
         const facilities = await models.facility.findAll();
-        res.status(200).json(facilities.slice((page - 1) * limit, page * limit));
+        res.status(200).json({
+            total: facilities.length,
+            facilities: facilities.slice((page - 1) * limit, page * limit)
+        });
     } catch (err) {
         res.status(500).send(err);
     }

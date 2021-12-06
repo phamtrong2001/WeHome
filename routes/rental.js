@@ -40,7 +40,10 @@ router.get('/', passport.authenticate('admin', {session: false}), async function
                     last_update: rental.last_update
                 });
             }
-            res.status(200).json(response);
+            res.status(200).json({
+                total: project.length,
+                rentals: response
+            });
         })
     } catch (err) {
         res.status(500).send(err);
@@ -96,7 +99,10 @@ async function getRentalByUserId(req, res) {
                                 last_update: rental.last_update
                             });
                         }
-                        res.status(200).json(response);
+                        res.status(200).json({
+                            total: project.length,
+                            rentals: response
+                        });
                         return
                     }
                     res.status(404).json({'message': 'Rental not found'});
@@ -168,7 +174,10 @@ async function getRentalByHostId(req, res) {
                             last_update: rental.last_update
                         });
                     }
-                    res.status(200).json(response);
+                    res.status(200).json({
+                        total: project.length,
+                        rentals: response
+                    });
                 })
                 return;
             }
