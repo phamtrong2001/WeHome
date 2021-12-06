@@ -13,7 +13,7 @@ module.exports = function (sequelize, DataTypes) {
         },
         address_id: {
             type: DataTypes.INTEGER,
-            allowNull: false,
+            allowNull: true,
             references: {
                 model: 'address',
                 key: 'address_id'
@@ -69,7 +69,7 @@ module.exports = function (sequelize, DataTypes) {
         },
         accommodation_type: {
             type: DataTypes.TEXT,
-            allowNull: false
+            allowNull: true
         },
         price: {
             type: DataTypes.INTEGER,

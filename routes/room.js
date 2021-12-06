@@ -135,7 +135,7 @@ async function updateRoom(req, res) {
             res.status(400).json({message: 'Invalid roomId'});
             return;
         }
-        if (curUser.role != 'admin' && room.hostId != curUser.user_id) {
+        if (curUser.role != 'admin' && room.host_id != curUser.user_id) {
             res.status(401).send('Unauthorized');
             return;
         }
@@ -194,7 +194,7 @@ async function deleteRoom(req, res) {
             res.status(400).json({message: 'Invalid roomId'});
             return;
         }
-        if (curUser.role != 'admin' && room.hostId != curUser.user_id) {
+        if (curUser.role != 'admin' && room.host_id != curUser.user_id) {
             res.status(401).send('Unauthorized');
             return;
         }
@@ -341,7 +341,7 @@ async function createRoom(req, res) {
 router.post('/create', passport.authenticate('host', {session: false}), createRoom);
 
 /**
- * Get rooms by hostId
+ * Get rooms by host_id
  * @param req
  * @param res
  * @returns {Promise<void>}
@@ -352,11 +352,11 @@ async function filterRoom(req, res) {
         const page = req.query.page || 1;
 
         let rooms;
-        if (req.body.hostId) {
+        if (req.body.host_id) {
             if (!req.body.filter) {
                 rooms = await models.room.findAll({
                     where: {
-                        host_id: req.body.hostId
+                        host_id: req.body.host_id
                     }
                 });
             } else if (req.body.filter != 'Empty') {
@@ -370,7 +370,7 @@ async function filterRoom(req, res) {
                 }
                 rooms = await models.room.findAll({
                     where: {
-                        host_id: req.body.hostId,
+                        host_id: req.body.host_id,
                         room_id: {
                             [Op.in]: db.literal(
                                 '( SELECT room_id FROM rental' +
@@ -385,7 +385,7 @@ async function filterRoom(req, res) {
             } else {
                 rooms = await models.room.findAll({
                     where: {
-                        host_id: req.body.hostId,
+                        host_id: req.body.host_id,
                         room_id: {
                             [Op.notIn]: db.literal(
                                 '( SELECT room_id FROM rental' +
