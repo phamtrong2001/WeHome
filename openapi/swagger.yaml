@@ -556,6 +556,9 @@ paths:
                     - Arriving soon
                     - Checking out
                     - Currently hosting
+                confirmed:
+                  type: boolean
+                  default: true
       responses:
         '200':
           description: OK

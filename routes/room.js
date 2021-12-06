@@ -351,6 +351,12 @@ async function filterRoom(req, res) {
         const limit = req.query.limit || 20;
         const page = req.query.page || 1;
 
+        let confirmed = req.body.confirmed;
+
+        if (confirmed !== false) {
+            confirmed = true;
+        }
+
         let rooms;
         if (req.body.host_id) {
             if (!req.body.filter) {
@@ -371,6 +377,7 @@ async function filterRoom(req, res) {
                 rooms = await models.room.findAll({
                     where: {
                         host_id: req.body.host_id,
+                        confirmed: true,
                         room_id: {
                             [Op.in]: db.literal(
                                 '( SELECT room_id FROM rental' +
@@ -386,12 +393,13 @@ async function filterRoom(req, res) {
                 rooms = await models.room.findAll({
                     where: {
                         host_id: req.body.host_id,
+                        confirmed: confirmed,
                         room_id: {
                             [Op.notIn]: db.literal(
                                 '( SELECT room_id FROM rental' +
                                 ' WHERE rental.room_id = room.room_id' +
                                 ' AND begin_date < Current_date() ' +
-                                ' AND status = CONFIRMED' +
+                                ' AND status != CONFIRMED' +
                                 ')'
                             )
                         }
