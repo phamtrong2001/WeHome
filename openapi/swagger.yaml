@@ -600,21 +600,21 @@ paths:
             application/json:
               schema:
                 type: object
-                  properties:
-                    total:
-                      type: number
-                    roomTypes:
-                      type: array
-                      items:
-                        type: object
-                        properties:
-                          room_type_id:
-                            type: number
-                          room_type:
-                            type: string
-                          description:
-                            type: string
-                            nullable: true
+                properties:
+                  total:
+                    type: number
+                  roomTypes:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        room_type_id:
+                          type: number
+                        room_type:
+                          type: string
+                        description:
+                          type: string
+                          nullable: true
         '500':
           description: System error
   /api/rental:
