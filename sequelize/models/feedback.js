@@ -1,6 +1,12 @@
 const Sequelize = require('sequelize');
 module.exports = function (sequelize, DataTypes) {
     return sequelize.define('feedback', {
+        id: {
+            autoIncrement: true,
+            type: DataTypes.INTEGER,
+            allowNull: false,
+            primaryKey: true
+        },
         room_id: {
             type: DataTypes.INTEGER,
             allowNull: false,
@@ -35,6 +41,14 @@ module.exports = function (sequelize, DataTypes) {
         tableName: 'feedback',
         timestamps: false,
         indexes: [
+            {
+                name: "PRIMARY",
+                unique: true,
+                using: "BTREE",
+                fields: [
+                    {name: "id"},
+                ]
+            },
             {
                 name: "room_id",
                 using: "BTREE",
