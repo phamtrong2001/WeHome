@@ -323,16 +323,23 @@ async function createRoom(req, res) {
             rate: req.body.rate
         }
         await models.room.create(newRoom);
-        let room = await models.room.findOne({
+        let rooms = await models.room.findAll({
             where: {
-                room_name: newRoom.room_name
-            }
+                room_name: newRoom.room_name,
+                host_id: newRoom.host_id
+            },
+            order: [["room_id", "DESC"]],
+            limit: 1
         });
+        let room = rooms[0];
         const images = req.body.images;
         await Image.createImage(room.room_id, images);
         const facilities = req.body.facilities;
         await Facility.addFacilityRoom(room.room_id, facilities);
-        res.status(200).json({message: 'OK'});
+        res.status(200).json({
+            room_id: room.room_id,
+            message: 'OK'
+        });
     } catch (err) {
         res.status(500).send(err);
     }

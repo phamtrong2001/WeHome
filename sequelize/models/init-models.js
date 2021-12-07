@@ -24,18 +24,6 @@ function initModels(sequelize) {
     var room_type = _room_type(sequelize, DataTypes);
     var user = _user(sequelize, DataTypes);
 
-    facility.belongsToMany(room, {
-        as: 'room_id_rooms',
-        through: facility_room,
-        foreignKey: "facility_id",
-        otherKey: "room_id"
-    });
-    room.belongsToMany(facility, {
-        as: 'facility_id_facilities',
-        through: facility_room,
-        foreignKey: "room_id",
-        otherKey: "facility_id"
-    });
     room.belongsTo(address, {as: "address", foreignKey: "address_id"});
     address.hasMany(room, {as: "rooms", foreignKey: "address_id"});
     facility_room.belongsTo(facility, {as: "facility", foreignKey: "facility_id"});

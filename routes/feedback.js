@@ -39,7 +39,7 @@ async function getFeedbackByRoomId(req, res) {
             where: {
                 room_id: req.params.room_id
             },
-            order: ["last_update", "DESC"]
+            order: [["last_update", "DESC"]]
         });
         res.status(200).json({
             total: feedbacks.length,

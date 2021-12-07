@@ -465,6 +465,16 @@ paths:
       responses:
         '200':
           description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    default: OK
+                  room_id:
+                    type: number
         '401':
           description: Access token is missing or invalid
         '500':

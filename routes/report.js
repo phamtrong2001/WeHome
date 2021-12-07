@@ -31,7 +31,7 @@ router.get('/', passport.authenticate('admin', {session: false}), async function
        const page = req.query.page || 1;
 
        const reports = await models.report.findAll({
-           order: ["last_update", "DESC"]
+           order: [["last_update", "DESC"]]
        });
        res.status(200).json({
            total: reports.length,
