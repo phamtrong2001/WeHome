@@ -198,13 +198,13 @@ async function deleteRoom(req, res) {
             res.status(401).send('Unauthorized');
             return;
         }
+        await Image.deleteImage(req.params["roomId"]);
+        await Facility.deleteFacilityRoom(req.params["roomId"]);
         await models.room.destroy({
             where: {
                 room_id: req.params["roomId"]
             }
         });
-        await Image.deleteImage(req.params["roomId"]);
-        await Facility.deleteFacilityRoom(req.params["roomId"]);
         res.status(200).json({message: 'Success'});
     } catch (err) {
         res.status(500).send(err);
