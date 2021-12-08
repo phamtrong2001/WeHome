@@ -137,20 +137,17 @@ async function getRentalByHostId(req, res) {
             res.status(400).json({'message': 'Invalid HostId supplied'})
             return
         }
-        await models.user.findOne({
-            where: {
-                user_id: hostId
-            }
-        }).then(async function (project) {
-            console.log(project);
+        await models.user.findByPk(hostId).then(async function (project) {
+            // console.log(project);
             if (project) {
-                if (project.role !== "host") {
+                if (project.role != "host" && project.role != 'admin') {
                     res.status(400).json({'message': 'Invalid HostId supplied'})
                     return
                 }
                 await models.rental.findAll({
                     include: {
                         model: models.room,
+                        as: 'room',
                         required: true,
                         where: {host_id: hostId}
                     }
@@ -184,6 +181,7 @@ async function getRentalByHostId(req, res) {
             res.status(400).json({'message': 'Invalid HostId supplied'})
         });
     } catch (err) {
+        console.log(err);
         res.status(500).send(err);
     }
 }
