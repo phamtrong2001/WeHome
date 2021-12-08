@@ -1249,7 +1249,10 @@ components:
         rate:
           type: number
           format: float
-          nullable: true
+          default: 0
+        total_rated:
+          type: number
+          default: 0
         images:
           type: array
           items:
@@ -1273,6 +1276,7 @@ components:
         accommodation_type: Bể bơi
         confirmed: true
         rate: 3.8
+        total_rated: 20
         host_id: 11
         price: 3000000
         images:

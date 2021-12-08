@@ -19,7 +19,7 @@ async function createFeedback(req, res) {
             rate: req.body.rate
         }
         if (newFeedback.rate) {
-            await Room.ratedRoom(newFeedback.room_id);
+            await Room.ratedRoom(newFeedback.room_id, newFeedback.rate);
         }
         await models.feedback.create(newFeedback);
         res.status(200).json({'message': 'OK'});

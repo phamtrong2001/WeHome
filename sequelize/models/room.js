@@ -76,8 +76,14 @@ module.exports = function (sequelize, DataTypes) {
             allowNull: false
         },
         rate: {
-            type: DataTypes.FLOAT,
-            allowNull: true
+            type: DataTypes.DECIMAL(5, 2),
+            allowNull: true,
+            defaultValue: 0.00
+        },
+        total_rated: {
+            type: DataTypes.INTEGER,
+            allowNull: true,
+            defaultValue: 0
         },
         confirmed: {
             type: DataTypes.BOOLEAN,

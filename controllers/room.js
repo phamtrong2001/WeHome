@@ -1,22 +1,12 @@
 const {models} = require("../sequelize/conn");
-const {where} = require("sequelize");
-module.exports.ratedRoom = async function updateRate(room_id) {
+module.exports.ratedRoom = async function updateRate(room_id, rate) {
     try {
-        const feedbacks = await models.feedback.findAll({
-            where: {
-                room_id: room_id
-            }
-        });
-        let rate = 0;
-        let numOfRated = 0;
-        for (let feedback of feedbacks) {
-            if (feedback.rate) {
-                rate += feedback.rate;
-                numOfRated++;
-            }
-        }
-        rate /= numOfRated;
-        await models.room.update({rate: rate}, {
+        const room = await models.room.findByPk(room_id);
+        let total_rate = room.rate * room.total_rated + rate;
+        let numOfRated = room.total_rated + 1;
+
+        total_rate /= numOfRated;
+        await models.room.update({rate: total_rate}, {
             where: {
                 room_id: room_id
             }
