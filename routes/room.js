@@ -416,7 +416,7 @@ async function filterRoom(req, res) {
                                 ' WHERE rental.room_id = room.room_id' +
                                 ' AND begin_date < Current_date() ' +
                                 ' AND end_date >= Current_date() ' +
-                                ' AND status == CONFIRMED' +
+                                ' AND status = CONFIRMED' +
                                 ')'
                             )
                         }
