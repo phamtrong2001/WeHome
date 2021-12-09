@@ -339,7 +339,6 @@ async function deleteRentalById(req, res) {
 
         let rentalId = req.params.rentalId;
 
-
         await models.rental.findByPk(rentalId).then(async function (project) {
             if (project) {
                 if (curUser.role != 'admin' && project.client_id != curUser.user_id) {
@@ -362,5 +361,100 @@ async function deleteRentalById(req, res) {
 }
 
 router.delete('/:rentalId', passport.authenticate('user', {session: false}), deleteRentalById);
+
+async function filterHostRentalByStatus(req, res) {
+    try {
+        const payload = jwt.decode(req.headers.authorization.split(' ')[1]);
+
+        const limit = req.query.limit || 20;
+        const page = req.query.page || 1;
+
+        const rentals = await models.rental.findAll({
+            include: {
+                model: models.room,
+                as: 'room',
+                required: true,
+                where: {host_id: payload.user_id}
+            },
+            where: {
+                status: req.body.status
+            }
+        });
+
+        let response = [];
+        for (let i = (page - 1) * limit; i < page * limit; i++) {
+            if (i >= rentals.length) break;
+            let rental = rentals[i];
+            let images = await Image.getImage(rental.room_id);
+            let room = await models.room.findByPk(rental.room_id);
+            response.push({
+                rental_id: rental.rental_id,
+                room_id: rental.room_id,
+                room_name: room.room_name,
+                begin_date: rental.begin_date,
+                end_date: rental.end_date,
+                status: rental.status,
+                cost: rental.cost,
+                client_id: rental.client_id,
+                images: images,
+                last_update: rental.last_update
+            });
+        }
+        res.status(200).json({
+            total: rentals.length,
+            rentals: response
+        });
+    } catch (err) {
+        console.log(err);
+        res.status(500).send(err);
+    }
+}
+
+router.post('/host/filter', passport.authenticate('host', {session: false}), filterHostRentalByStatus)
+
+async function filterUserRentalByStatus(req, res) {
+    try {
+        const payload = jwt.decode(req.headers.authorization.split(' ')[1]);
+
+        const limit = req.query.limit || 20;
+        const page = req.query.page || 1;
+
+        const rentals = await models.rental.findAll({
+            where: {
+                client_id: payload.user_id,
+                status: req.body.status
+            }
+        });
+
+        let response = [];
+        for (let i = (page - 1) * limit; i < page * limit; i++) {
+            if (i >= rentals.length) break;
+            let rental = rentals[i];
+            let images = await Image.getImage(rental.room_id);
+            let room = await models.room.findByPk(rental.room_id);
+            response.push({
+                rental_id: rental.rental_id,
+                room_id: rental.room_id,
+                room_name: room.room_name,
+                begin_date: rental.begin_date,
+                end_date: rental.end_date,
+                status: rental.status,
+                cost: rental.cost,
+                client_id: rental.client_id,
+                images: images,
+                last_update: rental.last_update
+            });
+        }
+        res.status(200).json({
+            total: rentals.length,
+            rentals: response
+        });
+    } catch (err) {
+        console.log(err);
+        res.status(500).send(err);
+    }
+}
+
+router.post('/user/filter', passport.authenticate('user', {session: false}), filterUserRentalByStatus)
 
 module.exports = router;

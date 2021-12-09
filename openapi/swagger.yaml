@@ -862,6 +862,108 @@ paths:
           description: Access token is missing or invalid
         '500':
           description: System error
+  /api/rental/user/filter:
+    post:
+      tags:
+        - rental
+      security:
+        - bearerAuth: [ ]
+      summary: User filter their rental
+      parameters:
+        - name: limit
+          in: query
+          description: number of items per page
+          required: false
+          schema:
+            type: number
+        - name: page
+          in: query
+          description: index of page
+          required: false
+          schema:
+            type: number
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                status:
+                  type: string
+                  enum:
+                    - UNCONFIRMED
+                    - CONFIRMED
+                    - RETURNED
+                    - REJECTED
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  total:
+                    type: number
+                  rentals:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Rental_response'
+        '401':
+          description: Access token is missing or invalid
+        '500':
+          description: System error
+  /api/rental/host/filter:
+    post:
+      tags:
+        - rental
+      security:
+        - bearerAuth: [ ]
+      summary: Host filter their rental
+      parameters:
+        - name: limit
+          in: query
+          description: number of items per page
+          required: false
+          schema:
+            type: number
+        - name: page
+          in: query
+          description: index of page
+          required: false
+          schema:
+            type: number
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                status:
+                  type: string
+                  enum:
+                    - UNCONFIRMED
+                    - CONFIRMED
+                    - RETURNED
+                    - REJECTED
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  total:
+                    type: number
+                  rentals:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Rental_response'
+        '401':
+          description: Access token is missing or invalid
+        '500':
+          description: System error
   /api/report:
     get:
       tags:
