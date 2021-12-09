@@ -20,6 +20,7 @@ router.get('/', /*passport.authenticate('user', {session: false}),*/ async funct
             facilities: facilities.slice((page - 1) * limit, page * limit)
         });
     } catch (err) {
+        console.log(err);
         res.status(500).send(err);
     }
 });

@@ -7,6 +7,7 @@ const passport = require("passport");
 const auth = require("../middlewares/auth");
 const Image = require("../controllers/image");
 const Facility = require("../controllers/facility");
+const {deleteRentalUnconfirmed} = require("../controllers/rental");
 
 router.use(bodyParser.urlencoded({extended: false}))
 router.use(bodyParser.json())
@@ -46,6 +47,7 @@ router.get('/', passport.authenticate('admin', {session: false}), async function
             });
         })
     } catch (err) {
+        console.log(err);
         res.status(500).send(err);
     }
 })
@@ -112,6 +114,7 @@ async function getRentalByUserId(req, res) {
             res.status(400).json({'message': 'Invalid UserId supplied'})
         });
     } catch (err) {
+        console.log(err);
         res.status(500).send(err);
     }
 }
@@ -227,6 +230,7 @@ async function getRentalById(req, res) {
             res.status(404).json({'message': 'Rental not found'});
         })
     } catch (err) {
+        console.log(err);
         res.status(500).send(err);
     }
 }
@@ -270,7 +274,10 @@ async function updateRentalById(req, res) {
                 res.status(200).json({'message': 'OK'});
                 if (!change) return;
                 let content;
-                if (req.body.status === "CONFIRMED") content = curUser.name + " has accepted your rental";
+                if (req.body.status === "CONFIRMED") {
+                    content = curUser.name + " has accepted your rental";
+                    await deleteRentalUnconfirmed(updateRental.room_id, updateRental.begin_date, updateRental.end_date);
+                }
                 if (req.body.status === "RETURNED") content = "The " + curUser.name + " has confirmed check-out";
                 if (req.body.status === "REJECTED") content = curUser.name + " has rejected your rental";
                 const createNotification = {
@@ -284,6 +291,7 @@ async function updateRentalById(req, res) {
             res.status(404).json({'message': 'Rental not found'});
         })
     } catch (err) {
+        console.log(err);
         res.status(500).send(err);
     }
 }
@@ -322,6 +330,7 @@ async function createRental(req, res) {
             await models.notification.create(newNotification)
         })
     } catch (err) {
+        console.log(err);
         res.status(500).send(err);
     }
 }
@@ -356,6 +365,7 @@ async function deleteRentalById(req, res) {
             res.status(404).json({'message': 'Rental not found'});
         })
     } catch (err) {
+        console.log(err);
         res.status(500).send(err);
     }
 }

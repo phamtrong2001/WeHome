@@ -20,6 +20,7 @@ router.get('/room-type', async function (req, res) {
             roomTypes: roomTypes.slice((page - 1) * limit, page * limit)
         });
     } catch (err) {
+        console.log(err);
         res.status(500).send(err);
     }
 })
@@ -29,7 +30,6 @@ async function getRoomType(room_type_id) {
         let roomType = await models.room_type.findByPk(room_type_id);
         return roomType.room_type;
     } catch (err) {
-        // console.log(err);
         throw err;
     }
 }
@@ -76,6 +76,7 @@ async function getRooms(req, res) {
             rooms: response
         });
     } catch (err) {
+        console.log(err);
         res.status(500).send(err);
     }
 }
@@ -118,6 +119,7 @@ async function getRoomById(req, res) {
         };
         res.status(200).json(response);
     } catch (err) {
+        console.log(err);
         res.status(500).send(err);
     }
 }
@@ -177,6 +179,7 @@ async function updateRoom(req, res) {
 
         res.status(200).json({message: 'OK'});
     } catch (err) {
+        console.log(err);
         res.status(500).send(err);
     }
 }
@@ -209,6 +212,7 @@ async function deleteRoom(req, res) {
         });
         res.status(200).json({message: 'Success'});
     } catch (err) {
+        console.log(err);
         res.status(500).send(err);
     }
 }
@@ -345,6 +349,7 @@ async function createRoom(req, res) {
             message: 'OK'
         });
     } catch (err) {
+        console.log(err);
         res.status(500).send(err);
     }
 }
@@ -410,7 +415,8 @@ async function filterRoom(req, res) {
                                 '( SELECT room_id FROM rental' +
                                 ' WHERE rental.room_id = room.room_id' +
                                 ' AND begin_date < Current_date() ' +
-                                ' AND status != CONFIRMED' +
+                                ' AND end_date >= Current_date() ' +
+                                ' AND status == CONFIRMED' +
                                 ')'
                             )
                         }
@@ -456,6 +462,7 @@ async function filterRoom(req, res) {
             rooms: response
         });
     } catch (err) {
+        console.log(err);
         res.status(500).send(err);
     }
 }

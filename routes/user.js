@@ -30,6 +30,7 @@ async function getUsers(req, res) {
             users: users.slice((page - 1) * limit, page * limit)
         });
     } catch (err) {
+        console.log(err);
         res.status(500).send(err);
     }
 }
@@ -52,6 +53,7 @@ async function getUserById(req, res) {
         }
         res.status(200).json(user);
     } catch (err) {
+        console.log(err);
         res.status(500).send(err);
     }
 }
@@ -120,6 +122,7 @@ async function updateUser(req, res) {
         });
         res.status(200).json({message: 'OK'});
     } catch (err) {
+        console.log(err);
         res.status(500).send(err);
     }
 }
@@ -147,6 +150,7 @@ async function deleteUser(req, res) {
         });
         res.status(200).json({message: 'Success'});
     } catch (err) {
+        console.log(err);
         res.status(500).send(err);
     }
 }
@@ -192,6 +196,7 @@ async function createUser(req, res) {
         await models.user.create(newUser);
         res.status(200).json({message: 'OK'});
     } catch (err) {
+        console.log(err);
         res.status(500).send(err);
     }
 }
@@ -237,6 +242,7 @@ async function changePassword(req, res) {
         });
         res.status(200).json({message: 'OK'});
     } catch (err) {
+        console.log(err);
         res.status(500).send(err);
     }
 }
@@ -277,6 +283,7 @@ async function filterUser(req, res) {
             users: users.slice((page - 1) * limit, page * limit)
         });
     } catch (err) {
+        console.log(err);
         res.status(500).send(err);
     }
 }
@@ -313,6 +320,7 @@ router.post('/login', async (req, res, next) => {
             }
         }
     } catch (err) {
+        console.log(err);
         res.status(500).send(err);
     }
 });

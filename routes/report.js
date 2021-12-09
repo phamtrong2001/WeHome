@@ -19,6 +19,7 @@ async function createReport(req, res) {
         await models.report.create(newReport);
         res.status(200).json({'message': 'OK'});
     } catch (err) {
+        console.log(err);
         res.status(500).json({message: err});
     }
 }
@@ -38,6 +39,7 @@ router.get('/', passport.authenticate('admin', {session: false}), async function
            reports: reports.slice((page - 1) * limit, page * limit)
        });
    } catch (err) {
+       console.log(err);
        res.status(500).send(err);
    }
 });

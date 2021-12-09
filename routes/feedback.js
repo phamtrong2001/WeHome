@@ -24,6 +24,7 @@ async function createFeedback(req, res) {
         await models.feedback.create(newFeedback);
         res.status(200).json({'message': 'OK'});
     } catch (err) {
+        console.log(err);
         res.status(500).json({message: err});
     }
 }
@@ -46,6 +47,7 @@ async function getFeedbackByRoomId(req, res) {
             feedbacks: feedbacks.slice((page - 1) * limit, page * limit)
         });
     } catch (err) {
+        console.log(err);
         res.status(500).send(err);
     }
 }
