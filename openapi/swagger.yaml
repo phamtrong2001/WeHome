@@ -1247,9 +1247,8 @@ components:
           type: boolean
           default: false
         rate:
-          type: number
-          format: float
-          default: 0
+          type: string
+          default: 0.00
         total_rated:
           type: number
           default: 0
