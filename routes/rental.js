@@ -283,7 +283,7 @@ async function updateRentalById(req, res) {
                 const createNotification = {
                     user_id: project.client_id,
                     content: content,
-                    status: 0
+                    status: "UNREAD"
                 }
                 await models.notification.create(createNotification);
                 return
@@ -325,7 +325,7 @@ async function createRental(req, res) {
             const newNotification = {
                 user_id: project.host_id,
                 content: "The " + curUser.name + " has created a rental of your room",
-                status: "UNCONFIRMED"
+                status: "UNREAD"
             }
             await models.notification.create(newNotification)
         })

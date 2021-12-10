@@ -12,6 +12,7 @@ const rentalRouter = require('./routes/rental');
 const reportRouter = require('./routes/report');
 const feedbackRouter = require('./routes/feedback');
 const facilityRouter = require('./routes/facility');
+const notificationRouter = require('./routes/notification');
 
 const app = express();
 
@@ -34,5 +35,6 @@ app.use('/api/rental', rentalRouter);
 app.use('/api/report', reportRouter);
 app.use('/api/feedback', feedbackRouter);
 app.use('/api/facility', facilityRouter);
+app.use('/api/notification', notificationRouter);
 
 module.exports = app;
