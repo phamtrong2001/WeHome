@@ -164,6 +164,8 @@ paths:
       responses:
         '200':
           description: OK
+        '400':
+          description: Invalid input
         '500':
           description: System error
   /api/user/filter:

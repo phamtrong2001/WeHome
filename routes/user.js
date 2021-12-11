@@ -180,7 +180,17 @@ async function createUser(req, res) {
                 username: newUser.username
             }
         });
-        if (user) {
+        const email = await models.user.findOne({
+            where: {
+                email: newUser.username
+            }
+        });
+        const phone = await models.user.findOne({
+            where: {
+                phone: newUser.phone
+            }
+        });
+        if (user || email || phone) {
             res.status(400).json({message: 'Failed! Username is already in use!'});
             return;
         }
