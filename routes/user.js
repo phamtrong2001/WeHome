@@ -189,8 +189,16 @@ async function createUser(req, res) {
                 phone: newUser.phone
             }
         });
-        if (user || email || phone) {
+        if (user) {
             res.status(400).json({message: 'Failed! Username is already in use!'});
+            return;
+        }
+        if (email) {
+            res.status(400).json({message: 'Failed! Email is already in use!'});
+            return;
+        }
+        if (phone) {
+            res.status(400).json({message: 'Failed! Phone number is already in use!'});
             return;
         }
         if (!validate_user(newUser.username, newUser.password)) {
