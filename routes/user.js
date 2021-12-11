@@ -84,6 +84,7 @@ async function updateUser(req, res) {
             phone: req.body.phone,
             email: req.body.email,
             username: req.body.username,
+            role: (req.body.role != 'admin' ? req.body.role : 'client')
         }
 
         if (curUser.role != 'admin') {
