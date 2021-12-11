@@ -27,7 +27,8 @@ async function createFeedback(req, res) {
             user_id: room.host_id,
             content: client.name + ' has reviewed your room',
             type: "FEEDBACK",
-            status: "UNREAD"
+            status: "UNREAD",
+            last_update: new Date().toISOString()
         };
         await models.feedback.create(newFeedback);
         await models.notification.create(newNotification);

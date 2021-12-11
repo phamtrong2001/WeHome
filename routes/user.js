@@ -167,7 +167,6 @@ router.delete('/:userId', passport.authenticate('admin', {session: false}), dele
 async function createUser(req, res) {
     try {
         const newUser = {
-            id: req.body.id,
             name: req.body.name,
             phone: req.body.phone,
             email: req.body.email,

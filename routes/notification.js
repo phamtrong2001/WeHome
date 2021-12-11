@@ -18,7 +18,8 @@ router.get('/', passport.authenticate('user', {session: false}), async function 
         await models.notification.findAll({
             where: {
                 user_id: payload.user_id
-            }
+            },
+            order: [["last_update", "DESC"]]
         }).then(function (project){
             res.status(200).json(project);
         })
@@ -30,7 +31,9 @@ router.get('/', passport.authenticate('user', {session: false}), async function 
 
 router.get('/all', passport.authenticate('admin', {session: false}), async function (req,res){
     try {
-        await models.notification.findAll().then(function (project){
+        await models.notification.findAll({
+            order: [["last_update", "DESC"]]
+        }).then(function (project){
             res.status(200).json(project);
         })
     } catch (err) {
