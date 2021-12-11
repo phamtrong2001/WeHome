@@ -102,6 +102,28 @@ async function updateUser(req, res) {
                     return;
                 }
             }
+            if (newUser.email) {
+                let user = await models.user.findOne({
+                    where: {
+                        email: newUser.email
+                    }
+                });
+                if (user) {
+                    res.status(400).json({message: 'Failed! Email is already in use!'});
+                    return;
+                }
+            }
+            if (newUser.phone) {
+                let user = await models.user.findOne({
+                    where: {
+                        phone: newUser.phone
+                    }
+                });
+                if (user) {
+                    res.status(400).json({message: 'Failed! Phone number is already in use!'});
+                    return;
+                }
+            }
             if (newUser.username && !validate_user(newUser.username)) {
                 res.status(400).json({message: 'Invalid username!'});
                 return;
