@@ -92,7 +92,7 @@ async function updateUser(req, res) {
                 res.status(400).json({message: 'Invalid userId'});
                 return;
             }
-            if (newUser.username) {
+            if (newUser.username && newUser.username != user.username) {
                 let user = await models.user.findOne({
                     where: {
                         username: newUser.username
@@ -103,7 +103,7 @@ async function updateUser(req, res) {
                     return;
                 }
             }
-            if (newUser.email) {
+            if (newUser.email && newUser.email != user.email) {
                 let user = await models.user.findOne({
                     where: {
                         email: newUser.email
@@ -114,7 +114,7 @@ async function updateUser(req, res) {
                     return;
                 }
             }
-            if (newUser.phone) {
+            if (newUser.phone && newUser.phone != user.phone) {
                 let user = await models.user.findOne({
                     where: {
                         phone: newUser.phone
