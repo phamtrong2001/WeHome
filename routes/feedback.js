@@ -21,7 +21,16 @@ async function createFeedback(req, res) {
         if (newFeedback.rate) {
             await Room.ratedRoom(newFeedback.room_id, newFeedback.rate);
         }
+        const room = await models.room.findByPk(newFeedback.room_id);
+        const client = await models.user.findByPk(newFeedback.client_id);
+        const newNotification = {
+            user_id: room.host_id,
+            content: client.name + ' has reviewed your room',
+            type: "FEEDBACK",
+            status: "UNREAD"
+        };
         await models.feedback.create(newFeedback);
+        await models.notification.create(newNotification);
         res.status(200).json({'message': 'OK'});
     } catch (err) {
         console.log(err);

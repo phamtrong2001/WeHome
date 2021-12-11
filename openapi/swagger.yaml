@@ -1637,6 +1637,11 @@ components:
           type: number
         content:
           type: string
+        type:
+          type: string
+          enum:
+            - RENTAL
+            - FEEDBACK
         status:
           type: string
           enum:
