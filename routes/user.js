@@ -234,7 +234,7 @@ async function changePassword(req, res) {
             }
 
             if (!bcrypt.compareSync(oldPassword, curUser.password)) {
-                res.status(401).json({message: 'Password is incorrect'});
+                res.status(400).json({message: 'Password is incorrect'});
                 return;
             }
 
@@ -313,7 +313,7 @@ router.post('/login', async (req, res, next) => {
                 }
             });
             if (!user) {
-                res.status(401).json({message: 'No such user found'});
+                res.status(400).json({message: 'No such user found'});
                 return;
             }
             if (bcrypt.compareSync(password, user.password)) {
@@ -326,7 +326,7 @@ router.post('/login', async (req, res, next) => {
                     token: token
                 });
             } else {
-                res.status(401).json({message: 'Password is incorrect!'});
+                res.status(400).json({message: 'Password is incorrect!'});
             }
         }
     } catch (err) {
