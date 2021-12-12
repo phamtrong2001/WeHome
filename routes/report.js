@@ -13,7 +13,6 @@ passport.use('admin', auth.isAdmin);
 async function createReport(req, res) {
     try {
         const newReport = {
-            user_id: req.body.user_id,
             description: req.body.description,
         }
         await models.report.create(newReport);
@@ -24,7 +23,7 @@ async function createReport(req, res) {
     }
 }
 
-router.post('/create', passport.authenticate('user', {session: false}), createReport);
+router.post('/create', createReport);
 
 router.get('/', passport.authenticate('admin', {session: false}), async function (req, res) {
    try {
