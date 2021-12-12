@@ -325,7 +325,7 @@ async function createRental(req, res) {
         }).then(async function (project) {
             const newNotification = {
                 user_id: project.host_id,
-                content: "The " + curUser.name + " has created a rental of your room",
+                content: "Khách " + curUser.name + " đã gửi yêu cầu đặt phòng của bạn",
                 type: "RENTAL",
                 status: "UNREAD"
             }

@@ -7,6 +7,7 @@
 const app = require('../app');
 const debug = require('debug')('worldwidecircus:server');
 const http = require('http');
+const socketapi = require("../routes/socket");
 
 /**
  * Get port from environment and store in Express.
@@ -20,7 +21,12 @@ app.set('port', port);
  */
 
 const server = http.createServer(app);
-
+socketapi.io.attach(server, {
+    cors: {
+        origin: 'http://localhost:3000',
+        methods: ["GET", "POST"]
+    }
+});
 /**
  * Listen on provided port, on all network interfaces.
  */

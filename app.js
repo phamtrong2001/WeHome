@@ -6,6 +6,7 @@ const passport = require('passport');
 const auth = require('./middlewares/auth');
 const cors = require('cors');
 
+
 const userRouter = require('./routes/user');
 const roomRouter = require('./routes/room');
 const rentalRouter = require('./routes/rental');
