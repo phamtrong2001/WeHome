@@ -38,4 +38,6 @@ app.use('/api/feedback', feedbackRouter);
 app.use('/api/facility', facilityRouter);
 app.use('/api/notification', notificationRouter);
 
+console.log(new Date().toISOString());
+
 module.exports = app;

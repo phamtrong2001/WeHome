@@ -1009,8 +1009,6 @@ paths:
     post:
       tags:
         - report
-      security:
-        - bearerAuth: [ ]
       summary: Create report
       operationId: report.createReport
       requestBody:
@@ -1020,15 +1018,11 @@ paths:
             schema:
               type: object
               properties:
-                user_id:
-                  type: number
                 description:
                   type: string
       responses:
         '200':
           description: OK
-        '401':
-          description: Access token is missing or invalid
   /api/feedback/create:
     post:
       tags:
@@ -1568,7 +1562,7 @@ components:
     Report:
       type: object
       properties:
-        user_id:
+        id:
           type: number
         description:
           type: string
@@ -1579,6 +1573,8 @@ components:
     Feedback:
       type: object
       properties:
+        id:
+          type: number
         room_id:
           type: number
         client_id:

@@ -257,12 +257,12 @@ async function updateRentalById(req, res) {
                     }
                 });
                 const updateRental = {
-                    room_id: req.body.room_id,
-                    begin_date: req.body.begin_date,
-                    end_date: req.body.end_date,
+                    room_id: req.body.room_id || project.room_id,
+                    begin_date: req.body.begin_date || project.begin_date,
+                    end_date: req.body.end_date || project.end_date,
                     status: req.body.status || project.status,
                     cost: req.body.cost,
-                    client_id: req.body.client_id
+                    client_id: req.body.client_id || project.client_id
                 }
                 let change = false;
                 if (project.status !== updateRental.status && updateRental.status !== "UNCONFIRMED") change = true;
@@ -284,7 +284,8 @@ async function updateRentalById(req, res) {
                     user_id: project.client_id,
                     content: content,
                     type: "RENTAL",
-                    status: "UNREAD"
+                    status: "UNREAD",
+                    last_update: new Date().toISOString()
                 }
                 await models.notification.create(createNotification);
                 return
@@ -327,7 +328,8 @@ async function createRental(req, res) {
                 user_id: project.host_id,
                 content: "Khách " + curUser.name + " đã gửi yêu cầu đặt phòng của bạn",
                 type: "RENTAL",
-                status: "UNREAD"
+                status: "UNREAD",
+                last_update: new Date().toISOString()
             }
             await models.notification.create(newNotification)
         })

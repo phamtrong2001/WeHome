@@ -84,6 +84,7 @@ async function updateUser(req, res) {
             phone: req.body.phone,
             email: req.body.email,
             username: req.body.username,
+            role: (req.body.role != 'admin' ? req.body.role : 'client')
         }
 
         if (curUser.role != 'admin') {
@@ -91,7 +92,7 @@ async function updateUser(req, res) {
                 res.status(400).json({message: 'Invalid userId'});
                 return;
             }
-            if (newUser.username) {
+            if (newUser.username && newUser.username != user.username) {
                 let user = await models.user.findOne({
                     where: {
                         username: newUser.username
@@ -99,6 +100,28 @@ async function updateUser(req, res) {
                 });
                 if (user) {
                     res.status(400).json({message: 'Failed! Username is already in use!'});
+                    return;
+                }
+            }
+            if (newUser.email && newUser.email != user.email) {
+                let user = await models.user.findOne({
+                    where: {
+                        email: newUser.email
+                    }
+                });
+                if (user) {
+                    res.status(400).json({message: 'Failed! Email is already in use!'});
+                    return;
+                }
+            }
+            if (newUser.phone && newUser.phone != user.phone) {
+                let user = await models.user.findOne({
+                    where: {
+                        phone: newUser.phone
+                    }
+                });
+                if (user) {
+                    res.status(400).json({message: 'Failed! Phone number is already in use!'});
                     return;
                 }
             }
@@ -167,7 +190,6 @@ router.delete('/:userId', passport.authenticate('admin', {session: false}), dele
 async function createUser(req, res) {
     try {
         const newUser = {
-            id: req.body.id,
             name: req.body.name,
             phone: req.body.phone,
             email: req.body.email,
@@ -190,8 +212,16 @@ async function createUser(req, res) {
                 phone: newUser.phone
             }
         });
-        if (user || email || phone) {
+        if (user) {
             res.status(400).json({message: 'Failed! Username is already in use!'});
+            return;
+        }
+        if (email) {
+            res.status(400).json({message: 'Failed! Email is already in use!'});
+            return;
+        }
+        if (phone) {
+            res.status(400).json({message: 'Failed! Phone number is already in use!'});
             return;
         }
         if (!validate_user(newUser.username, newUser.password)) {

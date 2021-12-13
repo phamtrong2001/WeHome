@@ -44,8 +44,6 @@ function initModels(sequelize) {
     user.hasMany(notification, {as: "notifications", foreignKey: "user_id"});
     rental.belongsTo(user, {as: "client", foreignKey: "client_id"});
     user.hasMany(rental, {as: "rentals", foreignKey: "client_id"});
-    report.belongsTo(user, {as: "user", foreignKey: "user_id"});
-    user.hasMany(report, {as: "reports", foreignKey: "user_id"});
     room.belongsTo(user, {as: "host", foreignKey: "host_id"});
     user.hasMany(room, {as: "rooms", foreignKey: "host_id"});
 

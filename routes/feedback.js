@@ -27,7 +27,8 @@ async function createFeedback(req, res) {
             user_id: room.host_id,
             content: client.name + ' has reviewed your room',
             type: "FEEDBACK",
-            status: "UNREAD"
+            status: "UNREAD",
+            last_update: new Date().toISOString()
         };
         await models.feedback.create(newFeedback);
         await models.notification.create(newNotification);
@@ -47,7 +48,7 @@ async function getFeedbackByRoomId(req, res) {
 
         const feedbacks = await models.feedback.findAll({
             where: {
-                room_id: req.params.room_id
+                room_id: req.params.roomId
             },
             order: [["last_update", "DESC"]]
         });
