@@ -38,7 +38,7 @@ async function getFeedbackByRoomId(req, res) {
 
         const feedbacks = await models.feedback.findAll({
             where: {
-                room_id: req.params.roomId
+                room_id: req.params.room_id
             },
             order: [["last_update", "DESC"]]
         });
