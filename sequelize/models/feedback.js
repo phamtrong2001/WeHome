@@ -23,9 +23,9 @@ module.exports = function (sequelize, DataTypes) {
                 key: 'user_id'
             }
         },
-        feed_back: {
+        feedback: {
             type: DataTypes.TEXT,
-            allowNull: true
+            allowNull: false
         },
         rate: {
             type: DataTypes.DECIMAL(5, 2),
