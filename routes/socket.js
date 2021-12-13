@@ -24,7 +24,7 @@ io.on("connection", function(socket) {
 
         socket.on("send_feedback", async (roomId, content) => {
             const room = await models.room.findByPk(roomId);
-            io.to(room.host_id.toString()).emit("receive_feedback", roomId, content, new Date());
+            io.to(room.host_id.toString()).emit("receive_feedback", content, new Date());
             const newNotification = {
                 user_id: room.host_id,
                 content: content,
