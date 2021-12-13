@@ -20,10 +20,15 @@ io.on("connection", function(socket) {
         console.log(content);
     });
 
-    socket.on("send_feedback", async (receiver_id, content) => {
-        io.to(receiver_id.toString()).emit("receive_feedback", content, new Date());
+    socket.on("send_feedback", async (roomId, content) => {
+        const room = await models.room.findOne({
+            where: {
+                room_id: roomId
+            }
+        })
+        io.to(room.host_id.toString()).emit("receive_feedback", roomId, content, new Date());
         const newNotification = {
-            user_id: receiver_id,
+            user_id: room.host_id,
             content: content,
             type: "FEEDBACK",
             status: "UNREAD"
