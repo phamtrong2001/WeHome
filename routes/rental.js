@@ -264,30 +264,12 @@ async function updateRentalById(req, res) {
                     cost: req.body.cost,
                     client_id: req.body.client_id || project.client_id
                 }
-                let change = false;
-                if (project.status !== updateRental.status && updateRental.status !== "UNCONFIRMED") change = true;
                 await models.rental.update(updateRental, {
                     where: {
                         rental_id: rentalId
                     }
                 })
                 res.status(200).json({'message': 'OK'});
-                if (!change) return;
-                let content;
-                if (req.body.status === "CONFIRMED") {
-                    content = curUser.name + " has accepted your rental";
-                    await deleteRentalUnconfirmed(updateRental.room_id, updateRental.begin_date, updateRental.end_date);
-                }
-                if (req.body.status === "RETURNED") content = "The " + curUser.name + " has confirmed check-out";
-                if (req.body.status === "REJECTED") content = curUser.name + " has rejected your rental";
-                const createNotification = {
-                    user_id: project.client_id,
-                    content: content,
-                    type: "RENTAL",
-                    status: "UNREAD",
-                    last_update: new Date().toISOString()
-                }
-                await models.notification.create(createNotification);
                 return
             }
             res.status(404).json({'message': 'Rental not found'});
@@ -319,20 +301,6 @@ async function createRental(req, res) {
         }
         await models.rental.create(newRental);
         res.status(200).json({'message': 'OK'});
-        await models.room.findOne({
-            where: {
-                room_id: req.body.room_id
-            }
-        }).then(async function (project) {
-            const newNotification = {
-                user_id: project.host_id,
-                content: "Khách " + curUser.name + " đã gửi yêu cầu đặt phòng của bạn",
-                type: "RENTAL",
-                status: "UNREAD",
-                last_update: new Date().toISOString()
-            }
-            await models.notification.create(newNotification)
-        })
     } catch (err) {
         console.log(err);
         res.status(500).send(err);
