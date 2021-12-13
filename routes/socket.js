@@ -15,7 +15,8 @@ io.on("connection", function(socket) {
                 user_id: receiver_id,
                 content: content,
                 type: "RENTAL",
-                status: "UNREAD"
+                status: "UNREAD",
+                last_update: new Date().toISOString()
             };
             await models.notification.create(newNotification);
             console.log(content);
@@ -28,7 +29,8 @@ io.on("connection", function(socket) {
                 user_id: room.host_id,
                 content: content,
                 type: "FEEDBACK",
-                status: "UNREAD"
+                status: "UNREAD",
+                last_update: new Date().toISOString()
             };
             await models.notification.create(newNotification);
         })
