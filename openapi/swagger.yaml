@@ -518,7 +518,7 @@ paths:
                   type: number
                   format: float
                   description: km
-                guest:
+                num_guest:
                   type: number
                 begin_date:
                   type: string
