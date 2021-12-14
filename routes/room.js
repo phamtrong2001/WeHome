@@ -230,9 +230,12 @@ async function search(req, res) {
         const limit = req.query.limit || 20;
         const page = req.query.page || 1;
 
-        const lat = req.body.latitude;
-        const long = req.body.longitude;
-        const radius = req.body.radius;
+        const lat = req.body.latitude || 21.028195403;
+        const long = req.body.longitude || 105.854159778;
+        const radius = req.body.radius || 20;
+        const begin_date = req.body.begin_date || "1970-1-1";
+        const end_date = req.body.end_date || "1970-1-1";
+
         const distance = db.Sequelize.literal("6371 * acos(cos(radians(" + lat + ")) * cos(radians(latitude)) * cos(radians(" + long + ") - radians(longitude)) + sin(radians(" + lat + ")) * sin(radians(latitude)))");
         const rooms = await models.room.findAll({
             attributes: [
@@ -256,11 +259,21 @@ async function search(req, res) {
                 [distance, 'distance']
             ],
             where: db.Sequelize.where(distance, "<=", radius),
-            // having: {
-            //     distance: {
-            //         [Op.lte]: radius
-            //     }
-            // },
+            having: {
+                num_guest: {
+                    [Op.gte]: req.body.num_guest
+                },
+                room_id: {
+                    [Op.notIn]: db.literal(
+                        '( SELECT room_id FROM rental' +
+                        ' WHERE rental.room_id = room.room_id' +
+                        ' AND ((begin_date BETWEEN ' + begin_date + ' AND ' + end_date + ')' +
+                        ' OR (end_date BETWEEN ' + begin_date + ' AND ' + end_date + ')) ' +
+                        ' AND status = CONFIRMED' +
+                        ')'
+                    )
+                }
+            },
             order: db.Sequelize.col('distance'),
             limit: 100
         });

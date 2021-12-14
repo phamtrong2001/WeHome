@@ -518,6 +518,14 @@ paths:
                   type: number
                   format: float
                   description: km
+                guest:
+                  type: number
+                begin_date:
+                  type: string
+                  format: date
+                end_date:
+                  type: string
+                  format: date
       responses:
         '200':
           description: OK
