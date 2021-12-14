@@ -17,10 +17,12 @@ tags:
   - name: user
   - name: room
   - name: rental
-  - name: report
-  - name: feedback
+  - name: favourite
   - name: facility
   - name: notification
+  - name: feedback
+  - name: report
+
 paths:
   /api/user:
     get:
@@ -1003,6 +1005,72 @@ paths:
                     type: array
                     items:
                       $ref: '#/components/schemas/Rental_response'
+        '401':
+          description: Access token is missing or invalid
+        '500':
+          description: System error
+  /api/favourite:
+    get:
+      tags:
+        - favourite
+      summary: Get favourite room id of current user
+      security:
+        - bearerAuth: [ ]
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: number
+        '401':
+          description: Access token is missing or invalid
+        '500':
+          description: System error
+  /api/favourite/create:
+    post:
+      tags:
+        - favourite
+      summary: Create new favourite room for current user
+      security:
+        - bearerAuth: [ ]
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                room_id:
+                  type: number
+                  nullable: false
+      responses:
+        '200':
+          description: OK
+        '401':
+          description: Access token is missing or invalid
+        '500':
+          description: System error
+  /api/favourite/delete:
+    post:
+      tags:
+        - favourite
+      summary: Delete favourite room from current user
+      security:
+        - bearerAuth: [ ]
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                room_id:
+                  type: number
+                  nullable: false
+      responses:
+        '200':
+          description: OK
         '401':
           description: Access token is missing or invalid
         '500':
