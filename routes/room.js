@@ -42,38 +42,9 @@ async function getRooms(req, res) {
         const limit = req.query.limit || 20;
         const page = req.query.page || 1;
         const rooms = await models.room.findAll();
-        let response = [];
-        for (let i = (page - 1) * limit; i < page * limit; i++) {
-            if (i >= rooms.length) break;
-            let room = rooms[i];
-            let images = await Image.getImage(room.room_id);
-            let facilities = await Facility.getFacilityRoom(room.room_id);
-            // let roomType = await getRoomType(room.room_type_id);
-            response.push({
-                'room_id': room.room_id,
-                'room_name': room.room_name,
-                'latitude': room.latitude,
-                'longitude': room.longitude,
-                'address_id': room.address_id,
-                'room_type': room.room_type_id,
-                'num_guest': room.num_guest,
-                'num_bed': room.num_bed,
-                'num_bedroom': room.num_bedroom,
-                'num_bathroom': room.num_bathroom,
-                'rule': room.rule,
-                'accommodation_type': room.accommodation_type,
-                'confirmed': room.confirmed,
-                'rate': room.rate,
-                'total_rated': room.total_rated,
-                'host_id': room.host_id,
-                'price': room.price,
-                'images': images,
-                'facilities': facilities
-            });
-        }
         res.status(200).json({
             total: rooms.length,
-            rooms: response
+            rooms: rooms.slice((page - 1) * limit, page * limit)
         });
     } catch (err) {
         console.log(err);
@@ -489,8 +460,8 @@ async function filterRoom(req, res) {
 
 router.post('/filter', filterRoom);
 
-router.post('/:roomId/rental_date', async function (req, res) {
-   const room_id = req.params.roomId;
+router.get('/:roomId/rental_date', async function (req, res) {
+    const room_id = req.params.roomId;
 
 });
 
