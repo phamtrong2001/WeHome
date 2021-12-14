@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
-const Image = require('../controllers/image');
-const Facility = require('../controllers/facility');
+const Image = require('../utils/image');
+const Facility = require('../utils/facility');
 const {models, db} = require('../sequelize/conn');
 const {Sequelize, Op, QueryTypes} = require("sequelize");
 const jwt = require("jsonwebtoken");
@@ -235,6 +235,7 @@ async function search(req, res) {
         const radius = req.body.radius || 20;
         const begin_date = req.body.begin_date || "1970-1-1";
         const end_date = req.body.end_date || "1970-1-1";
+        const num_guest = req.body.num_guest || 0;
 
         const distance = db.Sequelize.literal("6371 * acos(cos(radians(" + lat + ")) * cos(radians(latitude)) * cos(radians(" + long + ") - radians(longitude)) + sin(radians(" + lat + ")) * sin(radians(latitude)))");
         const rooms = await models.room.findAll({
@@ -261,7 +262,7 @@ async function search(req, res) {
             where: db.Sequelize.where(distance, "<=", radius),
             having: {
                 num_guest: {
-                    [Op.gte]: req.body.num_guest
+                    [Op.gte]: num_guest
                 },
                 room_id: {
                     [Op.notIn]: db.literal(
@@ -487,5 +488,10 @@ async function filterRoom(req, res) {
 }
 
 router.post('/filter', filterRoom);
+
+router.post('/:roomId/rental_date', async function (req, res) {
+   const room_id = req.params.roomId;
+
+});
 
 module.exports = router;

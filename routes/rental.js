@@ -5,9 +5,9 @@ const bodyParser = require('body-parser')
 const jwt = require("jsonwebtoken");
 const passport = require("passport");
 const auth = require("../middlewares/auth");
-const Image = require("../controllers/image");
-const Facility = require("../controllers/facility");
-const {deleteRentalUnconfirmed} = require("../controllers/rental");
+const Image = require("../utils/image");
+const Facility = require("../utils/facility");
+const {deleteRentalUnconfirmed} = require("../utils/rental");
 
 router.use(bodyParser.urlencoded({extended: false}))
 router.use(bodyParser.json())

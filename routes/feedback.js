@@ -1,7 +1,7 @@
 const express = require('express');
 const {models, db} = require("../sequelize/conn");
 const router = express.Router();
-const Room = require("../controllers/room");
+const Room = require("../utils/room");
 const passport = require("passport");
 const auth = require("../middlewares/auth");
 
