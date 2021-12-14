@@ -8,6 +8,7 @@ const passport = require('passport');
 const bcrypt = require('bcryptjs');
 const {validate_user, validate_pass} = require("../middlewares/validate");
 const {QueryTypes, Op} = require("sequelize");
+const {sendEmail} = require("../utils/email");
 
 passport.use('user', auth.jwtStrategy);
 passport.use('admin', auth.isAdmin);
@@ -288,6 +289,37 @@ async function changePassword(req, res) {
 }
 
 router.post('/:userId/change-password', passport.authenticate('user', {session: false}), changePassword);
+
+router.post('/forgot-password', async function (req, res) {
+    try {
+        const username = req.body.username;
+        const email = req.body.email;
+
+        const user = await models.user.findOne({
+            where: {
+                username: username,
+                email: email
+            }
+        });
+        if (!user) {
+            res.status(400).send("Invalid information supplied");
+            return;
+        }
+        const newPass = Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
+        console.log(newPass);
+        const password = bcrypt.hashSync(newPass, +process.env.SALT);
+        await models.user.update({password: password}, {
+            where: {
+                user_id: user.user_id
+            }
+        });
+        sendEmail(email, newPass);
+        res.status(200).send("OK");
+    } catch (err) {
+        console.log(err);
+        res.status(500).send(err);
+    }
+});
 
 /**
  * Filter users

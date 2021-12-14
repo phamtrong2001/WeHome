@@ -259,6 +259,29 @@ paths:
           description: Access token is missing or invalid
         '500':
           description: System error
+  /api/user/forgot-password:
+    post:
+      tags:
+        - user
+      summary: Forgot password
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                username:
+                  type: string
+                email:
+                  type: string
+      responses:
+        '200':
+          description: OK
+        '400':
+          description: Invalid username/email supplied
+        '500':
+          description: System error
   /api/user/ping/current-user:
     get:
       tags:
