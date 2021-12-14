@@ -423,6 +423,12 @@ async function filterRoom(req, res) {
                     }
                 });
             }
+        } else {
+            rooms = await models.room.findAll({
+                where: {
+                    confirmed: confirmed
+                }
+            });
         }
         if (!rooms) {
             res.status(404).send({message: 'No room'});
