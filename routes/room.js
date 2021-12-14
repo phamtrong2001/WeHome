@@ -461,8 +461,28 @@ async function filterRoom(req, res) {
 router.post('/filter', filterRoom);
 
 router.get('/:roomId/rental_date', async function (req, res) {
-    const room_id = req.params.roomId;
-
+    try {
+        const room_id = req.params.roomId;
+        const rentals = await models.rental.findAll({
+            where: {
+                room_id: room_id
+            }
+        });
+        if (!rentals.length) {
+            res.status(400).send("Not found");
+            return;
+        }
+        const response = rentals.map(rental => {
+            return {
+                begin_date: rental.begin_date,
+                end_date: rental.end_date
+            };
+        });
+        res.status(200).json(response);
+    } catch (err) {
+        console.log(err);
+        res.status(500).send(err);
+    }
 });
 
 module.exports = router;

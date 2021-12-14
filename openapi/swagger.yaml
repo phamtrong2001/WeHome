@@ -450,6 +450,38 @@ paths:
           content: { }
         '500':
           description: System error
+  /api/room/{roomId}/rental_date:
+    get:
+      tags:
+        - room
+      summary: Get rental date of room by id
+      parameters:
+        - name: roomId
+          in: path
+          required: true
+          schema:
+            type: number
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    begin_date:
+                      type: string
+                      format: date
+                    end_date:
+                      type: string
+                      format: date
+        '400':
+          description: Not found date
+          content: { }
+        '500':
+          description: System error
   /api/room/create:
     post:
       tags:
