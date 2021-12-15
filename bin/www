@@ -40,7 +40,16 @@ const options = {
     cert: fs.readFileSync('public/certificate.crt')
 };
 
-https.createServer(options, app).listen(8000);
+const serverHttps = https.createServer(options, app);
+
+socketapi.io.attach(serverHttps, {
+    cors: {
+        origin: ['http://localhost:3000', 'https://main.d25osnb6rghzr4.amplifyapp.com/'],
+        methods: ["GET", "POST"]
+    }
+});
+
+serverHttps.listen(8000);
 
 /**
  * Listen on provided port, on all network interfaces.
