@@ -35,8 +35,9 @@ socketapi.io.attach(server, {
  */
 
 const options = {
-    key: fs.readFileSync('key.pem'),
-    cert: fs.readFileSync('cert.pem')
+    ca: fs.readFileSync('public/ca_bundle.crt'),
+    key: fs.readFileSync('public/private.key'),
+    cert: fs.readFileSync('public/certificate.crt')
 };
 
 https.createServer(options, app).listen(8000);
