@@ -469,10 +469,6 @@ router.get('/:roomId/rental_date', async function (req, res) {
                 status: "CONFIRMED"
             }
         });
-        if (!rentals.length) {
-            res.status(400).send("Not found");
-            return;
-        }
         const response = rentals.map(rental => {
             return {
                 begin_date: rental.begin_date,
