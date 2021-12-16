@@ -465,7 +465,8 @@ router.get('/:roomId/rental_date', async function (req, res) {
         const room_id = req.params.roomId;
         const rentals = await models.rental.findAll({
             where: {
-                room_id: room_id
+                room_id: room_id,
+                status: "CONFIRMED"
             }
         });
         if (!rentals.length) {
