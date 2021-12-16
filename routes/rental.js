@@ -36,6 +36,7 @@ router.get('/', passport.authenticate('admin', {session: false}), async function
                     end_date: rental.end_date,
                     status: rental.status,
                     cost: rental.cost,
+                    room: room.host_id,
                     client_id: rental.client_id,
                     images: images,
                     last_update: rental.last_update
@@ -96,6 +97,7 @@ async function getRentalByUserId(req, res) {
                                 end_date: rental.end_date,
                                 status: rental.status,
                                 cost: rental.cost,
+                                host_id: room.host_id,
                                 client_id: rental.client_id,
                                 images: images,
                                 last_update: rental.last_update
@@ -169,6 +171,7 @@ async function getRentalByHostId(req, res) {
                             end_date: rental.end_date,
                             status: rental.status,
                             cost: rental.cost,
+                            host_id: room.host_id,
                             client_id: rental.client_id,
                             images: images,
                             last_update: rental.last_update
@@ -219,6 +222,7 @@ async function getRentalById(req, res) {
                         end_date: project.end_date,
                         status: project.status,
                         cost: project.cost,
+                        host_id: room.host_id,
                         client_id: project.client_id,
                         images: images,
                         last_update: project.last_update
@@ -300,7 +304,16 @@ async function createRental(req, res) {
             client_id: req.body.client_id || payload.user_id
         }
         await models.rental.create(newRental);
-        res.status(200).json({'message': 'OK'});
+        const rental = await models.rental.findOne({
+            where: {
+                room_id: newRental.room_id,
+                begin_date: newRental.begin_date,
+                end_date: newRental.end_date,
+                cost: newRental.cost,
+                client_id: newRental.client_id
+            }
+        });
+        res.status(200).json(rental);
     } catch (err) {
         console.log(err);
         res.status(500).send(err);
@@ -377,6 +390,7 @@ async function filterHostRentalByStatus(req, res) {
                 end_date: rental.end_date,
                 status: rental.status,
                 cost: rental.cost,
+                host_id: room.host_id,
                 client_id: rental.client_id,
                 images: images,
                 last_update: rental.last_update
@@ -422,6 +436,7 @@ async function filterUserRentalByStatus(req, res) {
                 end_date: rental.end_date,
                 status: rental.status,
                 cost: rental.cost,
+                host_id: room.host_id,
                 client_id: rental.client_id,
                 images: images,
                 last_update: rental.last_update

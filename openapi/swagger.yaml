@@ -926,6 +926,30 @@ paths:
       responses:
         '200':
           description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  rental_id:
+                    type: number
+                  room_id:
+                    type: number
+                  begin_date:
+                    type: string
+                    format: date
+                  end_date:
+                    type: string
+                    format: date
+                  status:
+                    type: string
+                  cost:
+                    type: number
+                  client_id:
+                    type: number
+                  last_update:
+                    type: string
+                    format: timestamp
         '401':
           description: Access token is missing or invalid
         '500':
@@ -1662,9 +1686,10 @@ components:
             - REJECTED
         cost:
           type: string
+        host_id:
+          type: number
         client_id:
           type: number
-          nullable: true
         images:
           type: array
           items:
