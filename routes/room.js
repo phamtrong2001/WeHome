@@ -41,7 +41,9 @@ async function getRooms(req, res) {
     try {
         const limit = req.query.limit || 20;
         const page = req.query.page || 1;
-        const rooms = await models.room.findAll();
+        const rooms = await models.room.findAll({
+            order: price
+        });
         res.status(200).json({
             total: rooms.length,
             rooms: rooms.slice((page - 1) * limit, page * limit)
@@ -246,7 +248,7 @@ async function search(req, res) {
                     )
                 }
             },
-            order: db.Sequelize.col('distance'),
+            order: price,
             limit: 100
         });
         let response = [];
@@ -388,7 +390,8 @@ async function filterRoom(req, res) {
                                 ')'
                             )
                         }
-                    }
+                    },
+                    order: price
                 });
             } else {
                 rooms = await models.room.findAll({
@@ -405,7 +408,8 @@ async function filterRoom(req, res) {
                                 ')'
                             )
                         }
-                    }
+                    },
+                    order: price
                 });
             }
         } else {
