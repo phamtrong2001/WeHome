@@ -365,8 +365,14 @@ async function filterRoom(req, res) {
             if (!req.body.filter) {
                 rooms = await models.room.findAll({
                     where: {
+                        host_id: req.body.host_id
+                    }
+                });
+            } else if (req.body.filter == 'Unconfirmed') {
+                rooms = await models.room.findAll({
+                    where: {
                         host_id: req.body.host_id,
-                        confirmed: confirmed
+                        confirmed: false
                     }
                 });
             } else if (req.body.filter != 'Empty') {
