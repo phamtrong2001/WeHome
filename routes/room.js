@@ -42,7 +42,7 @@ async function getRooms(req, res) {
         const limit = req.query.limit || 20;
         const page = req.query.page || 1;
         const rooms = await models.room.findAll({
-            order: price
+            order: db.Sequelize.col('price')
         });
         res.status(200).json({
             total: rooms.length,
@@ -248,7 +248,7 @@ async function search(req, res) {
                     )
                 }
             },
-            order: price,
+            order: db.Sequelize.col('price'),
             limit: 100
         });
         let response = [];
@@ -391,7 +391,7 @@ async function filterRoom(req, res) {
                             )
                         }
                     },
-                    order: price
+                    order: db.Sequelize.col('price')
                 });
             } else {
                 rooms = await models.room.findAll({
@@ -409,7 +409,7 @@ async function filterRoom(req, res) {
                             )
                         }
                     },
-                    order: price
+                    order: db.Sequelize.col('price')
                 });
             }
         } else {
