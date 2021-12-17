@@ -415,10 +415,6 @@ async function filterRoom(req, res) {
                 }
             });
         }
-        if (!rooms) {
-            res.status(404).send({message: 'No room'});
-            return;
-        }
         let response = [];
         for (let i = (page - 1) * limit; i < page * limit; i++) {
             if (i >= rooms.length) break;

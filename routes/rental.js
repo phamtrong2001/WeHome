@@ -82,36 +82,32 @@ async function getRentalByUserId(req, res) {
                         client_id: userId
                     }
                 }).then(async function (project) {
-                    if (project.length) {
-                        let response = [];
-                        for (let i = (page - 1) * limit; i < page * limit; i++) {
-                            if (i >= project.length) break;
-                            let rental = project[i];
-                            let images = await Image.getImage(rental.room_id);
-                            let room = await models.room.findByPk(rental.room_id);
-                            response.push({
-                                rental_id: rental.rental_id,
-                                room_id: rental.room_id,
-                                room_name: room.room_name,
-                                begin_date: rental.begin_date,
-                                end_date: rental.end_date,
-                                status: rental.status,
-                                cost: rental.cost,
-                                host_id: room.host_id,
-                                client_id: rental.client_id,
-                                images: images,
-                                last_update: rental.last_update
-                            });
-                        }
-                        res.status(200).json({
-                            total: project.length,
-                            rentals: response
+                    let response = [];
+                    for (let i = (page - 1) * limit; i < page * limit; i++) {
+                        if (i >= project.length) break;
+                        let rental = project[i];
+                        let images = await Image.getImage(rental.room_id);
+                        let room = await models.room.findByPk(rental.room_id);
+                        response.push({
+                            rental_id: rental.rental_id,
+                            room_id: rental.room_id,
+                            room_name: room.room_name,
+                            begin_date: rental.begin_date,
+                            end_date: rental.end_date,
+                            status: rental.status,
+                            cost: rental.cost,
+                            host_id: room.host_id,
+                            client_id: rental.client_id,
+                            images: images,
+                            last_update: rental.last_update
                         });
-                        return
                     }
-                    res.status(404).json({'message': 'Rental not found'});
+                    res.status(200).json({
+                        total: project.length,
+                        rentals: response
+                    });
                 })
-                return
+                return;
             }
             res.status(400).json({'message': 'Invalid UserId supplied'})
         });
@@ -206,32 +202,28 @@ async function getRentalById(req, res) {
         let rentalId = req.params.rentalId;
 
         await models.rental.findByPk(rentalId).then(async function (project) {
-            if (project) {
-                await models.room.findByPk(project.room_id).then(async function (room) {
-                    if (curUser.role != 'admin' && curUser.user_id != room.host_id && curUser.user_id != project.client_id) {
-                        res.status(401).send("Unauthorized");
-                        return
-                    }
-                    let response;
-                    let images = await Image.getImage(project.room_id);
-                    response = {
-                        rental_id: project.rental_id,
-                        room_id: project.room_id,
-                        room_name: room.room_name,
-                        begin_date: project.begin_date,
-                        end_date: project.end_date,
-                        status: project.status,
-                        cost: project.cost,
-                        host_id: room.host_id,
-                        client_id: project.client_id,
-                        images: images,
-                        last_update: project.last_update
-                    };
-                    res.status(200).json(response);
-                });
-                return
-            }
-            res.status(404).json({'message': 'Rental not found'});
+            await models.room.findByPk(project.room_id).then(async function (room) {
+                if (curUser.role != 'admin' && curUser.user_id != room.host_id && curUser.user_id != project.client_id) {
+                    res.status(401).send("Unauthorized");
+                    return
+                }
+                let response;
+                let images = await Image.getImage(project.room_id);
+                response = {
+                    rental_id: project.rental_id,
+                    room_id: project.room_id,
+                    room_name: room.room_name,
+                    begin_date: project.begin_date,
+                    end_date: project.end_date,
+                    status: project.status,
+                    cost: project.cost,
+                    host_id: room.host_id,
+                    client_id: project.client_id,
+                    images: images,
+                    last_update: project.last_update
+                };
+                res.status(200).json(response);
+            });
         })
     } catch (err) {
         console.log(err);
@@ -276,7 +268,6 @@ async function updateRentalById(req, res) {
                 res.status(200).json({'message': 'OK'});
                 return
             }
-            res.status(404).json({'message': 'Rental not found'});
         })
     } catch (err) {
         console.log(err);
@@ -347,7 +338,6 @@ async function deleteRentalById(req, res) {
                 res.status(200).json({'message': 'OK'});
                 return
             }
-            res.status(404).json({'message': 'Rental not found'});
         })
     } catch (err) {
         console.log(err);
