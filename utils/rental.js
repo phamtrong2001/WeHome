@@ -1,5 +1,6 @@
 const {models} = require("../sequelize/conn");
 const {Op} = require("sequelize");
+
 module.exports.deleteRentalUnconfirmed = async function deleteRentalUnconfirmed(room_id, begin_date, end_date) {
     try {
         await models.rental.destroy({
@@ -18,6 +19,18 @@ module.exports.deleteRentalUnconfirmed = async function deleteRentalUnconfirmed(
                         }
                     }
                 ]
+            }
+        });
+    } catch (err) {
+        throw err;
+    }
+}
+
+module.exports.deleteRental = async function deleteRentalByRoom_id(room_id) {
+    try {
+        await models.rental.destroy({
+            where: {
+                room_id: room_id
             }
         });
     } catch (err) {

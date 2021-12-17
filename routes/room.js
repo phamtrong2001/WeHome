@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const Image = require('../utils/image');
 const Facility = require('../utils/facility');
+const Rental = require('../utils/rental');
 const {models, db} = require('../sequelize/conn');
 const {Sequelize, Op, QueryTypes} = require("sequelize");
 const jwt = require("jsonwebtoken");
@@ -176,6 +177,7 @@ async function deleteRoom(req, res) {
         }
         await Image.deleteImage(req.params["roomId"]);
         await Facility.deleteFacilityRoom(req.params["roomId"]);
+        await Rental.deleteRental(req.params["roomId"]);
         await models.room.destroy({
             where: {
                 room_id: req.params["roomId"]
