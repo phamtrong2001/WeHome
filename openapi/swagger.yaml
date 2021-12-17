@@ -85,9 +85,6 @@ paths:
         '400':
           description: Invalid userId supplied
           content: { }
-        '404':
-          description: User not found
-          content: { }
         '500':
           description: System error
     put:
@@ -118,9 +115,6 @@ paths:
           content: { }
         '401':
           description: Access token is missing or invalid
-        '404':
-          description: User not found
-          content: { }
         '500':
           description: System error
     delete:
@@ -145,9 +139,6 @@ paths:
           content: { }
         '401':
           description: Access token is missing or invalid
-        '404':
-          description: User not found
-          content: { }
         '500':
           description: System error
   /api/user/create:
@@ -409,9 +400,6 @@ paths:
         '400':
           description: Invalid roomId supplied
           content: { }
-        '404':
-          description: Room not found
-          content: { }
         '500':
           description: System error
     put:
@@ -443,9 +431,6 @@ paths:
           content: { }
         '401':
           description: Access token is missing or invalid
-        '404':
-          description: Room not found
-          content: { }
         '500':
           description: System error
     delete:
@@ -470,9 +455,6 @@ paths:
           content: { }
         '401':
           description: Access token is missing or invalid
-        '404':
-          description: Room not found
-          content: { }
         '500':
           description: System error
   /api/room/{roomId}/rental_date:
@@ -647,9 +629,6 @@ paths:
                     type: array
                     items:
                       $ref: '#/components/schemas/Room_response'
-        '404':
-          description: No room
-          content: { }
         '500':
           description: System error
   /api/room/room-type:
@@ -730,8 +709,6 @@ paths:
                       $ref: '#/components/schemas/Rental_response'
         '401':
           description: Access token is missing or invalid
-        '404':
-          description: Rental not found
         '500':
           description: System error
   /api/rental/user/{userId}:
@@ -778,8 +755,6 @@ paths:
           description: Invalid userId supplied
         '401':
           description: Access token is missing or invalid
-        '404':
-          description: Rental not found
         '500':
           description: System error
   /api/rental/host/{hostId}:
@@ -826,8 +801,6 @@ paths:
           description: Invalid hostId supplied
         '401':
           description: Access token is missing or invalid
-        '404':
-          description: Rental not found
         '500':
           description: System error
   /api/rental/{rentalId}:
@@ -853,8 +826,6 @@ paths:
                 $ref: '#/components/schemas/Rental_response'
         '401':
           description: Access token is missing or invalid
-        '404':
-          description: Rental not found
         '500':
           description: System error
     put:
@@ -881,8 +852,6 @@ paths:
           description: OK
         '401':
           description: Access token is missing or invalid
-        '404':
-          description: Rental not found
         '500':
           description: System error
     delete:
@@ -903,8 +872,6 @@ paths:
           description: OK
         '401':
           description: Access token is missing or invalid
-        '404':
-          description: Rental not found
         '500':
           description: System error
   /api/rental/create:
