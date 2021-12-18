@@ -383,7 +383,7 @@ async function filterRoom(req, res) {
                 } else if (req.body.filter == 'Checking out') {
                     condition = 'end_date BETWEEN Current_date() AND (Current_date() + 3)'
                 } else if (req.body.filter == 'Currently hosting') {
-                    condition = 'begin_date <= Current_date() AND end_date > Current_date()';
+                    condition = 'begin_date <= Current_date() AND end_date >= Current_date()';
                 }
                 rooms = await models.room.findAll({
                     where: {
