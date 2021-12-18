@@ -243,7 +243,7 @@ async function search(req, res) {
                         ' WHERE rental.room_id = room.room_id' +
                         ' AND ((begin_date BETWEEN ' + begin_date + ' AND ' + end_date + ')' +
                         ' OR (end_date BETWEEN ' + begin_date + ' AND ' + end_date + ')) ' +
-                        ' AND status = CONFIRMED' +
+                        ' AND status = "CONFIRMED"' +
                         ')'
                     )
                 }
