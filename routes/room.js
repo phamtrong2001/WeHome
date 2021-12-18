@@ -365,7 +365,8 @@ async function filterRoom(req, res) {
             if (!req.body.filter) {
                 rooms = await models.room.findAll({
                     where: {
-                        host_id: req.body.host_id
+                        host_id: req.body.host_id,
+                        confirmed: confirmed
                     }
                 });
             } else if (req.body.filter == 'Unconfirmed') {
@@ -393,7 +394,7 @@ async function filterRoom(req, res) {
                                 '( SELECT room_id FROM rental' +
                                 ' WHERE rental.room_id = room.room_id' +
                                 ' AND ' + condition +
-                                ' AND status = CONFIRMED' +
+                                ' AND status = "CONFIRMED"' +
                                 ')'
                             )
                         }
