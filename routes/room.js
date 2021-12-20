@@ -234,6 +234,7 @@ async function search(req, res) {
             ],
             where: db.Sequelize.where(distance, "<=", radius),
             having: {
+                confirmed: true,
                 num_guest: {
                     [Op.gte]: num_guest
                 },
