@@ -315,6 +315,12 @@ paths:
                     default: OK
                   userId:
                     type: number
+                  role:
+                    type: string
+                    enum:
+                      - admin
+                      - host
+                      - client
                   name:
                     type: string
                   token:
