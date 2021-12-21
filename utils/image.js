@@ -23,7 +23,6 @@ module.exports.createImage = async function createImage(room_id, images) {
             await models.image.create(newImage);
         }
     } catch (err) {
-        console.error(err);
         throw err;
     }
 }
@@ -39,7 +38,6 @@ module.exports.getImage = async function getImage(room_id) {
             return image.url;
         })
     } catch (err) {
-        console.error(err);
         throw err;
     }
 }

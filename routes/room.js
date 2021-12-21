@@ -178,6 +178,16 @@ async function deleteRoom(req, res) {
         await Image.deleteImage(req.params["roomId"]);
         await Facility.deleteFacilityRoom(req.params["roomId"]);
         await Rental.deleteRental(req.params["roomId"]);
+        await models.favourite.destroy({
+            where: {
+                room_id: req.params["roomId"]
+            }
+        });
+        await models.feedback.destroy({
+            where: {
+                room_id: req.params["roomId"]
+            }
+        });
         await models.room.destroy({
             where: {
                 room_id: req.params["roomId"]

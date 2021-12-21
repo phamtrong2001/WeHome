@@ -9,6 +9,7 @@ const bcrypt = require('bcryptjs');
 const {validate_user, validate_pass} = require("../middlewares/validate");
 const {QueryTypes, Op} = require("sequelize");
 const {sendEmail} = require("../utils/email");
+const {deleteRoom} = require("../utils/room");
 
 passport.use('user', auth.jwtStrategy);
 passport.use('admin', auth.isAdmin);
@@ -172,6 +173,34 @@ async function deleteUser(req, res) {
             res.status(400).json({message: 'Invalid userId'});
             return;
         }
+        let rooms = await models.room.findAll({
+            where: {
+                host_id: user.user_id
+            }
+        });
+        for (let room of rooms) {
+            await deleteRoom(room.room_id);
+        }
+        await models.favourite.destroy({
+            where: {
+                user_id: user.user_id
+            }
+        });
+        await models.feedback.destroy({
+            where: {
+                client_id: user.user_id
+            }
+        });
+        await models.notification.destroy({
+            where: {
+                user_id: user.user_id
+            }
+        });
+        await models.rental.destroy({
+            where: {
+                client_id: user.user_id
+            }
+        })
         await models.user.destroy({
             where: {
                 user_id: req.params["userId"]
