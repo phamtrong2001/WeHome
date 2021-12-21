@@ -9,7 +9,10 @@ module.exports.ratedRoom = async function updateRate(room_id, rate) {
         let numOfRated = room.total_rated + 1;
 
         total_rate /= numOfRated;
-        await models.room.update({rate: total_rate}, {
+        await models.room.update({
+            rate: total_rate,
+            total_rated: numOfRated
+        }, {
             where: {
                 room_id: room_id
             }
