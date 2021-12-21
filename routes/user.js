@@ -80,12 +80,17 @@ async function updateUser(req, res) {
             return;
         }
 
+        let role = (req.body.role != 'admin' ? req.body.role : 'client');
+        if (user.role == 'admin') {
+            role = 'admin';
+        }
+
         const newUser = {
             name: req.body.name,
             phone: req.body.phone,
             email: req.body.email,
             username: req.body.username,
-            role: (req.body.role != 'admin' ? req.body.role : 'client')
+            role: role
         }
 
         if (curUser.role != 'admin') {
