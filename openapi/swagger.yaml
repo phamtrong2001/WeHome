@@ -638,6 +638,56 @@ paths:
                       $ref: '#/components/schemas/Room_response'
         '500':
           description: System error
+  /api/room/admin-search:
+    post:
+      tags:
+        - room
+      description: Admin search room
+      security:
+        - bearerAuth: [ ]
+      parameters:
+        - name: limit
+          in: query
+          description: number of items per page
+          required: false
+          schema:
+            type: number
+        - name: page
+          in: query
+          description: index of page
+          required: false
+          schema:
+            type: number
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                room_name:
+                  type: string
+                host_id:
+                  type: number
+                confirmed:
+                  type: boolean
+      responses:
+        '401':
+          description: Access token is missing or invalid
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  total:
+                    type: number
+                  rooms:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Room_response'
+        '500':
+          description: System error
   /api/room/room-type:
     get:
       tags:

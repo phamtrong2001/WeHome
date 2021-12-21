@@ -10,6 +10,7 @@ const passport = require("passport");
 const auth = require("../middlewares/auth");
 
 passport.use('host', auth.isHost);
+passport.use('admin', auth.isAdmin);
 
 router.get('/room-type', async function (req, res) {
     try {
@@ -493,6 +494,43 @@ router.get('/:roomId/rental_date', async function (req, res) {
             };
         });
         res.status(200).json(response);
+    } catch (err) {
+        console.log(err);
+        res.status(500).send(err);
+    }
+});
+
+router.post('/admin-search', passport.authenticate('admin', {session: false}), async function (req, res) {
+    try {
+        const limit = req.query.limit || 20;
+        const page = req.query.page || 1;
+
+        const room_name = req.body.room_name || "";
+        const host_id = req.body.host_id;
+        const confirmed = req.body.confirmed;
+
+        let response = [];
+
+        const rooms = await models.room.findAll({
+            where: {
+                room_name: {
+                    [Op.like]: "%" + room_name + "%"
+                }
+            }
+        });
+        for (let room of rooms) {
+            if (host_id && room.host_id != host_id) {
+                continue;
+            }
+            if (confirmed !== undefined && room.confirmed !== confirmed) {
+                continue;
+            }
+            response.push(room);
+        }
+        res.status(200).json({
+            total: response.length,
+            rooms: response.slice((page - 1) * limit, page * limit)
+        });
     } catch (err) {
         console.log(err);
         res.status(500).send(err);
