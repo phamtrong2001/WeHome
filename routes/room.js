@@ -505,19 +505,35 @@ router.post('/admin-search', passport.authenticate('admin', {session: false}), a
         const limit = req.query.limit || 20;
         const page = req.query.page || 1;
 
+        const lat = req.body.latitude;
+        const long = req.body.longitude;
+        const radius = req.body.radius || 20;
         const room_name = req.body.room_name || "";
         const host_id = req.body.host_id;
         const confirmed = req.body.confirmed;
 
         let response = [];
+        let rooms;
 
-        const rooms = await models.room.findAll({
-            where: {
-                room_name: {
-                    [Op.like]: "%" + room_name + "%"
+        if (lat && long) {
+            const distance = db.Sequelize.literal("6371 * acos(cos(radians(" + lat + ")) * cos(radians(latitude)) * cos(radians(" + long + ") - radians(longitude)) + sin(radians(" + lat + ")) * sin(radians(latitude)))");
+            rooms = await models.room.findAll({
+                where: db.Sequelize.where(distance, "<=", radius),
+                having: {
+                    room_name: {
+                        [Op.like]: "%" + room_name + "%"
+                    }
                 }
-            }
-        });
+            });
+        } else {
+            rooms = await models.room.findAll({
+                where: {
+                    room_name: {
+                        [Op.like]: "%" + room_name + "%"
+                    }
+                }
+            });
+        }
         for (let room of rooms) {
             if (host_id && room.host_id != host_id) {
                 continue;

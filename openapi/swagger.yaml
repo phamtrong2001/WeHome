@@ -670,6 +670,14 @@ paths:
                   type: number
                 confirmed:
                   type: boolean
+                latitude:
+                  type: number
+                  format: float
+                longitude:
+                  type: number
+                  format: float
+                radius:
+                  type: number
       responses:
         '401':
           description: Access token is missing or invalid
