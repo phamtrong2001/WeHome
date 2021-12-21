@@ -239,7 +239,7 @@ async function createUser(req, res) {
         });
         const email = await models.user.findOne({
             where: {
-                email: newUser.username
+                email: newUser.email
             }
         });
         const phone = await models.user.findOne({
