@@ -260,6 +260,9 @@ async function updateRentalById(req, res) {
                     cost: req.body.cost,
                     client_id: req.body.client_id || project.client_id
                 }
+                if (project.status === 'UNCONFIRMED' && updateRental.status === 'CONFIRMED') {
+                    await deleteRentalUnconfirmed(updateRental.room_id, updateRental.begin_date, updateRental.end_date);
+                }
                 await models.rental.update(updateRental, {
                     where: {
                         rental_id: rentalId
