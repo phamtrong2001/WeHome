@@ -915,6 +915,12 @@ paths:
       responses:
         '200':
           description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: number
         '401':
           description: Access token is missing or invalid
         '500':

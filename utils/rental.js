@@ -21,13 +21,6 @@ module.exports.deleteRentalUnconfirmed = async function deleteRentalUnconfirmed(
                 ]
             }
         });
-
-        for (let rental of rentals) {
-            let client_id = rental.client_id;
-            //TODO: send notification to client
-
-        }
-
         await models.rental.destroy({
             where: {
                 room_id: room_id,
@@ -45,6 +38,9 @@ module.exports.deleteRentalUnconfirmed = async function deleteRentalUnconfirmed(
                     }
                 ]
             }
+        });
+        return rentals.map(rental => {
+            return rental.client_id;
         });
     } catch (err) {
         throw err;

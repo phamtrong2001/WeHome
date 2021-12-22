@@ -264,11 +264,12 @@ async function updateRentalById(req, res) {
                     where: {
                         rental_id: rentalId
                     }
-                })
+                });
+                let rejectedClients = [];
                 if (project.status === 'UNCONFIRMED' && updateRental.status === 'CONFIRMED') {
-                    await deleteRentalUnconfirmed(updateRental.room_id, updateRental.begin_date, updateRental.end_date);
+                    rejectedClients = await deleteRentalUnconfirmed(updateRental.room_id, updateRental.begin_date, updateRental.end_date);
                 }
-                res.status(200).json({'message': 'OK'});
+                res.status(200).json(rejectedClients);
                 return
             }
         })
