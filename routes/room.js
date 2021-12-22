@@ -391,9 +391,9 @@ async function filterRoom(req, res) {
             } else if (req.body.filter != 'Empty') {
                 let condition;
                 if (req.body.filter == 'Arriving soon') {
-                    condition = 'begin_date BETWEEN Current_date() AND (Current_date() + 3)';
+                    condition = 'begin_date BETWEEN Current_date() + 1 AND (Current_date() + 3)';
                 } else if (req.body.filter == 'Checking out') {
-                    condition = 'end_date BETWEEN Current_date() AND (Current_date() + 3)'
+                    condition = 'end_date BETWEEN Current_date() + 1 AND (Current_date() + 3)'
                 } else if (req.body.filter == 'Currently hosting') {
                     condition = 'begin_date <= Current_date() AND end_date >= Current_date()';
                 }
@@ -421,7 +421,7 @@ async function filterRoom(req, res) {
                             [Op.notIn]: db.literal(
                                 '( SELECT room_id FROM rental' +
                                 ' WHERE rental.room_id = room.room_id' +
-                                ' AND begin_date < Current_date()' +
+                                ' AND begin_date <= Current_date()' +
                                 ' AND end_date >= Current_date()' +
                                 ' AND status = "CONFIRMED"' +
                                 ')'
