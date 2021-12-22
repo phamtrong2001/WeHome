@@ -19,7 +19,6 @@ io.on("connection", function(socket) {
                 last_update: new Date().toISOString()
             };
             await models.notification.create(newNotification);
-            console.log(content);
         });
 
         socket.on("send_feedback", async (roomId, content) => {
@@ -34,6 +33,18 @@ io.on("connection", function(socket) {
             };
             await models.notification.create(newNotification);
         })
+
+        socket.on("send_room", async (receiver_id, content) => {
+            io.to(receiver_id.toString()).emit("receive_room", content, new Date());
+            const newNotification = {
+                user_id: receiver_id,
+                content: content,
+                type: "ROOM",
+                status: "UNREAD",
+                last_update: new Date().toISOString()
+            };
+            await models.notification.create(newNotification);
+        });
     } catch (err) {
         console.log(err);
         socket.emit('error', err.message);
