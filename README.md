@@ -32,6 +32,8 @@ Or:
     PORT=8889
     SECRET_KEY=any-secret-key
     SALT=8
+    MAIL_USER=wehomeapp@gmail.com
+    MAIL_PASS=password
 
 ### Run app
 Run file:
@@ -48,6 +50,7 @@ Or:
 ### api-docs
 Run project and open path in browser:
 
+    http://be.wehomeapp.tk/api-docs/
     http://localhost:8889/api-docs/
 
 ## Authors
