@@ -455,12 +455,12 @@ router.get('/ping/current-user', passport.authenticate('user', {session: false})
  */
 async function getAvatarByUserId(req, res) {
     try {
-        // console.log(req.headers.authorization.split(' ')[1]);
-        const payload = jwt.decode(req.headers.authorization.split(' ')[1]);
-        if (payload.user_id !== req.params["userId"]) {
-            res.status(400).json({message: 'Invalid userId'});
-            return;
-        }
+        // // console.log(req.headers.authorization.split(' ')[1]);
+        // const payload = jwt.decode(req.headers.authorization.split(' ')[1]);
+        // if (payload.user_id !== req.params["userId"]) {
+        //     res.status(400).json({message: 'Invalid userId'});
+        //     return;
+        // }
 
         const image = await Avatar.getAvatar(req.params["userId"]);
         if (!image) {
@@ -486,12 +486,12 @@ router.get('/avatar/:userId', passport.authenticate('user', {session: false}), g
  */
 async function uploadAvatarByUserId(req, res) {
     try {
-        // console.log(req.headers.authorization.split(' ')[1]);
-        const payload = jwt.decode(req.headers.authorization.split(' ')[1]);
-        if (payload.user_id !== req.params["userId"]) {
-            res.status(400).json({message: 'Invalid userId'});
-            return;
-        }
+        // // console.log(req.headers.authorization.split(' ')[1]);
+        // const payload = jwt.decode(req.headers.authorization.split(' ')[1]);
+        // if (payload.user_id !== req.params["userId"]) {
+        //     res.status(400).json({message: 'Invalid userId'});
+        //     return;
+        // }
 
         const {image} = req.body;
         await Avatar.uploadAvatar(req.params["userId"],image);
@@ -513,12 +513,12 @@ router.post('/avatar/:userId', passport.authenticate('user', {session: false}), 
  */
 async function deleteAvatarByUserId(req, res) {
     try {
-        // console.log(req.headers.authorization.split(' ')[1]);
-        const payload = jwt.decode(req.headers.authorization.split(' ')[1]);
-        if (payload.user_id !== req.params["userId"]) {
-            res.status(400).json({message: 'Invalid userId'});
-            return;
-        }
+        // // console.log(req.headers.authorization.split(' ')[1]);
+        // const payload = jwt.decode(req.headers.authorization.split(' ')[1]);
+        // if (payload.user_id !== req.params["userId"]) {
+        //     res.status(400).json({message: 'Invalid userId'});
+        //     return;
+        // }
 
         await deleteAvatar(req.params["userId"]);
 
