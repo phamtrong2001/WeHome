@@ -349,6 +349,30 @@ paths:
                   token:
                     type: string
                     default: null
+  /api/user/avatar/{userId}:
+    get:
+      tags:
+        - user
+      summary: Get avatar by UserId
+      operationId: avatar.getAvatarByUserId
+      parameters:
+        - name: userId
+          in: path
+          required: true
+          schema:
+            type: number
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Avatar_response'
+        '400':
+          description: Invalid userId supplied
+          content: { }
+        '500':
+          description: System error
   /api/room:
     get:
       tags:
@@ -1511,6 +1535,13 @@ components:
         username: client
         password: $2a$08$d3vpDmgChTKG2sQGs7QQx.OwOaSlZ.nCRmx31fMdoxuxTXsfKkK1q
         last_update: '2021-12-01T14:05:43.000Z'
+    Avatar_response:
+      type: object
+      properties:
+        image:
+          type: string
+      example:
+        image: https://i.ibb.co/xg99dyg/user.png
     Room_request:
       type: object
       properties:
