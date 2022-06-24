@@ -373,6 +373,43 @@ paths:
           content: { }
         '500':
           description: System error
+    post:
+      tags:
+        - user
+      summary: Upload avatar by UserId
+      operationId: avatar.uploadAvatarByUserId
+      requestBody:
+        description: Upload Avatar
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Avatar_response'
+      responses:
+        '200':
+          description: OK
+        '400':
+          description: Invalid input
+        '500':
+          description: System error
+    delete:
+      tags:
+        - user
+      summary: Delete avatar by UserId
+      operationId: avatar.deleteAvatarByUserId
+      parameters:
+        - name: userId
+          in: path
+          required: true
+          schema:
+            type: number
+      responses:
+        '200':
+          description: OK
+        '400':
+          description: Invalid userId supplied
+        '500':
+          description: System error
   /api/room:
     get:
       tags:

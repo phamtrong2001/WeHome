@@ -11,6 +11,7 @@ const {QueryTypes, Op} = require("sequelize");
 const {sendEmail} = require("../utils/email");
 const {deleteRoom} = require("../utils/room");
 const Avatar = require("../utils/avatar");
+const {deleteAvatar} = require("../utils/avatar");
 
 passport.use('user', auth.jwtStrategy);
 passport.use('admin', auth.isAdmin);
@@ -475,5 +476,59 @@ async function getAvatarByUserId(req, res) {
 }
 
 router.get('/avatar/:userId', passport.authenticate('user', {session: false}), getAvatarByUserId);
+
+/**
+ * Upload avatar by userId
+ * @author: user
+ * @param req
+ * @param res
+ * @returns {Promise<void>}
+ */
+async function uploadAvatarByUserId(req, res) {
+    try {
+        // console.log(req.headers.authorization.split(' ')[1]);
+        const payload = jwt.decode(req.headers.authorization.split(' ')[1]);
+        if (payload.user_id !== req.params["userId"]) {
+            res.status(400).json({message: 'Invalid userId'});
+            return;
+        }
+
+        const {image} = req.body;
+        await Avatar.uploadAvatar(req.params["userId"],image);
+        return res.status(200);
+    } catch (err) {
+        console.log(err);
+        res.status(500).send(err);
+    }
+}
+
+router.post('/avatar/:userId', passport.authenticate('user', {session: false}), uploadAvatarByUserId);
+
+/**
+ * Delete avatar by userId
+ * @author: user
+ * @param req
+ * @param res
+ * @returns {Promise<void>}
+ */
+async function deleteAvatarByUserId(req, res) {
+    try {
+        // console.log(req.headers.authorization.split(' ')[1]);
+        const payload = jwt.decode(req.headers.authorization.split(' ')[1]);
+        if (payload.user_id !== req.params["userId"]) {
+            res.status(400).json({message: 'Invalid userId'});
+            return;
+        }
+
+        await deleteAvatar(req.params["userId"]);
+
+        return res.status(200);
+    } catch (err) {
+        console.log(err);
+        res.status(500).send(err);
+    }
+}
+
+router.delete('/avatar/:userId', passport.authenticate('user', {session: false}), deleteAvatarByUserId);
 
 module.exports = router;
