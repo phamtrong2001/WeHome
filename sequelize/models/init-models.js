@@ -11,6 +11,7 @@ var _report = require("./report");
 var _room = require("./room");
 var _room_type = require("./room_type");
 var _user = require("./user");
+var _avatar = require("./avatar")
 
 function initModels(sequelize) {
     var address = _address(sequelize, DataTypes);
@@ -25,6 +26,7 @@ function initModels(sequelize) {
     var room = _room(sequelize, DataTypes);
     var room_type = _room_type(sequelize, DataTypes);
     var user = _user(sequelize, DataTypes);
+    var avatar = _avatar(sequelize, DataTypes);
 
     room.belongsTo(address, {as: "address", foreignKey: "address_id"});
     address.hasMany(room, {as: "rooms", foreignKey: "address_id"});
@@ -52,6 +54,9 @@ function initModels(sequelize) {
     user.hasMany(rental, {as: "rentals", foreignKey: "client_id"});
     room.belongsTo(user, {as: "host", foreignKey: "host_id"});
     user.hasMany(room, {as: "rooms", foreignKey: "host_id"});
+    user.hasMany(avatar, {as: "avatar", foreignKey: "user_id"});
+    avatar.belongsTo(user, {as: "user", foreignKey: "user_id"});
+
 
     return {
         address,
@@ -66,6 +71,7 @@ function initModels(sequelize) {
         room,
         room_type,
         user,
+        avatar,
     };
 }
 

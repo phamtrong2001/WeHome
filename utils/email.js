@@ -3,7 +3,8 @@ const nodemailer = require('nodemailer');
 module.exports.sendEmail = function sendEmail(email, password) {
     try {
         const transporter = nodemailer.createTransport({
-            service: 'gmail',
+            host: 'smtp.office365.com',
+            port: '587',
             auth: {
                 user: process.env.MAIL_USER,
                 pass: process.env.MAIL_PASS
@@ -11,7 +12,7 @@ module.exports.sendEmail = function sendEmail(email, password) {
         });
 
         const mailOptions = {
-            from: process.env.MAIL_USER,
+            from: "We Home" + '<' + process.env.MAIL_USER + '>',
             to: email,
             subject: 'Reset password WeHome',
             text: "Let's login with this password and change your password",

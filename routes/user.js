@@ -10,6 +10,7 @@ const {validate_user, validate_pass} = require("../middlewares/validate");
 const {QueryTypes, Op} = require("sequelize");
 const {sendEmail} = require("../utils/email");
 const {deleteRoom} = require("../utils/room");
+const Avatar = require("../utils/avatar");
 
 passport.use('user', auth.jwtStrategy);
 passport.use('admin', auth.isAdmin);
@@ -443,5 +444,36 @@ router.post('/logout', (req, res) => {
 router.get('/ping/current-user', passport.authenticate('user', {session: false}), (req, res) => {
     res.status(200).send('OK');
 })
+
+/**
+ * Get avatar by userId
+ * @author: user
+ * @param req
+ * @param res
+ * @returns {Promise<void>}
+ */
+async function getAvatarByUserId(req, res) {
+    try {
+        // console.log(req.headers.authorization.split(' ')[1]);
+        const payload = jwt.decode(req.headers.authorization.split(' ')[1]);
+        if (payload.user_id !== req.params["userId"]) {
+            res.status(400).json({message: 'Invalid userId'});
+            return;
+        }
+
+        const image = await Avatar.getAvatar(req.params["userId"]);
+        if (!image) {
+            res.status(200).json({image: 'https://i.ibb.co/xg99dyg/user.png'});
+            return;
+        }
+
+        return res.status(200).json({image: image});
+    } catch (err) {
+        console.log(err);
+        res.status(500).send(err);
+    }
+}
+
+router.get('/avatar/:userId', passport.authenticate('user', {session: false}), getAvatarByUserId);
 
 module.exports = router;
