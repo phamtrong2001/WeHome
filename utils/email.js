@@ -3,7 +3,7 @@ const nodemailer = require('nodemailer');
 module.exports.sendEmail = function sendEmail(email, password) {
     try {
         const transporter = nodemailer.createTransport({
-            host: 'smtp.office365.com',
+            host: 'smtp-mail.outlook.com',
             port: '587',
             auth: {
                 user: process.env.MAIL_USER,
@@ -19,7 +19,7 @@ module.exports.sendEmail = function sendEmail(email, password) {
             html: "<h3>Chúng tôi đã nhận được yêu cầu reset mật khẩu của bạn.</h3><br>" +
                 "<p>Hãy đăng nhập bằng mật khẩu dưới đây và đổi lại mật khẩu của bạn tại We Home" +
                 // "<a href='https://www.wehomeapp.tk/'>WeHome</a>" + " : </p>" +
-                "<h3>" + password + "</h3>"
+                "<br> <text>" + password + "</text>"
         }
 
         transporter.sendMail(mailOptions, function (err, info) {
