@@ -294,7 +294,7 @@ async function search(req, res) {
         }
         for (let i=0; i < response.length; i++ )
             for (let j=i+1; j < response.length; j++){
-                if (response[i].total_rated < response[j].total_rated) {
+                if (response[i].price < response[j].price) {
                     let t = response[i];
                     response[i] = response[j];
                     response[j] = t;
