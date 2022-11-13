@@ -15,6 +15,7 @@ const reportRouter = require('./routes/report');
 const feedbackRouter = require('./routes/feedback');
 const facilityRouter = require('./routes/facility');
 const notificationRouter = require('./routes/notification');
+const net = require('net');
 
 const app = express();
 app.use(express.static(__dirname + '/public'));
@@ -29,7 +30,11 @@ app.use(passport.initialize());
 app.use(cors());
 
 app.get('/', (req, res) => {
-   res.send("Welcome to WeHome BackEnd!");
+	let client = net.connect({port: 80, host:"google.com"}, () => {
+		  console.log('MyIP='+client.localAddress);
+		  console.log('MyPORT='+client.localPort);
+   res.send("Welcome to WeHome BackEnd! " + client.address().address);
+	});
 });
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 app.use('/api/user', userRouter);
